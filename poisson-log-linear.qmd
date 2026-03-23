@@ -1,0 +1,398 @@
+# Log Linear Models for Counts
+
+{{< include _r_setup.qmd >}}
+
+{{< include _python_setup.qmd >}}
+
+
+
+
+### Data
+
+```{r}
+n = 100
+
+x = rnorm(n)
+
+beta0 = rnorm(n, 0, 0.1)
+beta1 = rnorm(n, 1, 0.1)
+
+mu = exp(beta0 + beta1 * x)
+
+y = rpois(n, mu)
+
+data = data.frame(x, y)
+```
+
+
+
+### Posterior distribution
+
+
+```{r}
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+```{r}
+get_prior(data = data,
+          family = poisson(),
+          y ~ 1 + x)
+```
+
+
+
+```{r}
+fit <- brm(data = data,
+           family = poisson(),
+           y ~ 1 + x,
+           prior = c(prior(normal(4, 0.1), class = Intercept),
+                     prior(normal(0, 0.1), class = b)),
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+summary(fit)
+```
+
+
+```{r}
+plot(fit)
+```
+
+
+```{r}
+pairs(fit)
+```
+
+
+```{r}
+mcmc_dens_overlay(fit, pars = vars(b_Intercept, b_BMI, sigma))
+```
+
+
+
+```{r}
+neff_ratio(fit)[c("b_Intercept", "b_BMI", "sigma")]
+```
+
+```{r}
+neff_ratio(fit)[c("b_Intercept", "b_BMI", "sigma")] |> 
+  mcmc_neff() +
+  yaxis_text(hjust = 0) 
+```
+
+
+### Posterior distribution, model using centered BMI
+
+```{r}
+data = data |>
+  mutate(BMI_c = BMI - mean(BMI))
+```
+
+
+```{r}
+fit_c <- brm(data = data,
+           family = gaussian(),
+           PBF ~ 1 + BMI_c,
+           prior = c(prior(normal(18, 2), class = Intercept),
+                prior(normal(0.5, 0.1), class = b),
+                prior(exponential(0.667), class = sigma)),
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+summary(fit_c)
+```
+
+
+```{r}
+color_scheme_set("viridis")
+
+plot(fit_c)
+```
+
+
+```{r}
+pairs(fit_c)
+```
+
+
+
+```{r}
+neff_ratio(fit_c)[c("b_Intercept", "b_BMI_c", "sigma")]
+```
+
+
+```{r}
+neff_ratio(fit_c)[c("b_Intercept", "b_BMI_c", "sigma")] |> 
+  mcmc_neff() +
+  yaxis_text(hjust = 0) 
+```
+
+
+Posterior distribution of regression slope
+
+```{r}
+mcmc_intervals(fit_c,
+               pars = c("b_BMI_c"),
+               prob = 0.5,
+               prob_outer = 0.98)
+```
+
+```{r}
+#| layout-nrow: 3
+
+color_scheme_set("teal")
+
+mcmc_areas(fit_c,
+           pars = c("b_BMI_c"),
+           prob = 0.5,
+           point_est = "median")
+
+mcmc_areas(fit_c,
+           pars = c("b_BMI_c"),
+           prob = 0.8,
+           point_est = "median")
+
+mcmc_areas(fit_c,
+           pars = c("b_BMI_c"),
+           prob = 0.98,
+           point_est = "median")
+```
+
+
+
+
+Posterior distribution of $\sigma$
+
+```{r}
+mcmc_intervals(fit_c,
+               pars = c("sigma"),
+               prob = 0.5,
+               prob_outer = 0.98)
+```
+
+```{r}
+#| layout-nrow: 3
+
+mcmc_areas(fit_c,
+           pars = c("sigma"),
+           prob = 0.5,
+           point_est = "median")
+
+mcmc_areas(fit_c,
+           pars = c("sigma"),
+           prob = 0.8,
+           point_est = "median")
+
+mcmc_areas(fit_c,
+           pars = c("sigma"),
+           prob = 0.98,
+           point_est = "median")
+```
+
+
+
+Posterior distribution of mean response
+
+```{r}
+posterior_c = fit_c |>
+  spread_draws(b_Intercept, b_BMI_c, sigma) |>
+  mutate(mu_20 = b_Intercept + b_BMI_c * (20 - mean(data$BMI)))
+
+posterior_c |> head(10) |> kbl() |> kable_styling()
+```
+
+
+```{r}
+posterior_c |>
+  ggplot(aes(x = mu_20)) +
+  stat_halfeye(.width = c(0.80, 0.98),
+               fill = bayes_col["posterior"]) +
+  theme_bw()
+```
+
+
+
+```{r}
+quantile(posterior_c$mu_20, c(0.01, 0.99))
+```
+
+
+
+### Posterior prediction
+
+
+```{r}
+posterior_c = posterior_c |>
+  mutate(y_pred_20 = mu_20 + sigma * rnorm(nrow(posterior_c), 0, 1))
+
+posterior_c |> head(10) |> kbl() |> kable_styling()
+```
+
+
+```{r}
+ggplot(posterior_c,
+       aes(x = y_pred_20)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+  geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
+  labs(x = "Posterior predicted PBF(%) for BMI of 20 kg/m^2") +
+  theme_bw()
+```
+
+```{r}
+quantile(posterior_c$y_pred_20, c(0.025, 0.975))
+```
+
+
+
+```{r}
+predictive_interval(fit_c,
+                    newdata = data.frame(BMI_c = 20 - mean(data$BMI)),
+                    prob = 0.95)
+```
+
+
+### Posterior predictive checking
+
+4 simulated samples
+
+```{r}
+data |>
+  add_predicted_draws(fit_c, ndraws = 4) %>%
+  ggplot(aes(x = BMI_c, y = PBF)) +
+    geom_point(aes(y = .prediction,
+                   group = .draw), size = 0.2) + 
+    facet_wrap(~ .draw)
+```
+
+Posterior predictive check of response
+
+```{r}
+color_scheme_set("purple")
+
+pp_check(fit_c, ndraw = 100)
+
+```
+
+`posterior_predict` simulates a sample of size 2157, using the observed $x$ values, for each of the 10000 simulated triples from the posterior distribution, resulting in a 10000 x 2157 matrix.
+
+```{r}
+predictions <- posterior_predict(fit_c)
+
+dim(predictions)
+```
+
+
+We can use these predictions to plot posterior prediction intervals for a range of BMI values.
+
+```{r}
+ppc_intervals(data$PBF,
+              yrep = predictions,
+              x = data$BMI, 
+              prob = 0.5,
+              prob_outer = 0.95)
+```
+
+
+
+
+
+### Sensitivity: using `brms` default prior
+
+
+
+```{r}
+get_prior(data = data,
+          family = gaussian(),
+          PBF ~ 1 + BMI_c)
+```
+
+
+```{r}
+fit_brms_prior <- brm(data = data,
+           family = gaussian(),
+           PBF ~ 1 + BMI_c,
+           sample_prior = TRUE,
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+summary(fit_brms_prior)
+```
+
+
+```{r}
+color_scheme_set("viridis")
+
+plot(fit_brms_prior)
+```
+
+
+```{r}
+pairs(fit_brms_prior)
+```
+
+
+
+```{r}
+neff_ratio(fit_brms_prior)[c("b_Intercept", "b_BMI_c", "sigma")]
+```
+
+
+```{r}
+neff_ratio(fit_brms_prior)[c("b_Intercept", "b_BMI_c", "sigma")] |> 
+  mcmc_neff() +
+  yaxis_text(hjust = 0) 
+```
+
+
+```{r}
+color_scheme_set("purple")
+
+pp_check(fit_brms_prior, ndraw = 100)
+
+```
+
+```{r}
+predictions_b <- posterior_predict(fit_brms_prior)
+
+dim(predictions_b)
+```
+
+
+
+
+```{r}
+ppc_intervals(data$PBF,
+              yrep = predictions_b,
+              x = data$BMI, 
+              prob = 0.5,
+              prob_outer = 0.95)
+```
+
+Leave-one-out (LOO) cross-validation to compare models.
+
+```{r}
+LOO(fit_c, fit_brms_prior)
+```
+
+
+
+
+

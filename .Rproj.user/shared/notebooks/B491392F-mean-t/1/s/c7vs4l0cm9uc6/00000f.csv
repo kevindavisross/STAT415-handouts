@@ -1,0 +1,15 @@
+"0","#| cache: true"
+"0",""
+"0","fit <- brm(data = data,"
+"0","           family = student,"
+"0","           birthweight ~ 1,"
+"0","           prior = c(prior(normal(3400, 100), class = Intercept),"
+"0","                     prior(normal(600, 200), class = sigma)),"
+"0","           iter = 3500,"
+"0","           warmup = 1000,"
+"0","           chains = 4,"
+"0","           refresh = 0)"
+"2","Compiling Stan program...
+"
+"2","Start sampling
+"

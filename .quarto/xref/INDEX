@@ -1,0 +1,95 @@
+{
+  "index.qmd": {
+    "index.html": "dc2f7208"
+  },
+  "introduction.qmd": {
+    "introduction.html": "1df8f039"
+  },
+  "references.qmd": {
+    "references.html": "daf4822c"
+  },
+  "introductory-activity.qmd": {
+    "introductory-activity.html": "35734989"
+  },
+  "introductory-example.qmd": {
+    "introductory-example.html": "3dbc05a1"
+  },
+  "interpretations-probstat.qmd": {
+    "interpretations-probstat.html": "d0a8bcb8"
+  },
+  "bayesian-ideas.qmd": {
+    "bayesian-ideas.html": "fd8abb01"
+  },
+  "bayes-rule.qmd": {
+    "bayes-rule.html": "f990c235"
+  },
+  "intro-estimation.qmd": {
+    "intro-estimation.html": "d62c01bc"
+  },
+  "intro-inference.qmd": {
+    "intro-inference.html": "4007160c"
+  },
+  "normal-mean.qmd": {
+    "normal-mean.html": "ea055af0"
+  },
+  "comparing-bayesian-and-frequentist.qmd": {
+    "comparing-bayesian-and-frequentist.html": "92613ac7"
+  },
+  "intro-prediction.qmd": {
+    "intro-prediction.html": "f2398554"
+  },
+  "predictive-tuning-and-checking.qmd": {
+    "predictive-tuning-and-checking.html": "0b6ef8b1"
+  },
+  "beta-binomial.qmd": {
+    "beta-binomial.html": "ee573612"
+  },
+  "considering-priors.qmd": {
+    "considering-priors.html": "6b776ee0"
+  },
+  "posterior-simulation.qmd": {
+    "posterior-simulation.html": "63cc4f61"
+  },
+  "poisson.qmd": {
+    "poisson.html": "a9c9ed1f"
+  },
+  "normal-normal.qmd": {
+    "normal-normal.html": "15ea9134"
+  },
+  "multi-parameter.qmd": {
+    "multi-parameter.html": "28824dde"
+  },
+  "numerical-skew.qmd": {
+    "numerical-skew.html": "8fadee57"
+  },
+  "mean-t.qmd": {
+    "mean-t.html": "692ebd3c"
+  },
+  "comparing-two-means.qmd": {
+    "comparing-two-means.html": "6a97ecea"
+  },
+  "mcmc.qmd": {
+    "mcmc.html": "f8d670bc"
+  },
+  "mcmc-diagnostics.qmd": {
+    "mcmc-diagnostics.html": "347edb23"
+  },
+  "regression.qmd": {
+    "regression.html": "bc8e16fc"
+  },
+  "hierarchical.qmd": {
+    "hierarchical.html": "2250ee5c"
+  },
+  "junk.qmd": {
+    "junk.html": "9255a07d"
+  },
+  "hierarchical-linear.qmd": {
+    "hierarchical-linear.html": "f2c457bd"
+  },
+  "classification.qmd": {
+    "classification.html": "70045c8b"
+  },
+  "model-comparison.qmd": {
+    "model-comparison.html": "9207ff51"
+  }
+}

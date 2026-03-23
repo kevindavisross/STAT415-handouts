@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<script src="lib/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lib/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lib/kePrint-0.0.1/kePrint.js"></script>
+<link href="lib/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+</head>
+<body>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Player </th>
+   <th style="text-align:right;"> FTA </th>
+   <th style="text-align:right;"> FT </th>
+   <th style="text-align:right;"> FTpct </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Joel Embiid </td>
+   <td style="text-align:right;"> 556 </td>
+   <td style="text-align:right;"> 477 </td>
+   <td style="text-align:right;"> 0.858 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> James Harden </td>
+   <td style="text-align:right;"> 279 </td>
+   <td style="text-align:right;"> 241 </td>
+   <td style="text-align:right;"> 0.864 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Tyrese Maxey </td>
+   <td style="text-align:right;"> 155 </td>
+   <td style="text-align:right;"> 126 </td>
+   <td style="text-align:right;"> 0.813 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Tobias Harris </td>
+   <td style="text-align:right;"> 90 </td>
+   <td style="text-align:right;"> 77 </td>
+   <td style="text-align:right;"> 0.856 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Shake Milton </td>
+   <td style="text-align:right;"> 89 </td>
+   <td style="text-align:right;"> 76 </td>
+   <td style="text-align:right;"> 0.854 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Montrezl Harrell </td>
+   <td style="text-align:right;"> 85 </td>
+   <td style="text-align:right;"> 59 </td>
+   <td style="text-align:right;"> 0.694 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> De'Anthony Melton </td>
+   <td style="text-align:right;"> 59 </td>
+   <td style="text-align:right;"> 46 </td>
+   <td style="text-align:right;"> 0.780 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Danuel House Jr. </td>
+   <td style="text-align:right;"> 40 </td>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:right;"> 0.700 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Georges Niang </td>
+   <td style="text-align:right;"> 32 </td>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:right;"> 0.875 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Furkan Korkmaz </td>
+   <td style="text-align:right;"> 29 </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 0.655 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Paul Reed </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0.727 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> P.J. Tucker </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 0.850 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Matisse Thybulle </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0.750 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Jalen McDaniels </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0.400 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Kevin Ross </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Jaden Springer </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.750 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Saben Lee </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Julian Champagnie </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Michael Foster Jr. </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+</tbody>
+</table> <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [["$","$"]]}})</script><script async src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

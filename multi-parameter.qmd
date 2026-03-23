@@ -1,0 +1,806 @@
+# Introduction to Multi-Parameter models {#sec-multi-parameter}
+
+{{< include _r_setup.qmd >}}
+
+<!-- {{< include _python_setup.qmd >}} -->
+
+
+
+
+
+
+
+- Most interesting problems involve multiple unknown parameters.
+- When there are two (or more) unknown parameters the prior and posterior distribution will each be a *joint* probability distribution over *pairs* (or tuples/vectors) of possible values of the parameters.
+
+
+
+
+::: {#exm-body-temp-discrete-sd}
+Assume body temperatures (degrees Fahrenheit) of healthy adults follow a Normal distribution with unknown mean $\mu$ and unknown standard deviation $\sigma$.
+Suppose we wish to estimate both $\mu$, the population mean healthy human body temperature, and $\sigma$, the population standard deviation of body temperatures.
+Assume a discrete prior distribution according to which
+
+- $\mu$ takes values 97.6, 98.1, 98.6 with prior probability 0.2, 0.3, 0.5, respectively.
+- $\sigma$ takes values 0.5, 1 with prior probability 0.25, 0.75, respectively.
+- $\mu$ and $\sigma$ are independent.
+:::
+
+1. Start to construct the Bayes table.
+What are the possible values of the parameter (in this discrete example)?
+What are the prior probabilities?
+(Hint: the parameter $\theta$ is a *pair* $(\mu, \sigma)$.)
+\
+\
+\
+\
+\
+
+1. Suppose two temperatures of 97.5 and 97.9 are observed, independently.
+Identify the likelihood.
+\
+\
+\
+\
+\
+
+1. Complete the Bayes table and find the posterior distribution after observing these two measurements.
+Compare to the prior distribution.
+\
+\
+\
+\
+\
+
+
+1. The prior assumes that $\mu$ and $\sigma$ are independent.
+Are they independent according to the posterior distribution?
+\
+\
+\
+\
+\
+
+
+
+::: {#exm-body-temp-prior-sd}
+Continuing @exm-body-temp-discrete-sd, let's assume a more reasonable, continuous prior for $(\mu,\sigma)$.
+:::
+
+
+1. What are the possible values of $\sigma$?
+How would you choose a prior for $\sigma$?
+\
+\
+\
+\
+\
+
+
+1. For a prior, assume that: $\mu$ has a Normal distribution with mean 98.6 and standard deviation 0.3, $\sigma$ has a "Half-Normal(0, 1)" distribution (that's Normal(0, 1) but constrained to positive values), and $\mu$ and $\sigma$ are independent.
+Simulate $(\mu, \sigma)$ pairs from the prior distribution and plot them.
+\
+\
+\
+\
+\
+
+1. Simulate the prior predictive distribution.
+Do the values seem reasonable?
+If not, adjust the prior distribution of parameters and try again.
+\
+\
+\
+\
+\
+
+
+
+1. Find and interpret a central 98% prior credible interval for $\mu$.
+\
+\
+\
+\
+\
+
+1. Find and interpret a central 98% prior credible interval for $\sigma$.
+\
+\
+\
+\
+\
+
+1. What is the prior credibility that both $\mu$ and $\sigma$ lie within their credible intervals?
+\
+\
+\
+\
+\
+
+
+::: {#exm-body-temp-grid-sd}
+Continuing @exm-body-temp-discrete-sd, we'll now use grid approximation to approximate the posterior distribution.
+:::
+
+
+
+1. Assume a grid of $\mu$ values from 96 to 100 in increments of 0.01, and a grid of $\sigma$ values from 0.01 to 3 in increments of 0.01.
+How many possible values of the pair $(\mu, \sigma)$ are there; that is, how many rows are there in the Bayes table?
+\
+\
+\
+\
+\
+
+1. Suppose first that we are given a sample of two measurements of 97.9 and 97.5.
+Use grid approximation to approximate the joint posterior distribution of $(\mu, \sigma)$
+Simulate values from the joint posterior distribution and plot them.
+Compare to the prior.
+Compute the posterior correlation between $\mu$ and $\sigma$; are they independent according to the posterior distribution?
+\
+\
+\
+\
+\
+
+
+1. In a recent study, the sample mean body temperature in a sample of 208 healthy adults was 97.7 degrees F and the sample standard deviation was 1.0 degree F; the sample data is summarized in @sec-body-temperature-data (it's the same data we used in @sec-brms).
+Use grid approximation to approximate the joint posterior distribution of $(\mu, \sigma)$
+Simulate values from the joint posterior distribution and plot them.
+Compare to the prior.
+Compute the posterior correlation between $\mu$ and $\sigma$; are they independent according to the posterior distribution?
+\
+\
+\
+\
+\
+
+
+::: {#exm-body-temp-brms-sd}
+Continuing @exm-body-temp-discrete-sd, we'll now use simulation to approximate the posterior distribution, given the same sample data as before.
+:::
+
+
+
+1. Describe how, in principle, you would use a naive (non-MCMC) simulation to approximate the posterior distribution.
+In practice, what is the problem with such a simulation?
+\
+\
+\
+\
+\
+
+1. Use `brms` to approximate the posterior distribution.
+Compare to the results of the grid approximation.
+\
+\
+\
+\
+\
+
+1. Find and interpret a central 98% posterior credible interval for $\mu$.
+\
+\
+\
+\
+\
+
+1. Find and interpret a central 98% posterior credible interval for $\sigma$.
+\
+\
+\
+\
+\
+
+1. What is the posterior credibility that both $\mu$ and $\sigma$ lie within their credible intervals?
+\
+\
+\
+\
+\
+
+
+
+
+::: {#exm-body-temp-prediction-sd}
+
+Continuing the previous example
+:::
+
+
+1. Describe how you could use simulation to approximate the posterior predictive distribution.
+\
+\
+\
+\
+\
+
+1. Run the simulation, summarize the predictive distribution, and find and interpret a 95% posterior predictive interval.
+\
+\
+\
+\
+\
+
+1. Explain how you could use posterior predictive checking to assess the reasonableness of the model in light of the observed data.
+Does the model seem reasonable?
+\
+\
+\
+\
+\
+
+
+## Notes
+
+### Discrete grid
+
+```{r}
+mu = c(97.6, 98.1, 98.6)
+sigma = c(0.5, 1)
+
+# theta is all possible (mu, sigma) pairs
+theta = expand.grid(mu, sigma)
+names(theta) = c("mu", "sigma")
+
+# prior
+prior_mu = c(0.20, 0.30, 0.50)
+prior_sigma = c(0.25, 0.75)
+prior = apply(expand.grid(prior_mu, prior_sigma), 1, prod)
+prior = prior / sum(prior)
+
+# data
+y = c(97.9, 97.5) # single observed value
+
+# likelihood
+likelihood = dnorm(97.9, mean = theta$mu, sd = theta$sigma) *
+  dnorm(97.5, mean = theta$mu, sd = theta$sigma)
+
+# posterior
+product = likelihood * prior
+posterior = product / sum(product)
+
+# bayes table
+bayes_table = data.frame(theta,
+                     prior,
+                     likelihood,
+                     product,
+                     posterior)
+
+# display table
+bayes_table |>
+  adorn_totals("row",,,, -c(mu, sigma)) |>
+  kbl(digits = 4) |>
+  kable_styling()
+```
+
+```{r}
+#| label: fig-body-temp-discrete-tile
+#| echo: true
+#| fig-cap: "Joint distribution of mean and SD of body temperatures in @exm-body-temp-discrete-sd."
+#| fig-subcap: 
+#|   - "Prior distribution."
+#|   - "Posterior distribution."
+#| layout-ncol: 2
+
+ggplot(bayes_table |>
+         mutate(mu = factor(mu),
+                sigma = factor(sigma)),
+       aes(mu, sigma)) +
+  geom_tile(aes(fill = prior))  +
+  scale_fill_viridis(option = "mako",
+                     limits = c(0, max(c(prior, posterior)))) +
+  theme_bw()
+
+ggplot(bayes_table |>
+         mutate(mu = factor(mu),
+                sigma = factor(sigma)),
+       aes(mu, sigma)) +
+  geom_tile(aes(fill = posterior)) +
+  scale_fill_viridis(option = "mako",
+                     limits = c(0, max(c(prior, posterior))))
+```
+
+
+### Prior distribution
+
+```{r}
+#| label: fig-body-temp-prior
+#| echo: true
+#| fig-cap: "Simulated joint prior distribution of mean and SD of body temperatures in @exm-body-temp-prior-sd."
+#| fig-subcap: 
+#|   - "Scatterplot."
+#|   - "Density plot."
+#| layout-ncol: 2
+
+n_rep = 10000
+
+mu_sim_prior = rnorm(n_rep, 98.6, 0.3)
+sigma_sim_prior = abs(rnorm(n_rep, 0, 1))
+sim_prior = data.frame(mu_sim_prior, sigma_sim_prior)
+
+ggplot(sim_prior,
+       aes(x = mu_sim_prior,
+           y = sigma_sim_prior)) +
+  geom_point(color = bayes_col["prior"], alpha = 0.4) +
+  labs(x = "mean (mu)",
+       y = "sd (sigma)") +
+  theme_bw()
+
+ggplot(sim_prior,
+       aes(x = mu_sim_prior,
+           y = sigma_sim_prior)) +
+  stat_density_2d(aes(fill = after_stat(level)),
+                  geom = "polygon", color = "white") +
+  scale_fill_viridis(option = "mako") +
+  labs(x = "mean (mu)",
+       y = "sd (sigma)") +
+  theme_bw()
+```
+
+
+### Prior predictive distribution
+
+
+```{r}
+
+# given theta = (mu, sigma), simulation y from Normal(mu, sigma)
+y_sim_prior = rnorm(n_rep, mu_sim_prior, sigma_sim_prior)
+
+# plot the simulated y values
+ggplot(data.frame(y_sim_prior),
+       aes(x = y_sim_prior)) + 
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["prior_predict"],
+                 fill = "white") +
+  geom_density(col = bayes_col["prior_predict"],
+               linewidth = 1) +
+  labs(x = "Body temperature (y)") +
+  theme_bw()
+
+# plot the cdf
+ggplot(data.frame(y_sim_prior),
+       aes(x = y_sim_prior)) + 
+  stat_ecdf(col = bayes_col["prior_predict"],
+            linewidth = 1) +
+  labs(x = "Body temperature (y)",
+       y = "cdf") +
+  theme_bw()
+```
+
+```{r}
+quantile(y_sim_prior, c(0.025, 0.975))
+```
+
+
+### Grid approximation: $n=2$
+
+
+```{r}
+mu = seq(96, 100, 0.01)
+sigma = seq(0.01, 3, 0.01)
+
+# theta is all possible (mu, sigma) pairs
+theta = expand.grid(mu, sigma)
+names(theta) = c("mu", "sigma")
+
+# prior
+prior_mu = dnorm(mu, 98.6, 0.3)
+prior_sigma = dnorm(sigma, 0, 1)
+prior = apply(expand.grid(prior_mu, prior_sigma), 1, prod)
+prior = prior / sum(prior)
+
+# data
+y = c(97.9, 97.5) # single observed value
+
+# likelihood
+likelihood = dnorm(97.9, mean = theta$mu, sd = theta$sigma) *
+  dnorm(97.5, mean = theta$mu, sd = theta$sigma)
+
+# posterior
+product = likelihood * prior
+posterior = product / sum(product)
+
+```
+
+
+
+
+```{r}
+#| label: fig-body-temp-posterior-discrete
+#| echo: true
+#| fig-cap: "Grid-approximated joint posterior distribution of mean and SD of body temperatures in @exm-body-temp-prior-sd."
+#| fig-subcap: 
+#|   - "Scatterplot."
+#|   - "Density plot."
+#| layout-ncol: 2
+
+n_rep = 10000
+
+# sample (mu, sigma) pairs for the posterior distribution by
+# sampling rows of the Bayes table according to posterior
+# and then finding the (mu, sigma) values for the sampled rows
+
+index_sim = sample(1:length(posterior),
+                   size = n_rep, replace = TRUE,
+                   prob = posterior)
+
+sim_posterior = theta |> slice(index_sim)
+
+ggplot(sim_posterior,
+       aes(x = mu,
+           y = sigma)) +
+  geom_point(color = bayes_col["posterior"], alpha = 0.4) +
+  labs(x = "mean (mu)",
+       y = "sd (sigma)") +
+  theme_bw()
+
+ggplot(sim_posterior,
+       aes(x = mu,
+           y = sigma)) +
+  stat_density_2d(aes(fill = after_stat(level)),
+                  geom = "polygon", color = "white") +
+  scale_fill_viridis(option = "mako") +
+  labs(x = "mean (mu)",
+       y = "sd (sigma)") +
+  theme_bw()
+```
+
+```{r}
+cor(sim_posterior$mu, sim_posterior$sigma)
+```
+
+
+### Sample data {#sec-body-temperature-data}
+
+```{r}
+data = read_csv("bodytemps.csv")
+
+head(data)
+```
+
+
+```{r}
+mean(data$bodytemp)
+
+sd(data$bodytemp)
+```
+
+```{r}
+data |>
+  ggplot(aes(x = bodytemp)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = "black", fill = "white") +
+  geom_density(linewidth = 1) +
+  theme_bw()
+```
+
+### Grid approximation of posterior given sample data
+
+
+```{r}
+mu = seq(96, 100, 0.01)
+sigma = seq(0.01, 3, 0.01)
+
+# theta is all possible (mu, sigma) pairs
+theta = expand.grid(mu, sigma)
+names(theta) = c("mu", "sigma")
+
+# prior
+prior_mu = dnorm(mu, 98.6, 0.3)
+prior_sigma = dnorm(sigma, 0, 1)
+prior = apply(expand.grid(prior_mu, prior_sigma), 1, prod)
+prior = prior / sum(prior)
+
+# data
+y = data$bodytemp
+
+# likelihood - looping through each theta, but probably better/easier ways
+likelihood = rep(NA, nrow(theta))
+
+for (i in 1:nrow(theta)) {
+  likelihood[i] = prod(dnorm(y, theta[i, "mu"], theta[i, "sigma"]))
+}
+
+# posterior
+product = likelihood * prior
+posterior = product / sum(product)
+
+```
+
+
+
+
+```{r}
+#| label: fig-body-temp-posterior-grid
+#| echo: true
+#| fig-cap: "Grid-approximated joint posterior distribution of mean and SD of body temperatures in @exm-body-temp-prior-sd."
+#| fig-subcap: 
+#|   - "Scatterplot."
+#|   - "Density plot."
+#| layout-ncol: 2
+
+n_rep = 10000
+
+# sample (mu, sigma) pairs for the posterior distribution by
+# sampling rows of the Bayes table according to posterior
+# and then finding the (mu, sigma) values for the sampled rows
+
+index_sim = sample(1:length(posterior),
+                   size = n_rep, replace = TRUE,
+                   prob = posterior)
+
+sim_posterior = theta |> slice(index_sim)
+
+ggplot(sim_posterior,
+       aes(x = mu,
+           y = sigma)) +
+  geom_point(color = bayes_col["posterior"], alpha = 0.4) +
+  labs(x = "mean (mu)",
+       y = "sd (sigma)") +
+  theme_bw()
+
+ggplot(sim_posterior,
+       aes(x = mu,
+           y = sigma)) +
+  stat_density_2d(aes(fill = after_stat(level)),
+                  geom = "polygon", color = "white") +
+  scale_fill_viridis(option = "mako") +
+  labs(x = "mean (mu)",
+       y = "sd (sigma)") +
+  theme_bw()
+```
+
+```{r}
+cor(sim_posterior$mu, sim_posterior$sigma)
+```
+
+```{r}
+mean(sim_posterior$mu)
+
+sd(sim_posterior$mu)
+```
+
+```{r}
+mean(sim_posterior$sigma)
+
+sd(sim_posterior$sigma)
+```
+
+```{r}
+#| label: fig-body-temp-posterior-grid-marginal
+#| echo: true
+#| fig-cap: "Grid-approximated marginal distribution of mean and SD of body temperatures in @exm-body-temp-prior-sd."
+#| fig-subcap: 
+#|   - "Population mean (mu)."
+#|   - "Population SD (sigma)."
+#| layout-ncol: 2
+
+
+sim_posterior |>
+  ggplot(aes(x = mu)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior"], fill = "white") +
+  geom_density(linewidth = 1, col = bayes_col["posterior"]) +
+  theme_bw()
+
+sim_posterior |>
+  ggplot(aes(x = sigma)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior"], fill = "white") +
+  geom_density(linewidth = 1, col = bayes_col["posterior"]) +
+  theme_bw()
+```
+
+
+
+
+### Posterior simulation with `brms`
+
+
+```{r}
+#| warning: false
+
+library(brms)
+library(bayesplot)
+library(tidybayes)
+```
+
+Next we fit the model to the data using the function `brm`.
+The three inputs are:
+
+- Input 1: the data  
+`data = data`
+
+- Input 2: model for the data (likelihood)  
+`family = gaussian`  
+`bodytemp ~ 1 # linear model with intercept only`
+
+- Input 3: prior distribution for parameters  
+`prior(normal(98.6, 0.3), class = Intercept),`
+`prior(normal(0, 1), class = sigma))`
+
+- Other arguments specify the details of the numerical algorithm; our specifications below will result in 10000 $\theta$ values simulated from the posterior distribution.
+(It will simulate 3500 values (`iter`), discard the first 1000 (`warmup`), and then repeat 4 times (`chains`).)
+
+
+```{r}
+#| cache: true
+
+fit <- brm(data = data,
+           family = gaussian,
+           bodytemp ~ 1,
+           prior = c(prior(normal(98.6, 0.3), class = Intercept),
+                     prior(normal(0, 1), class = sigma)),
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+summary(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+
+
+```{r}
+posterior = fit |>
+  spread_draws(b_Intercept, sigma) |>
+  rename(mu = b_Intercept)
+```
+
+
+```{r}
+posterior |> head(10) |> kbl() |> kable_styling()
+```
+
+
+Marginal posterior distribution of $\mu$
+
+```{r}
+#| warning: false
+
+posterior |>
+  ggplot(aes(x = mu)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior"], fill = "white") +
+  geom_density(linewidth = 1, col = bayes_col["posterior"]) +
+  theme_bw()
+```
+
+```{r}
+# posterior mean of mu
+mean(posterior$mu)
+
+# posterior sd of mu
+sd(posterior$mu)
+
+# posterior quantiles are endpoints of credible intervals for mu
+quantile(posterior$mu, c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99))
+```
+
+Marginal posterior distribution of $\sigma$
+
+```{r}
+#| warning: false
+
+posterior |>
+  ggplot(aes(x = sigma)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior"], fill = "white") +
+  geom_density(linewidth = 1, col = bayes_col["posterior"]) +
+  theme_bw()
+```
+
+```{r}
+# posterior mean of sigma
+mean(posterior$sigma)
+
+# posterior sd of sigma
+sd(posterior$sigma)
+
+# posterior quantiles are endpoints of credible intervals for sigma
+quantile(posterior$sigma, c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99))
+```
+
+
+Joint posterior distribution
+
+```{r}
+#| label: fig-body-temp-posterior-brms
+#| echo: true
+#| fig-cap: "Simulated joint posterior distribution of mean and SD of body temperatures in @exm-body-temp-brms-sd."
+#| fig-subcap: 
+#|   - "Scatterplot."
+#|   - "Density plot."
+#| layout-ncol: 2
+
+
+ggplot(posterior,
+       aes(x = mu,
+           y = sigma)) +
+  geom_point(color = bayes_col["posterior"], alpha = 0.4) +
+  stat_ellipse(level = 0.98, color = "black", linewidth = 2) +
+  stat_density_2d(color = "grey", linewidth = 1) +
+  labs(x = "mean (mu)",
+       y = "sd (sigma)") +
+  theme_bw()
+
+ggplot(posterior,
+       aes(x = mu,
+           y = sigma)) +
+  stat_density_2d(aes(fill = after_stat(level)),
+                  geom = "polygon", color = "white") +
+  scale_fill_viridis(option = "mako") +
+  labs(x = "mean (mu)",
+       y = "sd (sigma)") +
+  theme_bw()
+```
+
+```{r}
+cor(posterior$mu, posterior$sigma)
+```
+
+
+### Posterior prediction
+
+
+```{r}
+n_rep = nrow(posterior)
+
+posterior <- posterior |>
+  mutate(y_sim = rnorm(n_rep,
+                       mean = posterior$mu,
+                       sd = posterior$sigma))
+
+posterior |> head(10) |> kbl() |> kable_styling()
+```
+
+
+```{r}
+
+ggplot(posterior,
+       aes(x = y_sim)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+  geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
+  labs(x = "Predicted body temp") +
+  theme_bw()
+
+
+# plot the cdf
+ggplot(posterior,
+       aes(x = y_sim)) + 
+  stat_ecdf(col = bayes_col["prior_predict"],
+            linewidth = 1) +
+  labs(x = "Body temperature (y)",
+       y = "cdf") +
+  theme_bw()
+
+```
+
+
+```{r}
+quantile(posterior$y_sim, c(0.025, 0.975))
+```
+
+
+### Posterior predictive checking
+
+
+```{r}
+pp_check(fit, type = "hist")
+```
+
+
+```{r}
+pp_check(fit, ndraw = 100)
+```
+
+

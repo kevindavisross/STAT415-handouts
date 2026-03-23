@@ -1,0 +1,594 @@
+# More Bayesian Analyis of a Numerical Variable {#sec-numerical-skew}
+
+{{< include _r_setup.qmd >}}
+
+<!-- {{< include _python_setup.qmd >}} -->
+
+
+
+
+
+
+
+
+
+
+
+::: {#exm-partytime-prior}
+How late do people arrive at parties?
+[FiveThirtyEight](https://fivethirtyeight.com/features/how-to-estimate-when-people-will-arrive-at-a-party/) conducted a survey to address this question.
+We'll assume this is a reasonably representative sample and arrival times are measured reliably.
+Arrival times are measured in minutes after the scheduled start time, rounded to the nearest minute.
+(Negative arrival times represent arrivals before the scheduled start time.)
+:::
+
+1. What would you expect the population distribution of party arrival times to look like?
+For example, what percent of arrivals would you expect to be early (negative)?
+Later than two hours?
+What would you expect of other features like shape, center, and variability?
+\
+\
+\
+\
+\
+
+1. We will start by assuming that, given the values of relevant parameters, arrival times follow a conditional Normal distribution.
+Describe what this assumption says about arrival times.
+What are the relevant parameters, and what do they represent?
+(We will revisit this conditional Normal assumption later, but go with it for now.)
+\
+\
+\
+\
+\
+
+1. Suggest a prior distribution.
+Explain your reasoning.
+\
+\
+\
+\
+\
+
+1. Describe how you could simulate the prior predictive distribution.
+\
+\
+\
+\
+\
+
+1. This [applet](https://kevin-davisross.shinyapps.io/Normal-Prior-Predictive/) conducts the simulation from the previous part.
+Move the sliders to enter your prior mean and SD for $\mu$ and $\sigma$.
+Does the distribution of arrival times seem reasonable based on your expectations?
+For example, what percent of arrivals are early (negative), or later than two hours --- and do these values seem reasonable?
+If not, revise your assumptions and try again (i.e., play with the sliders in the applet) until you find a distribution that is reasonable.
+Do not worry about getting it perfect; you just want to settle on assumptions that provide a reasonable starting point.
+(The assumptions include both the conditional Normal model for arrival times and the prior distribution of parameters.
+For now we are focusing on the prior distribution, so take the conditional Normal model as given.
+We'll revisit that assumption later.)
+\
+\
+\
+\
+\
+
+
+
+
+
+
+
+
+::: {#exm-partytime-posterior}
+@sec-partytime-data summarizes the FiveThirtyEight sample^[We couldn't find the raw FiveThirtyEight data online, so this data was constructed to match the histogram in the article.] of 803 arrival times (rounded to the nearest minute).
+
+We should always first explore the sample data, but to illustrate a point we will not do that yet.
+Instead, we'll skip straight to fitting the model.
+:::
+
+
+1. Use `brms` to fit the model and summarize the posterior distribution.
+Briefly describe the posterior distribution.
+\
+\
+\
+\
+\
+
+1. Simulate the posterior predictive distribution.
+Briefly describe the posterior predictive distribution.
+\
+\
+\
+\
+\
+
+1. Perform a visual posterior predictive check.
+What does the posterior predictive check say about the appropriateness of our model?
+Could any problems be fixed by switching from a Normal to a $t$ likelihood?
+\
+\
+\
+\
+\
+
+::: {#exm-partytime-posterior-skew}
+The sample data suggests a model that allows for skewness would be more appropriate than Normal.
+This primarily results in a change of the likelihood function.
+There are several likelihood functions we can use, but we'll try a [Skew Normal](https://en.wikipedia.org/wiki/Skew_normal_distribution) family, which introduces an additional skewness parameter $\alpha$.
+Since $\alpha$ is a parameter it also needs a prior distribution.
+Rather than redoing our prior predictive tuning, we'll rely on the fact that software packages like `brms` can utilize default priors.
+:::
+
+1. Use `brms` to fit the skew Normal model, letting `brms` choose the prior for $\alpha$ (but specifying the priors for $\mu$ and $\sigma$ as before).
+What prior does `brms` use?
+\
+\
+\
+\
+\
+
+1. Summarize and describe the posterior distribution.
+\
+\
+\
+\
+\
+
+
+1. Use simulation to approximate the posterior predictive distribution.
+Summarize and describe the posterior predictive distribution.
+\
+\
+\
+\
+\
+
+1. Perform a visual posterior predictive check.
+What does the posterior predictive check say about the appropriateness of the model?
+Which model seems to be a better fit for the data: likelihood based on Normal or Skew-Normal?
+\
+\
+\
+\
+\
+
+1. Fit the model to the data in `brms` using the `skew_normal` family but letting `brms` choose the prior for all parameters.
+What prior does `brms` choose?
+Is the posterior sensitive to the choice of prior?
+\
+\
+\
+\
+\
+
+1. Are the posterior distributions of parameters skewed or relatively symmetric?
+Is the posterior predictive distribution skewed or relatively symmetric?
+\
+\
+\
+\
+\
+
+
+
+
+1. Write a few sentences summarizing the conclusions of the Bayesian model in context.
+\
+\
+\
+\
+\
+
+
+
+
+## Notes
+
+### Prior predictive distribution (Normal likelihood)
+
+```{r}
+#| warning: false
+
+n_rep = 10000
+
+mu_sim = rnorm(n_rep, 40, sd = 7)
+
+sigma_sim = pmax(0.001, rnorm(n_rep, 20, 5))
+
+y_sim = rnorm(n_rep, mu_sim, sigma_sim)
+
+ggplot(data.frame(y_sim),
+       aes(x = y_sim)) + 
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["prior_predict"],
+                 fill = "white") +
+  geom_density(col = bayes_col["prior_predict"],
+               linewidth = 1) +
+  labs(x = "Arrival time (y, minutes after start)") +
+  theme_bw()
+```
+
+
+### Sample data {#sec-partytime-data}
+
+
+```{r}
+data = read_csv("party-time.csv")
+
+head(data)
+```
+
+
+```{r}
+summary(data$minutes)
+
+sd(data$minutes)
+```
+
+
+```{r}
+ggplot(data,
+       aes(x = minutes)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 50,
+                 col = "black", fill = "white") +
+  geom_density(linewidth = 1) +
+  theme_bw()
+```
+
+
+### Posterior distribution (Normal likelihood)
+
+
+```{r}
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+
+```{r}
+#| cache: true
+
+
+fit <- brm(data = data,
+           family = gaussian,
+           minutes ~ 1,
+           prior = c(prior(normal(40, 7), class = Intercept),
+                     prior(normal(20, 5), class = sigma)),
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+summary(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+```{r}
+pairs(fit,
+      off_diag_args = list(alpha = 0.1))
+```
+
+
+```{r}
+posterior = fit |>
+  spread_draws(b_Intercept, sigma) |>
+  rename(mu = b_Intercept)
+
+posterior |> head(10) |> kbl() |> kable_styling()
+```
+
+
+### Posterior predictive distribution (Normal likelihood)
+
+
+
+```{r}
+n_rep = nrow(posterior)
+
+posterior <- posterior |>
+  mutate(y_sim = rnorm(n_rep,
+                       mean = posterior$mu,
+                       sd = posterior$sigma))
+
+posterior |> head(10) |> kbl() |> kable_styling()
+
+```
+
+
+```{r}
+ggplot(posterior,
+       aes(x = y_sim)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+  geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
+  labs(x = "Arrival time (minutes after start)") +
+  theme_bw()
+```
+
+
+```{r}
+# plot the cdf
+ggplot(posterior,
+       aes(x = y_sim)) + 
+  stat_ecdf(col = bayes_col["prior_predict"],
+            linewidth = 1) +
+  labs(x = "Arrival time (minutes after start)",
+       y = "cdf") +
+  theme_bw()
+```
+
+```{r}
+quantile(posterior$y_sim, c(0.005, 0.995))
+```
+
+
+### Posterior predictive checking (Normal likelihood)
+
+```{r}
+pp_check(fit, ndraw = 100)
+```
+
+
+```{r}
+pp_check(fit, ndraw = 100, type = "ecdf_overlay")
+```
+
+### Posterior distribution (Skew-Normal likelihood)
+
+
+
+```{r}
+#| cache: true
+
+fit <- brm(data = data,
+           family = skew_normal,
+           minutes ~ 1,
+           prior = c(prior(normal(40, 7), class = Intercept),
+                     prior(normal(20, 5), class = sigma)),
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+prior_summary(fit)
+```
+
+
+```{r}
+summary(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+```{r}
+pairs(fit,
+      off_diag_args = list(alpha = 0.1))
+```
+
+```{r}
+posterior = fit |>
+  spread_draws(b_Intercept, sigma, alpha) |>
+  rename(mu = b_Intercept)
+
+posterior |> head(10) |> kbl() |> kable_styling()
+```
+
+
+
+
+
+### Posterior predictive distribution (Skew-Normal likelihood)
+
+`posterior_predict` simulates a sample of size 803 for each of the 10000 simulated $(\mu, \sigma, \alpha)$ triples from the posterior distribution, resuling in a 10000 x 803 matrix.
+
+```{r}
+y_predict = posterior_predict(fit)
+
+y_predict[1:5, 1:5]
+```
+
+We'll just select the first column to get 10000 simulated $y$ values.
+
+```{r}
+y_predict = data.frame(y_sim = y_predict[, 1])
+```
+
+
+
+```{r}
+ggplot(y_predict,
+       aes(x = y_sim)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+  geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
+  labs(x = "Predicted arrival time (minutes after start)") +
+  theme_bw()
+  
+```
+
+
+
+```{r}
+# plot the cdf
+ggplot(y_predict,
+       aes(x = y_sim)) + 
+  stat_ecdf(col = bayes_col["prior_predict"],
+            linewidth = 1) +
+  labs(x = "Arrival time (minutes after start)",
+       y = "cdf") +
+  theme_bw()
+```
+
+
+```{r}
+quantile(y_predict$y_sim, c(0.005, 0.995))
+```
+
+
+
+### Posterior predictive checking (Skew-Normal likelihood)
+
+```{r}
+pp_check(fit, ndraw = 100)
+```
+
+```{r}
+pp_check(fit, ndraw = 100, type = "ecdf_overlay")
+```
+
+
+### Default `brms` priors (Skew-Normal likelihood)
+
+
+```{r}
+#| cache: true
+
+fit <- brm(data = data,
+           family = skew_normal(),
+           minutes ~ 1,
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+prior_summary(fit)
+```
+
+
+```{r}
+summary(fit)
+```
+
+
+```{r}
+plot(fit)
+```
+
+
+```{r}
+pairs(fit,
+      off_diag_args = list(alpha = 0.1))
+```
+
+
+```{r}
+pp_check(fit, ndraw = 100)
+```
+
+
+```{r}
+y_predict = posterior_predict(fit)
+
+y_predict = data.frame(y_sim = y_predict[, 1])
+```
+
+
+
+```{r}
+ggplot(y_predict,
+       aes(x = y_sim)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+  geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
+  labs(x = "Predicted arrival time (minutes after start)") +
+  theme_bw()
+  
+```
+
+
+
+```{r}
+# plot the cdf
+ggplot(y_predict,
+       aes(x = y_sim)) + 
+  stat_ecdf(col = bayes_col["prior_predict"],
+            linewidth = 1) +
+  labs(x = "Arrival time (minutes after start)",
+       y = "cdf") +
+  theme_bw()
+```
+
+
+```{r}
+quantile(y_predict$y_sim, c(0.005, 0.995))
+```
+
+
+
+
+
+### Code for Shiny app
+
+
+
+Here is some code for creating a rough [applet](https://kevin-davisross.shinyapps.io/Normal-Prior-Predictive/) that you can embed within an RMarkdown file by adding `runtime: shiny` to the YAML metadata; see [Shiny Documents](https://bookdown.org/yihui/rmarkdown/shiny-documents.html).
+(This code is not evaluated; you would need to run it on your own.)
+
+
+```{r}
+#| eval: false
+
+
+sliderInput("mu_prior_mean", "Prior mean of mu:", value = 10, min = -60, max = 120)
+
+sliderInput("mu_prior_sd", "Prior SD of mu:", value = 10, min = 5, max = 120)
+
+sliderInput("sigma_prior_mean", "Prior mean of sigma:", value = 10, min = 5, max = 120)
+
+sliderInput("sigma_prior_sd", "Prior SD of sigma:", value = 10, min = 5, max = 120)
+
+renderPlot({
+  
+  n_rep = 10000
+  
+  sim_prior = data.frame(
+    mu = rnorm(n_rep, input$mu_prior_mean, input$mu_prior_sd),
+    sigma = rgamma(n_rep,
+                   shape = input$sigma_prior_mean ^ 2 / input$sigma_prior_sd ^ 2,
+                   rate = input$sigma_prior_mean / input$sigma_prior_sd ^ 2)) %>%
+    mutate(y_predict = rnorm(n_rep, mu, sigma))
+  
+  p1 = sim_prior %>%
+    ggplot(aes(x = y_predict)) +
+    geom_density(col = bayes_col[4]) +
+    labs(x = "Arrival time (minutes)",
+         title = "Simulated prior predictive distribution of arrival times: Density") +
+    scale_x_continuous(breaks = seq(-60, 180, by = 30),
+                         limits = c(-60, 180)) +
+    theme_bw()
+
+  p2 = sim_prior %>%
+    ggplot(aes(x = y_predict)) +
+    stat_ecdf(col = bayes_col[4]) +
+    labs(x = "Arrival time (minutes)",
+         y = "Cumulative probability",
+         title = "Simulated prior predictive distribution of arrival times: CDF") +
+    scale_x_continuous(breaks = seq(-60, 180, by = 30),
+                         limits = c(-60, 180)) +
+    theme_bw()
+  
+  grid.arrange(p1, p2)
+    
+})
+
+```
+
+
+

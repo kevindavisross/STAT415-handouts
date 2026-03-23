@@ -1,0 +1,193 @@
+# Introduction to Bayesian Hierarchical Linear Models {#sec-hierarchical-linear}
+
+{{< include _r_setup.qmd >}}
+
+{{< include _python_setup.qmd >}}
+
+
+We have studied a Bayesian simple linear regression model.
+We have also introduced some basic principles of hierarchical models.
+Now we'll combine elements to formulate Bayesian hierarchical linear regression models.
+
+
+*This handout corresponds to [Chapters 15-17](https://www.bayesrulesbook.com/chapter-15.html) of [@johnson2022].*
+*This handout only contains a brief introduction; see [@johnson2022] for a much more thorough analysis.*
+
+We'll consider the `cherry_blossom_sample` data in the `bayesrules` package which contains the `net` running times (in minutes) and `age` for participants in the annual 10-mile Cherry Blossom race held in Washington, D.C.
+Each runner in the sample is in their 50s or 60s.
+
+```{r}
+library(bayesrules)
+
+data(cherry_blossom_sample)
+running <- cherry_blossom_sample |>
+  select(runner, age, net) |>
+  na.omit()
+
+head(running)
+```
+
+
+1. Suppose we fit a Bayesian simple regression model of `net` on `age`.
+What do the slope and intercept parameters represent in context?
+What might be a reasonable prior?
+(You can assume that the `age` variable has been centered by subtracting the sample mean.)
+\
+\
+\
+\
+\
+
+1. Fit the model from the previous part (see the results in [Section 17.1](https://www.bayesrulesbook.com/chapter-17.html#first-steps-complete-pooling) of [@johnson2022]).
+Do the results seem reasonable?
+(Hint: consider the posterior distribution of the slope.)
+\
+\
+\
+\
+\
+
+1. Each of the runners in the sample has run the race in multiple years.
+What assumption of the simple linear regression model is violated?
+\
+\
+\
+\
+\
+
+1. Formulate a Bayesian hierarchical linear model which assumes the intercept (but not slope) varies by runner.
+What do the parameters represent in context?
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+
+
+
+1. Fit the model from the previous part (see the results in [Section 17.2.4](https://www.bayesrulesbook.com/chapter-17.html#chapter-17-random-intercepts) of [@johnson2022]).
+What are some features of the analysis you would explore?
+Consider the posterior distribution of the slope associated with `age`; does the posterior distribution based on this hierarchical model seem more reasonable than the one based on the simple linear regression model?
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+
+
+1. Formulate a Bayesian hierarchical linear model which assumes both the intercept and the slope vary by runner.
+What do the parameters represent in context?
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+
+
+
+1. Fit the model from the previous part (see the results in [Section 17.3.3](https://www.bayesrulesbook.com/chapter-17.html#ch-17-rand-int-slope-sim) of [@johnson2022]).
+What are some features of the analysis you would explore?
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+
+1. Compare the two hierarchical regression models.
+What are some similarities?
+What are some differences?
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+
+
+
+## Notes
+
+```{r}
+library(brms)
+library(bayesplot)
+library(tidybayes)
+```
+
+### Linear model
+
+
+```{r}
+fit_lm <- brm(data = running,
+              family = gaussian(),
+              net ~ 1 + age)
+```
+
+
+```{r}
+summary(fit_lm)
+```
+
+### Hierarchical model - random intercepts only
+
+
+```{r}
+fit_hier1 <- brm(data = running,
+                 family = gaussian(),
+                 net ~ 1 + age + (1 | runner))
+```
+
+
+```{r}
+summary(fit_hier1)
+```
+
+
+
+
+### Hierarchical model - random intercepts and slopes
+
+
+```{r}
+fit_hier2 <- brm(data = running,
+                 family = gaussian(),
+                 net ~ 1 + age + (1 + age | runner))
+```
+
+
+```{r}
+summary(fit_hier2)
+```
+
+```{r}
+#| eval: false
+
+library(shinystan)
+
+launch_shinystan(fit_hier2)
+```
+
+

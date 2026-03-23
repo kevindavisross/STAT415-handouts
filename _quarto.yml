@@ -1,0 +1,50 @@
+project:
+  type: book
+
+book:
+  title: "STAT415 Handouts"
+  author: "Kevin Ross"
+  date: today
+  date-format: "MMM D, YYYY"
+  chapters:
+    - index.qmd
+    - introductory-activity.qmd
+    - introductory-example.qmd
+    - bayesian-ideas.qmd
+    - interpretations-probstat.qmd
+    - bayes-rule.qmd
+    - intro-estimation.qmd
+    - intro-inference.qmd
+    - normal-mean.qmd
+    - comparing-bayesian-and-frequentist.qmd
+    - intro-prediction.qmd
+    - predictive-tuning-and-checking.qmd
+    - beta-binomial.qmd
+    - considering-priors.qmd
+    - posterior-simulation.qmd
+    - poisson.qmd
+    - normal-normal.qmd
+    - multi-parameter.qmd
+    - mean-t.qmd
+    - numerical-skew.qmd
+    - comparing-two-means.qmd
+    - mcmc.qmd
+    - mcmc-diagnostics.qmd
+    - regression.qmd
+    # - hierarchical.qmd
+    # - hierarchical-linear.qmd
+    - classification.qmd
+    - model-comparison.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+  pdf:
+    documentclass: scrreprt
+
+
+

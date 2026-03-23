@@ -1,0 +1,58 @@
+---
+title: "Untitled"
+format: html
+---
+
+Fix and add to Intro to Multi-parameter
+
+```{r}
+#| echo: false
+
+# observed data
+n = 1
+y_obs = 97.9
+
+mu = c(97.6, 98.1, 98.6)
+sigma = c(0.5, 1)
+
+# theta is all possible (mu, sigma) pairs
+theta = expand.grid(mu, sigma)
+
+# distribution of y for each value of theta
+sampling_distribution_table = expand_grid(mu, sigma,
+                                          y = seq(95, 102, 0.01)) |>
+  mutate(prob = dnorm(y, mu, sigma / sqrt(n)))
+
+sampling_distribution_table |>
+  ggplot(aes(x = y,
+             y = prob)) +
+  geom_point() +
+  geom_line(linetype = "dotted")
+  # scale_color_viridis_d(option = "magma") +
+  
+  # # highlight observed y
+  # annotate("rect", xmin = y_obs - 0.05, xmax = y_obs + 0.05,
+  #          ymin = 0, ymax = max(sampling_distribution_table["prob"]), alpha = 0.5,
+  #          color = bayes_col["likelihood"],
+  #          fill = bayes_col["likelihood"]) +
+  # labs(y = "Density of y given theta") +
+  # theme_bw()
+
+# # evaluate likelihood of y for each theta
+# likelihood_table = data.frame(theta,
+#                               likelihood = dnorm(y_obs, theta, sigma / sqrt(n)))
+# 
+# # plot the likelihood
+# likelihood_table |>
+#   mutate(theta_f = factor(theta)) |>
+#   ggplot(aes(x = theta,
+#              y = likelihood,
+#              col = theta_f)) +
+#   geom_point(size = 3) +
+#   scale_color_viridis_d(option = "magma") +
+#   scale_x_continuous(breaks = theta) + 
+#   labs(y = paste("Likelihood of y = ", y_obs, " given theta"),
+#        col = "theta") +
+#   theme_bw()
+```
+

@@ -1,0 +1,50 @@
+"0","library(brms)"
+"2","Warning: package ‘brms’ was built under R version 4.3.3"
+"2","Loading required package: Rcpp
+"
+"2","Warning: package ‘Rcpp’ was built under R version 4.3.3"
+"2","Loading 'brms' package (version 2.22.0). Useful instructions
+can be found by typing help('brms'). A more detailed introduction
+to the package is available through vignette('brms_overview').
+"
+"2","
+Attaching package: ‘brms’
+
+"
+"2","The following object is masked from ‘package:stats’:
+
+    ar
+
+"
+"0","library(tidybayes)"
+"2","Warning: package ‘tidybayes’ was built under R version 4.3.3"
+"2","
+Attaching package: ‘tidybayes’
+
+"
+"2","The following objects are masked from ‘package:brms’:
+
+    dstudent_t, pstudent_t, qstudent_t, rstudent_t
+
+"
+"0","library(bayesplot)"
+"2","Warning: package ‘bayesplot’ was built under R version 4.3.3"
+"2","This is bayesplot version 1.11.1
+"
+"2","- Online documentation and vignettes at mc-stan.org/bayesplot
+"
+"2","- bayesplot theme set to bayesplot::theme_default()
+"
+"2","   * Does _not_ affect other ggplot2 plots
+"
+"2","   * See ?bayesplot_theme_set for details on theme setting
+"
+"2","
+Attaching package: ‘bayesplot’
+
+"
+"2","The following object is masked from ‘package:brms’:
+
+    rhat
+
+"

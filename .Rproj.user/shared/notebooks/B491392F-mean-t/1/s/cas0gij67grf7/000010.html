@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<script src="lib/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lib/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lib/kePrint-0.0.1/kePrint.js"></script>
+<link href="lib/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+</head>
+<body>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> .chain </th>
+   <th style="text-align:right;"> .iteration </th>
+   <th style="text-align:right;"> .draw </th>
+   <th style="text-align:right;"> mu </th>
+   <th style="text-align:right;"> sigma </th>
+   <th style="text-align:right;"> nu </th>
+   <th style="text-align:right;"> sd </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3373.677 </td>
+   <td style="text-align:right;"> 457.5273 </td>
+   <td style="text-align:right;"> 3.971359 </td>
+   <td style="text-align:right;"> 649.3872 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 3361.737 </td>
+   <td style="text-align:right;"> 475.5978 </td>
+   <td style="text-align:right;"> 4.563823 </td>
+   <td style="text-align:right;"> 634.5418 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3368.691 </td>
+   <td style="text-align:right;"> 465.6991 </td>
+   <td style="text-align:right;"> 4.637702 </td>
+   <td style="text-align:right;"> 617.5100 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 3352.008 </td>
+   <td style="text-align:right;"> 478.0051 </td>
+   <td style="text-align:right;"> 4.533236 </td>
+   <td style="text-align:right;"> 639.4387 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 3391.079 </td>
+   <td style="text-align:right;"> 440.9675 </td>
+   <td style="text-align:right;"> 3.570605 </td>
+   <td style="text-align:right;"> 664.8811 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 3362.322 </td>
+   <td style="text-align:right;"> 466.1868 </td>
+   <td style="text-align:right;"> 4.330092 </td>
+   <td style="text-align:right;"> 635.5095 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 3366.932 </td>
+   <td style="text-align:right;"> 469.8402 </td>
+   <td style="text-align:right;"> 4.229500 </td>
+   <td style="text-align:right;"> 647.1292 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 3380.745 </td>
+   <td style="text-align:right;"> 449.4773 </td>
+   <td style="text-align:right;"> 4.344809 </td>
+   <td style="text-align:right;"> 611.8421 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 3345.529 </td>
+   <td style="text-align:right;"> 459.5655 </td>
+   <td style="text-align:right;"> 4.517823 </td>
+   <td style="text-align:right;"> 615.6012 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 3344.827 </td>
+   <td style="text-align:right;"> 450.1412 </td>
+   <td style="text-align:right;"> 4.577242 </td>
+   <td style="text-align:right;"> 599.8921 </td>
+  </tr>
+</tbody>
+</table> <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [["$","$"]]}})</script><script async src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

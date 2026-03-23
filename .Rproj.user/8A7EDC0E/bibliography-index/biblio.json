@@ -1,0 +1,123 @@
+{
+    "sources": [
+        {
+            "DOI": "10.1093/comjnl/27.2.97",
+            "ISSN": "0010-4620",
+            "URL": "https://doi.org/10.1093/comjnl/27.2.97",
+            "author": [
+                {
+                    "family": "Knuth",
+                    "given": "Donald E."
+                }
+            ],
+            "container-title": "Comput. J.",
+            "id": "knuth84",
+            "issue": "2",
+            "issued": {
+                "date-parts": [
+                    [
+                        1984,
+                        5
+                    ]
+                ]
+            },
+            "page": "97-111",
+            "publisher": "Oxford University Press, Inc.",
+            "publisher-place": "USA",
+            "title": "Literate programming",
+            "type": "article-journal",
+            "volume": "27"
+        },
+        {
+            "DOI": "10.1201/9781315372495",
+            "URL": "http://dx.doi.org/10.1201/9781315372495",
+            "author": [
+                {
+                    "family": "McElreath",
+                    "given": "Richard"
+                }
+            ],
+            "id": "mcelreath2018a",
+            "issued": {
+                "date-parts": [
+                    [
+                        2018,
+                        1,
+                        3
+                    ]
+                ]
+            },
+            "publisher": "Chapman; Hall/CRC",
+            "title": "Statistical rethinking",
+            "type": "book"
+        },
+        {
+            "DOI": "10.1201/9780429288340",
+            "URL": "http://dx.doi.org/10.1201/9780429288340",
+            "author": [
+                {
+                    "family": "Johnson",
+                    "given": "Alicia A."
+                },
+                {
+                    "family": "Ott",
+                    "given": "Miles Q."
+                },
+                {
+                    "family": "Dogucu",
+                    "given": "Mine"
+                }
+            ],
+            "id": "johnson2022",
+            "issued": {
+                "date-parts": [
+                    [
+                        2022,
+                        1,
+                        31
+                    ]
+                ]
+            },
+            "title": "Bayes rules!",
+            "type": "article-journal"
+        },
+        {
+            "DOI": "10.1016/c2012-0-00477-2",
+            "URL": "http://dx.doi.org/10.1016/c2012-0-00477-2",
+            "id": "doingba2015",
+            "issued": {
+                "date-parts": [
+                    [
+                        2015
+                    ]
+                ]
+            },
+            "publisher": "Elsevier",
+            "title": "Doing bayesian data analysis",
+            "type": "book"
+        },
+        {
+            "URL": "https://paulbuerkner.com/brms/",
+            "author": [
+                {
+                    "family": "C.",
+                    "given": "Bürkner P."
+                }
+            ],
+            "id": "brms",
+            "issued": {
+                "date-parts": [
+                    [
+                        2017
+                    ]
+                ]
+            },
+            "title": "Brms: An r package for bayesian multilevel models using stan",
+            "title-short": "Brms",
+            "type": "book"
+        }
+    ],
+    "project_biblios": [
+        "references.bib"
+    ]
+}

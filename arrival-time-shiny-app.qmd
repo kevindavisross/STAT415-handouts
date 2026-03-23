@@ -1,0 +1,78 @@
+---
+title: "Prior Predictive Distribution of Arrival Times"
+format: 
+  html:
+    page-layout: custom
+server: shiny
+---
+
+
+```{r}
+#| echo: false
+
+
+```
+
+
+```{r}
+#| panel: sidebar
+sliderInput("mu_prior_mean", "Prior mean of mu:", value = 10, min = -60, max = 120)
+
+sliderInput("mu_prior_sd", "Prior SD of mu:", value = 10, min = 5, max = 120)
+
+sliderInput("sigma_prior_mean", "Prior mean of sigma:", value = 10, min = 5, max = 120)
+
+sliderInput("sigma_prior_sd", "Prior SD of sigma:", value = 10, min = 5, max = 120)
+```
+
+
+```{r}
+#| panel: fill
+plotOutput('plots')
+```
+
+```{r}
+#| context: server
+
+library(tidyverse)
+library(gridExtra)
+
+bayes_col = c("#56B4E9", "#E69F00", "#009E73", "#CC79A7", "#CC79A7")
+names(bayes_col) = c("prior", "likelihood", "posterior", "prior_predict", "posterior_predict")
+
+
+output$plots <- renderPlot({
+  
+  n_rep = 10000
+  
+  sim_prior = data.frame(
+    mu = rnorm(n_rep, input$mu_prior_mean, input$mu_prior_sd),
+    sigma = rgamma(n_rep,
+                   shape = input$sigma_prior_mean ^ 2 / input$sigma_prior_sd ^ 2,
+                   rate = input$sigma_prior_mean / input$sigma_prior_sd ^ 2)) |>
+    mutate(y_predict = rnorm(n_rep, mu, sigma))
+  
+  p1 = sim_prior |>
+    ggplot(aes(x = y_predict)) +
+    geom_density(col = bayes_col[4]) +
+    labs(x = "Arrival time (minutes)",
+         title = "Simulated prior predictive distribution of arrival times: Density") +
+    scale_x_continuous(breaks = seq(-60, 180, by = 30),
+                         limits = c(-60, 180)) +
+    theme_bw()
+
+  p2 = sim_prior |>
+    ggplot(aes(x = y_predict)) +
+    stat_ecdf(col = bayes_col[4]) +
+    labs(x = "Arrival time (minutes)",
+         y = "Cumulative probability",
+         title = "Simulated prior predictive distribution of arrival times: CDF") +
+    scale_x_continuous(breaks = seq(-60, 180, by = 30),
+                         limits = c(-60, 180)) +
+    theme_bw()
+  
+  grid.arrange(p1, p2)
+    
+})
+```
+

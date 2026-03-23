@@ -1,0 +1,6 @@
+[1,"==> quarto preview --render all --no-watch-inputs --no-browse\n\n"]
+[1,"Rendering:\n"]
+[1,"\r[ 1/29] index.qmd\n"]
+[1,"\r[ 2/29] introductory-activity.qmd\n"]
+[1,"\r\n\r\nprocessing file: introductory-activity.qmd\r\n"]
+[1,"\r  |                                                          \r  |                                                    |   0%\r  |                                                          \r  |.......                                             |  14%                  \r  |                                                          \r  |...............                                     |  29% [unnamed-chunk-1]"]

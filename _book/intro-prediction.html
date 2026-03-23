@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>10&nbsp; Introduction to Prediction – STAT415 Handouts</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./predictive-tuning-and-checking.html" rel="next">
+<link href="./comparing-bayesian-and-frequentist.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro-prediction.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Prediction</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">STAT415 Handouts</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introductory-activity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introductory Activity</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introductory-example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introductory Example</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-ideas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Ideas of Bayesian Reasoning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretations-probstat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Interpretations of Probability and Statistics</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayes-rule.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bayes Rule</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro-estimation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Introduction to Estimation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro-inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./normal-mean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introduction to Inference for a Population Mean</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparing-bayesian-and-frequentist.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Comparing Bayesian and Frequentist Analysis</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro-prediction.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Prediction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./predictive-tuning-and-checking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Predictive Tuning and Checking</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./beta-binomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Beta-Binomial Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./considering-priors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Considering Prior Distributions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./posterior-simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Introduction to Posterior Simulation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./poisson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Bayesian Analysis of Poisson Count Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./normal-normal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Normal-Normal Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multi-parameter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Introduction to Multi-Parameter models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mean-t.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Bayesian Analyis of a Numerical Variable</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./numerical-skew.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">More Bayesian Analyis of a Numerical Variable</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparing-two-means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Comparing Two Means</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Introduction to Markov Chain Monte Carlo (MCMC) Simulation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mcmc-diagnostics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Some Diagnostics for MCMC Simulation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Bayesian Simple Linear Regression Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./model-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#notes" id="toc-notes" class="nav-link active" data-scroll-target="#notes"><span class="header-section-number">10.1</span> Notes</a>
+  <ul class="collapse">
+  <li><a href="#prior-predictive-probability-of-success-for-single-trial" id="toc-prior-predictive-probability-of-success-for-single-trial" class="nav-link" data-scroll-target="#prior-predictive-probability-of-success-for-single-trial"><span class="header-section-number">10.1.1</span> Prior predictive probability of success for single trial</a></li>
+  <li><a href="#prior-predictive-distribution-of-sample-count-of-success" id="toc-prior-predictive-distribution-of-sample-count-of-success" class="nav-link" data-scroll-target="#prior-predictive-distribution-of-sample-count-of-success"><span class="header-section-number">10.1.2</span> Prior predictive distribution of sample count of success</a></li>
+  <li><a href="#posterior-distribution---simulation" id="toc-posterior-distribution---simulation" class="nav-link" data-scroll-target="#posterior-distribution---simulation"><span class="header-section-number">10.1.3</span> Posterior distribution - simulation</a></li>
+  <li><a href="#posterior-distribution---calculation" id="toc-posterior-distribution---calculation" class="nav-link" data-scroll-target="#posterior-distribution---calculation"><span class="header-section-number">10.1.4</span> Posterior distribution - calculation</a></li>
+  <li><a href="#posterior-predictive-probability-of-success-for-single-trial" id="toc-posterior-predictive-probability-of-success-for-single-trial" class="nav-link" data-scroll-target="#posterior-predictive-probability-of-success-for-single-trial"><span class="header-section-number">10.1.5</span> Posterior predictive probability of success for single trial</a></li>
+  <li><a href="#posterior-predictive-distribution-of-sample-count-of-success" id="toc-posterior-predictive-distribution-of-sample-count-of-success" class="nav-link" data-scroll-target="#posterior-predictive-distribution-of-sample-count-of-success"><span class="header-section-number">10.1.6</span> Posterior predictive distribution of sample count of success</a></li>
+  <li><a href="#continuous-theta-prior-distribution" id="toc-continuous-theta-prior-distribution" class="nav-link" data-scroll-target="#continuous-theta-prior-distribution"><span class="header-section-number">10.1.7</span> Continuous theta: Prior distribution</a></li>
+  <li><a href="#continuous-theta-prior-predictive-distribution" id="toc-continuous-theta-prior-predictive-distribution" class="nav-link" data-scroll-target="#continuous-theta-prior-predictive-distribution"><span class="header-section-number">10.1.8</span> Continuous theta: Prior predictive distribution</a></li>
+  <li><a href="#continuous-theta-posterior-distribution" id="toc-continuous-theta-posterior-distribution" class="nav-link" data-scroll-target="#continuous-theta-posterior-distribution"><span class="header-section-number">10.1.9</span> Continuous theta: Posterior distribution</a></li>
+  <li><a href="#continuous-theta-posterior-predictive-distribution" id="toc-continuous-theta-posterior-predictive-distribution" class="nav-link" data-scroll-target="#continuous-theta-posterior-predictive-distribution"><span class="header-section-number">10.1.10</span> Continuous theta: Posterior predictive distribution</a></li>
+  <li><a href="#continuous-theta-posterior-distribution-after-observing-large-sample" id="toc-continuous-theta-posterior-distribution-after-observing-large-sample" class="nav-link" data-scroll-target="#continuous-theta-posterior-distribution-after-observing-large-sample"><span class="header-section-number">10.1.11</span> Continuous theta: Posterior distribution after observing large sample</a></li>
+  <li><a href="#continuous-theta-posterior-predictive-distribution-after-observing-large-sample" id="toc-continuous-theta-posterior-predictive-distribution-after-observing-large-sample" class="nav-link" data-scroll-target="#continuous-theta-posterior-predictive-distribution-after-observing-large-sample"><span class="header-section-number">10.1.12</span> Continuous theta: Posterior predictive distribution (after observing large sample)</a></li>
+  <li><a href="#sleep-hours-prior-distribution" id="toc-sleep-hours-prior-distribution" class="nav-link" data-scroll-target="#sleep-hours-prior-distribution"><span class="header-section-number">10.1.13</span> Sleep hours: Prior distribution</a></li>
+  <li><a href="#sleep-hours-prior-predictive-distribution" id="toc-sleep-hours-prior-predictive-distribution" class="nav-link" data-scroll-target="#sleep-hours-prior-predictive-distribution"><span class="header-section-number">10.1.14</span> Sleep hours: Prior predictive distribution</a></li>
+  <li><a href="#sleep-hours-posterior-distribution" id="toc-sleep-hours-posterior-distribution" class="nav-link" data-scroll-target="#sleep-hours-posterior-distribution"><span class="header-section-number">10.1.15</span> Sleep hours: Posterior distribution</a></li>
+  <li><a href="#sleep-hours-posterior-predictive-distribution" id="toc-sleep-hours-posterior-predictive-distribution" class="nav-link" data-scroll-target="#sleep-hours-posterior-predictive-distribution"><span class="header-section-number">10.1.16</span> Sleep hours: Posterior predictive distribution</a></li>
+  <li><a href="#sleep-hours-posterior-predictive-distribution-after-observing-large-sample" id="toc-sleep-hours-posterior-predictive-distribution-after-observing-large-sample" class="nav-link" data-scroll-target="#sleep-hours-posterior-predictive-distribution-after-observing-large-sample"><span class="header-section-number">10.1.17</span> Sleep hours: Posterior predictive distribution after observing large sample</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Prediction</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- {{< include _python_setup.qmd >}} -->
+<ul>
+<li>A Bayesian analysis leads directly and naturally to making predictions about future observations from the random process that generated the data.</li>
+<li>Prediction is also useful for tuning prior distributions, and for checking if model assumptions seem reasonable in light of observed data.</li>
+</ul>
+<div id="exm-data-singular-prior-predict" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.1</strong></span> Do people prefer to use the word “data” as singular or plural? <a href="https://fivethirtyeight.com/features/elitist-superfluous-or-popular-we-polled-americans-on-the-oxford-comma/">FiveThirtyEight conducted a poll</a> to address this question (and others). Rather than simply ask whether the respondent considered “data” to be singular or plural, they asked which of the following sentences they prefer:</p>
+<ol type="a">
+<li>Some experts say it’s important to drink milk, but the data is inconclusive.</li>
+<li>Some experts say it’s important to drink milk, but the data are inconclusive.</li>
+</ol>
+<p>Suppose we wish to study the opinions of students in Cal Poly statistics classes regarding this issue. That is, let <span class="math inline">\(\theta\)</span> represent the population proportion of students in Cal Poly statistics classes who prefer to consider data as a <em>singular</em> noun, as in option a) above (“the data is”).</p>
+<p>Before proceeding, consider the context of this problem and sketch your prior distribution for <span class="math inline">\(\theta\)</span>. What are the main features of your prior?</p>
+<p>To illustrate ideas, we’ll start with a prior distribution which places probability 0.01, 0.05, 0.15, 0.30, 0.49 on the values 0.1, 0.3, 0.5, 0.7, 0.9, respectively.</p>
+</div>
+<ol type="1">
+<li><p>Before observing any data, suppose we plan to randomly select a single Cal Poly statistics student. Consider the <em>unconditional</em> prior probability that the selected student prefers data as singular. (This is called a <em>prior predictive probability</em>.) Explain how you could use simulation to approximate this probability.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Compute the prior predictive probability from the previous part.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Before observing any data, suppose we plan to randomly select a sample of 35 Cal Poly statistics students. Consider the <em>unconditional</em> prior distribution of the number of students in the sample who prefer data as singular. (This is called a <em>prior predictive distribution</em>.) Explain how you could use simulation to approximate this distribution. In particular, how could you use simulation to approximate the prior predictive probability that exactly 31 students in the sample prefer data as singular?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Compute and interpret the prior predictive probability that exactly 31 students in a sample of size 35 prefer data as singular.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<div id="exm-data-singular-posterior" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.2</strong></span> Continuing <a href="#exm-data-singular-prior-predict" class="quarto-xref">Example&nbsp;<span>10.1</span></a>. Suppose that we observe a sample of 35 Cal Poly statistics students in which 31 prefer data as singular.</p>
+</div>
+<ol type="1">
+<li><p>Explain how you would use simulation to approximate the posterior distribution of <span class="math inline">\(\theta\)</span>.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Find the posterior distribution of <span class="math inline">\(\theta\)</span>.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<div id="exm-data-singular-posterior-predict" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.3</strong></span> Continuing <a href="#exm-data-singular-posterior" class="quarto-xref">Example&nbsp;<span>10.2</span></a>. After observing a sample of 35 Cal Poly statistics students in which 31 prefer data as singular, suppose we plan to collect more data.</p>
+</div>
+<ol type="1">
+<li><p>Suppose we plan to randomly select an additional Cal Poly statistics student. Consider the <em>posterior predictive probability</em> that this student prefers data as singular. Explain how you could use simulation to estimate this probability.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Compute the posterior predictive probability from the previous part.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Suppose we plan to collect data on another sample of 35 Cal Poly statistics students. Consider the <em>posterior predictive distribution</em> of the number of students in the new sample who prefer data as singular. Explain how you could use simulation to approximate this distribution. In particular, how could you use simulation to approximate the posterior predictive probability that exactly 31 students in the sample prefer data as singular? (Of course, the sample size of the new sample does not have to be 35; however, we’re keeping it the same so we can compare the prior and posterior predictions.)<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Compute and interpret the posterior predictive probability that exactly 31 students in a sample of size 35 prefer data as singular.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<ul>
+<li>The <strong>predictive distribution</strong> of a measured variable <span class="math inline">\(y\)</span> is the marginal distribution (of the unobserved values) after accounting for the uncertainty in the parameters <span class="math inline">\(\theta\)</span>.</li>
+<li>A <strong>prior predictive distribution</strong> is calculated using the prior distribution of the parameters.</li>
+<li>A <strong>posterior predictive distribution</strong> is calculated using the posterior distribution of the parameters, conditional on the observed data.</li>
+<li>Be sure to carefully distinguish between posterior distributions and posterior predictive distributions (or between prior distributions and prior predictive distributions.)
+<ul>
+<li><strong>Prior and posterior distributions</strong> are distributions on values of the <em>parameters</em>. These distributions quantify the degree of uncertainty about unknown parameters <span class="math inline">\(\theta\)</span> (before and after observing data).</li>
+<li><strong>Prior and posterior <em>predictive</em> distributions</strong> are distributions on <em>potential</em> values of the <em>measured variable</em> (data). Predictive distributions reflect sample-to-sample variability of the sample data, while also accounting for the uncertainty in the parameters.</li>
+</ul></li>
+<li>Simulation is an effective tool in approximating posterior (or prior) predictive distributions.
+<ul>
+<li>Step 1: Simulate a value of <span class="math inline">\(\theta\)</span> from its posterior distribution (or prior distribution).</li>
+<li>Step 2: Given this value of <span class="math inline">\(\theta\)</span> simulate a value of <span class="math inline">\(y\)</span> from <span class="math inline">\(f(y|\theta)\)</span>, the data model conditional on <span class="math inline">\(\theta\)</span>.</li>
+<li>Repeat many times to simulate many <span class="math inline">\((\theta, y)\)</span> pairs, and summarize the values of <span class="math inline">\(y\)</span> to approximate the posterior predictive distribution (or prior predictive distribution).</li>
+</ul></li>
+</ul>
+<div id="exm-data-singular-prior-predict-grid" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.4</strong></span> Continuing <a href="#exm-data-singular-prior-predict" class="quarto-xref">Example&nbsp;<span>10.1</span></a>. We’ll use a grid approximation and assume that any multiple of 0.0001 is a possible value of <span class="math inline">\(\theta\)</span>: 0, 0.0001, 0.0002, …, 0.9999, 1.</p>
+</div>
+<ol type="1">
+<li><p>Assume the prior distribution for <span class="math inline">\(\theta\)</span> is proportional to <span class="math inline">\(\theta^2\)</span>. Plot this prior distribution and describe its main features. Is the prior distribution truly discrete or essentially continuous?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Given the shape of the prior distribution, explain why we might not want to compute <em>central</em> prior credible intervals. Suggest an alternative approach, and compute a 98% prior credible interval for <span class="math inline">\(\theta\)</span>.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Before observing any data, suppose we plan to randomly select a sample of 35 Cal Poly statistics students. Let <span class="math inline">\(y\)</span> represent the number of students in the selected sample who prefer data as singular. Use simulation to approximate the prior predictive distribution of <span class="math inline">\(y\)</span> and plot it. Is the prior predictive distribution truly discrete or essentially continuous?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Find a 95% prior <em>prediction</em> interval for <span class="math inline">\(y\)</span>. Write a clearly worded sentence interpreting this interval in context.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<div id="exm-data-singular-posterior-predict-grid" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.5</strong></span> Continuing <a href="#exm-data-singular-prior-predict-grid" class="quarto-xref">Example&nbsp;<span>10.4</span></a>. Suppose that we observe a sample of 35 Cal Poly statistics students in which 31 prefer data as singular.</p>
+</div>
+<ol type="1">
+<li><p>Find the posterior distribution of <span class="math inline">\(\theta\)</span>, plot it and describe its main features, and find and interpret a 98% central posterior credible interval for <span class="math inline">\(\theta\)</span>. Is the posterior distribution truly discrete or essentially continuous?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Suppose we plan to randomly select another sample of 35 Cal Poly statistics students. Let <span class="math inline">\(\tilde{y}\)</span> represent the number of students in the new sample who prefer data as singular. Use simulation to approximate the posterior predictive distribution of <span class="math inline">\(\tilde{y}\)</span> and plot it. Is the posterior predictive distribution truly discrete or essentially continuous? (Of course, the sample size of the new sample does not have to be 35. However, we’re keeping it the same so we can compare the prior and posterior predictions.)<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Find a 95% posterior <em>prediction</em> interval for <span class="math inline">\(\tilde{y}\)</span>. Write a clearly worded sentence interpreting this interval in context.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<div id="exm-data-singular-posterior-predict-compare" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.6</strong></span> Continuing <a href="#exm-data-singular-posterior-predict-grid" class="quarto-xref">Example&nbsp;<span>10.5</span></a>. Now suppose instead of using the Cal Poly sample data (31/35) to form the posterior distribution of <span class="math inline">\(\theta\)</span>, we had used the <a href="https://github.com/fivethirtyeight/data/tree/master/comma-survey">data from the FiveThirtyEight study</a> in which 865 out of 1093 respondents preferred data as singular.</p>
+</div>
+<ol type="1">
+<li><p>Find the posterior distribution of <span class="math inline">\(\theta\)</span>, plot it and describe its main features, and find and interpret a 98% central posterior credible interval for <span class="math inline">\(\theta\)</span>. How does the posterior based on the FiveThirtyEight data compare to the posterior distribution based on the Cal Poly sample data (31/35)? Why?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Again, suppose we use the FiveThirtyEight data to form the posterior distribution of <span class="math inline">\(\theta\)</span>. Suppose we plan to randomly select a new sample of size 35. Let <span class="math inline">\(\tilde{y}\)</span> represent the number in the new sample who prefer data as singular. Use simulation to approximate the posterior predictive distribution of <span class="math inline">\(\tilde{y}\)</span> and plot it. Find a 95% posterior <em>prediction</em> interval for <span class="math inline">\(\tilde{y}\)</span>. How does the predictive distribution which uses the posterior distribution based on the FiveThirtyEight data compare to the one based on the Cal Poly sample data (31/35)? Why?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<ul>
+<li>Be sure to distinguish between a prior/posterior <em>distribution</em> and a prior/posterior <em>predictive distribution</em>.</li>
+<li>A prior/posterior <em>distribution</em> is a distribution on potential values of the <em>parameters</em> <span class="math inline">\(\theta\)</span>. These distributions quantify the degree of uncertainty about the unknown parameter <span class="math inline">\(\theta\)</span> (before and after observing data).</li>
+<li>A prior/posterior <em>predictive distribution</em> is a distribution on potential values of the <em>data</em> <span class="math inline">\(y\)</span>. Predictive distributions reflect sample-to-sample variability of the sample data, while accounting for the uncertainty in the parameters.</li>
+<li>Even if parameters are essentially “known” — that is, even if the prior/posterior SD of parameters is small — there will still be sample-to-sample variability reflected in the predictive distribution of the data, mainly influenced by the size <span class="math inline">\(n\)</span> of the sample being “predicted” (or unit-to-unit variability for the predictive distribution of a single observation).</li>
+</ul>
+<div id="exm-sleep-predict" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.7</strong></span> Suppose we want to estimate <span class="math inline">\(\theta\)</span>, the population mean hours of sleep on a typical night for Cal Poly students. Assume that sleep hours, <span class="math inline">\(y\)</span>, for students follow a Normal distribution with unknown mean <span class="math inline">\(\theta\)</span> and known standard deviation 1.5 hours. (Known population SD is an unrealistic assumption that we use for simplicity here.)</p>
+<p>Assume a Normal(7.5, 0.5) prior distribution for <span class="math inline">\(\theta\)</span>.</p>
+</div>
+<ol type="1">
+<li><p>Describe what the prior distribution represents. Find and interpret a 98% prior credible interval.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Explain how you would use simulation to approximate the prior predictive distribution of <span class="math inline">\(y\)</span>. Use simulation to approximate a 95% prior prediction interval, and interpret it.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Now suppose you observe sleep hours (rounded to one decimal place) of 6.8 and 7.2 for a sample of 2 students. Explain how, in principle, you could use simulation to approximate the posterior distribution. (To preview what lies ahead: what issues would you experience with this method in practice?)<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Suppose that the posterior distribution is approximately Normal with mean 7.4 and SD 0.4. Describe what the posterior distribution represents. Find and interpret a 98% posterior credible interval.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Explain how you would use simulation to approximate the posterior predictive distribution of <span class="math inline">\(y\)</span>. Use simulation to approximate a 95% posterior prediction interval, and interpret it.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Now suppose you observe a very large sample of students (with a sample mean of 7.0), and the posterior distribution is Normal with mean 7.0 and SD 0.001. Without doing any calculations, approximate the posterior predictive distribution of <span class="math inline">\(y\)</span> and a 95% posterior prediction interval.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<section id="notes" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="notes"><span class="header-section-number">10.1</span> Notes</h2>
+<section id="prior-predictive-probability-of-success-for-single-trial" class="level3" data-number="10.1.1">
+<h3 data-number="10.1.1" class="anchored" data-anchor-id="prior-predictive-probability-of-success-for-single-trial"><span class="header-section-number">10.1.1</span> Prior predictive probability of success for single trial</h3>
+<ol type="1">
+<li>Simulate a value of <span class="math inline">\(\theta\)</span> from the prior distribution.</li>
+<li>Given the value of <span class="math inline">\(\theta\)</span>, construct a spinner that lands on success with probability <span class="math inline">\(\theta\)</span>. Spin the spinner once and record the result, success or not.</li>
+<li>Repeat steps 1 and 2 many times, and find the proportion of repetitions which result in success. This proportion approximates the (unconditional) prior predictive probability of success.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>n_rep <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>, <span class="fl">0.2</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.15</span>, <span class="fl">0.30</span>, <span class="fl">0.49</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate values of theta from the prior</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">sample</span>(theta, n_rep, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> prior)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># for each simulated value of theta, simulate a single trial from Binomial(1, theta): "success" = 1, "failure" = 0 </span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rbinom</span>(n_rep, <span class="at">size =</span> <span class="dv">1</span>, theta_sim)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">data.frame</span>(theta_sim, y_sim)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">theta_sim</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">y_sim</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta =</span> <span class="fu">factor</span>(theta_sim),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="fu">factor</span>(y_sim)) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">color =</span> theta, <span class="at">shape =</span> y)) <span class="sc">+</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"magma"</span>, <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">19</span>), <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta =</span> <span class="fu">factor</span>(theta_sim),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="fu">factor</span>(y_sim)) <span class="sc">|&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(y)) <span class="sc">+</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> theta)) <span class="sc">+</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"magma"</span>) <span class="sc">+</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-data-singular-prior-prediction-single" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-single-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-prior-prediction-single" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-prior-prediction-single-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-single-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-prior-prediction-single-1.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-prior-prediction-single" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-prior-prediction-single-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) (theta, y) pairs for single trials: theta simulated from prior; y = 1 (succes) with probability theta
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-prior-prediction-single" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-prior-prediction-single-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-single-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-prior-prediction-single-2.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-prior-prediction-single" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-prior-prediction-single-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Summary of simulated y values to approximate prior predictive probability of success
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-prior-prediction-single-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.1: Prior predictive simulation
+</figcaption>
+</figure>
+</div>
+<p>Law of total probability calculation of prior predictive probability:</p>
+<p><span class="math display">\[
+0.1(0.01) + 0.3(0.05) + 0.5(0.15) + 0.7(0.30) + 0.9(0.49) = 0.742
+\]</span></p>
+<div>
+
+</div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-prior-prediction-single-ltp-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-single-ltp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-prior-prediction-single-ltp-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-prior-prediction-single-ltp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.2: Probability of success on single trial, for different values of theta in <a href="#exm-data-singular-prior-predict" class="quarto-xref">Example&nbsp;<span>10.1</span></a>. Color represents the prior probability of theta, with darker colors corresponding to higher prior probability.
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-prior-prediction-single-ltp-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-single-ltp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-prior-prediction-single-ltp-2.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-prior-prediction-single-ltp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.3: Prior predictive probability of success on single trial
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="prior-predictive-distribution-of-sample-count-of-success" class="level3" data-number="10.1.2">
+<h3 data-number="10.1.2" class="anchored" data-anchor-id="prior-predictive-distribution-of-sample-count-of-success"><span class="header-section-number">10.1.2</span> Prior predictive distribution of sample count of success</h3>
+<ol type="1">
+<li>Simulate a value of <span class="math inline">\(\theta\)</span> from the prior distribution.</li>
+<li>Given the value of <span class="math inline">\(\theta\)</span>, construct a spinner that lands on success with probability <span class="math inline">\(\theta\)</span>. Spin the spinner 35 times and count <span class="math inline">\(y\)</span>, the number of spins that land on success.</li>
+<li>Repeat steps 1 and 2 many times, and record the number of successes (out of 35) for each repetition. <strong>Summarize the simulated <span class="math inline">\(y\)</span> values to approximate the prior predictive distribution.</strong> To approximate the prior predictive probability that exactly 31 students in a sample of size 35 prefer data as singular, count the number of simulated repetitions that result in 31 successes (<span class="math inline">\(y = 31\)</span>) and divide by the total number of simulated repetitions.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n_rep <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>, <span class="fl">0.2</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.15</span>, <span class="fl">0.30</span>, <span class="fl">0.49</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate values of theta from the prior</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">sample</span>(theta, n_rep, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> prior)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># for each simulated value of theta, simulate number of successes from Binomial(35, theta)</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rbinom</span>(n_rep, <span class="at">size =</span> <span class="dv">35</span>, theta_sim)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">data.frame</span>(theta_sim, y_sim)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">theta_sim</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">y_sim</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">18</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">17</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>theta_y_sim_plot <span class="ot">&lt;-</span> sim <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta =</span> <span class="fu">factor</span>(theta_sim)) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta_sim,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> y_sim)) <span class="sc">+</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">color =</span> theta)) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"magma"</span>, <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> theta) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"y"</span>) <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>theta_y_sim_plot</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta =</span> <span class="fu">factor</span>(theta_sim),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> y_sim) <span class="sc">|&gt;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(y)) <span class="sc">+</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> theta)) <span class="sc">+</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"magma"</span>) <span class="sc">+</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-data-singular-prior-prediction-sample" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-prior-prediction-sample" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-prior-prediction-sample-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-sample-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-prior-prediction-sample-1.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-prior-prediction-sample" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-prior-prediction-sample-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) (theta, y) pairs for samples of size 35: theta simulated from prior; y simulated from Binomial(35, theta)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-prior-prediction-sample" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-prior-prediction-sample-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-sample-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-prior-prediction-sample-2.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-prior-prediction-sample" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-prior-prediction-sample-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Summary of simulated y values to approximate prior predictive distribution of sample count of success
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-prior-prediction-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.4: Prior predictive simulation
+</figcaption>
+</figure>
+</div>
+<p>Law of total probability calculation for prior predictive probability that <span class="math inline">\(y = 31\)</span> when <span class="math inline">\(n=35\)</span></p>
+<p><span class="math display">\[\begin{align*}
+&amp; \left(\binom{35}{31}(0.1)^{31}(1-0.1)^{4}\right)(0.01) +
+\left(\binom{35}{31}(0.3)^{31}(1-0.3)^{4}\right)(0.05)\\
+&amp; + \left(\binom{35}{31}(0.5)^{31}(1-0.5)^{4}\right)(0.15)
++ \left(\binom{35}{31}(0.7)^{31}(1-0.7)^{4}\right)(0.30)\\
+&amp; + \left(\binom{35}{31}(0.9)^{31}(1-0.9)^{4}\right)(0.49)
+\end{align*}\]</span></p>
+<div id="fig-data-singular-prior-prediction-sample-ltp" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-sample-ltp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-prior-prediction-sample-ltp" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-prior-prediction-sample-ltp-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-sample-ltp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-prior-prediction-sample-ltp-1.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-prior-prediction-sample-ltp" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-prior-prediction-sample-ltp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Sample-to-sample distribution of <span class="math inline">\(y\)</span>, the number of successes in samples of size <span class="math inline">\(n=35\)</span> for different values of theta in <a href="#exm-data-singular-prior-predict" class="quarto-xref">Example&nbsp;<span>10.1</span></a>. Color represents the prior probability of $ heta$, with darker colors corresponding to higher prior probability.
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-prior-prediction-sample-ltp" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-prior-prediction-sample-ltp-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-prior-prediction-sample-ltp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-prior-prediction-sample-ltp-2.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-prior-prediction-sample-ltp" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-prior-prediction-sample-ltp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Prior predictive distribution of <span class="math inline">\(y\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-prior-prediction-sample-ltp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.5: Prior predictive simulation
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="posterior-distribution---simulation" class="level3" data-number="10.1.3">
+<h3 data-number="10.1.3" class="anchored" data-anchor-id="posterior-distribution---simulation"><span class="header-section-number">10.1.3</span> Posterior distribution - simulation</h3>
+<ol type="1">
+<li>Simulate a value of <span class="math inline">\(\theta\)</span> from the prior distribution.</li>
+<li>Given the value of <span class="math inline">\(\theta\)</span>, construct a spinner that lands on success with probability <span class="math inline">\(\theta\)</span>. Spin the spinner 35 times and count <span class="math inline">\(y\)</span>, the number of spins that land on success.</li>
+<li>Repeat steps 1 and 2 many times, and record the number of successes (out of 35) for each repetition.</li>
+<li><strong>Discard any repetitions for which <span class="math inline">\(y\neq 31\)</span>.</strong> <strong>For the remaining repetitions (with <span class="math inline">\(y=31\)</span>) summarize the simulated <span class="math inline">\(\theta\)</span> values</strong> to approximate the posterior distribution of <span class="math inline">\(\theta\)</span>.</li>
+</ol>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>y_obs <span class="ot">=</span> <span class="dv">31</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># same (theta, y) simulation as before; highlight y == 31</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>theta_y_sim_plot <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="dv">1</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">ymin =</span> y_obs <span class="sc">-</span> <span class="fl">0.4</span>, <span class="at">ymax =</span> y_obs <span class="sc">+</span> <span class="fl">0.4</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> bayes_col[<span class="st">"posterior"</span>],</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> bayes_col[<span class="st">"posterior"</span>]) <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Only keep (theta, y) pairs with y = 31, and summarize the theta values</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>sim_posterior_table <span class="ot">=</span> sim <span class="sc">|&gt;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(y_sim <span class="sc">==</span> y_obs) <span class="sc">|&gt;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(theta_sim, <span class="at">name =</span> <span class="st">"freq"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rel_freq =</span> freq <span class="sc">/</span> <span class="fu">sum</span>(freq))</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>sim_posterior_table <span class="sc">|&gt;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta_sim,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> rel_freq)) <span class="sc">+</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">col =</span> bayes_col[<span class="st">"posterior"</span>], <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">col =</span> bayes_col[<span class="st">"posterior"</span>]) <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">breaks =</span> theta) <span class="sc">+</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"theta"</span>,</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Posterior"</span>) <span class="sc">+</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-data-singular-posterior-simulation" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-posterior-simulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-posterior-simulation" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-posterior-simulation-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-posterior-simulation-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-posterior-simulation-1.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-posterior-simulation" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-posterior-simulation-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) (theta, y) pairs for samples of size 35: theta simulated from the prior; y simulated from Binomial(35, theta)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-posterior-simulation" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-posterior-simulation-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-posterior-simulation-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-posterior-simulation-2.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-posterior-simulation" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-posterior-simulation-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Summary of simulated theta values from repetitions with <span class="math inline">\(y=31\)</span> values to approximate posterior distribution of theta given <span class="math inline">\(y=31\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-posterior-simulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.6: Approximating the posterior distribution via simulation
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="posterior-distribution---calculation" class="level3" data-number="10.1.4">
+<h3 data-number="10.1.4" class="anchored" data-anchor-id="posterior-distribution---calculation"><span class="header-section-number">10.1.4</span> Posterior distribution - calculation</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># observed data</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">35</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>y_obs <span class="ot">=</span> <span class="dv">31</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># likelihood of observed data for each theta</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>likelihood <span class="ot">=</span> <span class="fu">dbinom</span>(y_obs, n, theta)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior is proportional to product of prior and likelihood</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>product <span class="ot">=</span> prior <span class="sc">*</span> likelihood</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">=</span> product <span class="sc">/</span> <span class="fu">sum</span>(product)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>bayes_table <span class="ot">=</span> <span class="fu">data.frame</span>(theta,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>                         prior,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>                         likelihood,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>                         product,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>                         posterior)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>bayes_table <span class="sc">|&gt;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_totals</span>(<span class="st">"row"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">digits =</span> <span class="dv">4</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">theta</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">prior</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">likelihood</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">product</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">posterior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0.1</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0.3</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0.5</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0.7</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">0.0067</td>
+<td style="text-align: right;">0.0020</td>
+<td style="text-align: right;">0.0201</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0.9</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">0.1998</td>
+<td style="text-align: right;">0.0979</td>
+<td style="text-align: right;">0.9799</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Total</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.2065</td>
+<td style="text-align: right;">0.0999</td>
+<td style="text-align: right;">1.0000</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="intro-prediction_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="posterior-predictive-probability-of-success-for-single-trial" class="level3" data-number="10.1.5">
+<h3 data-number="10.1.5" class="anchored" data-anchor-id="posterior-predictive-probability-of-success-for-single-trial"><span class="header-section-number">10.1.5</span> Posterior predictive probability of success for single trial</h3>
+<p>Similar to the prior predictive, but now simulate <span class="math inline">\(\theta\)</span> from the posterior distribution instead of the prior distribution.</p>
+<ol type="1">
+<li>Simulate a value of <span class="math inline">\(\theta\)</span> from the <em>posterior</em> distribution.</li>
+<li>Given the value of <span class="math inline">\(\theta\)</span>, construct a spinner that lands on success with probability <span class="math inline">\(\theta\)</span>. Spin the spinner once and record the result, success or not.</li>
+<li>Repeat steps 1 and 2 many times, and find the proportion of repetitions which result in success. This proportion approximates the (unconditional) <em>posterior</em> predictive probability of success.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>n_rep <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate values of theta from the posterior</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">sample</span>(theta, n_rep, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> posterior)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># for each simulated value of theta, simulate a single trial from Binomial(1, theta): "success" = 1, "failure" = 0 </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rbinom</span>(n_rep, <span class="at">size =</span> <span class="dv">1</span>, theta_sim)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">data.frame</span>(theta_sim, y_sim)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">theta_sim</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">y_sim</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta =</span> <span class="fu">factor</span>(theta_sim),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="fu">factor</span>(y_sim)) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">color =</span> theta, <span class="at">shape =</span> y)) <span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"magma"</span>, <span class="at">guide =</span> <span class="st">"none"</span>, <span class="at">limits =</span> <span class="fu">factor</span>(theta)) <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">19</span>), <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta =</span> <span class="fu">factor</span>(theta_sim),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="fu">factor</span>(y_sim)) <span class="sc">|&gt;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(y)) <span class="sc">+</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> theta)) <span class="sc">+</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"magma"</span>, <span class="at">limits =</span> <span class="fu">factor</span>(theta)) <span class="sc">+</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-data-singular-posterior-prediction-single" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-single-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-posterior-prediction-single" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-posterior-prediction-single-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-single-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-posterior-prediction-single-1.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-posterior-prediction-single" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-posterior-prediction-single-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) (theta, y) pairs for single trials: theta simulated from posterior; y = 1 (succes) with probability theta
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-posterior-prediction-single" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-posterior-prediction-single-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-single-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-posterior-prediction-single-2.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-posterior-prediction-single" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-posterior-prediction-single-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Summary of simulated y values to approximate posterior predictive probability of success
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-posterior-prediction-single-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.7: Posterior predictive simulation
+</figcaption>
+</figure>
+</div>
+<p>Law of total probability calculation of posterior predictive probability:</p>
+<p><span class="math display">\[
+0.1(0.0000) + 0.3(0.0000) + 0.5(0.0000) + 0.7(0.0201
+) + 0.9(0.9799) = 0.8960
+\]</span></p>
+<div>
+
+</div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-posterior-prediction-single-ltp-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-single-ltp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-posterior-prediction-single-ltp-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-posterior-prediction-single-ltp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.8: Probability of success on single trial, for different values of theta in <a href="#exm-data-singular-prior-predict" class="quarto-xref">Example&nbsp;<span>10.1</span></a>. Color represents the posterior probability of $ heta$, with darker colors corresponding to higher posterior probability.
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-posterior-prediction-single-ltp-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-single-ltp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-posterior-prediction-single-ltp-2.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-posterior-prediction-single-ltp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.9: Posterior predictive probability of success on single trial
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="posterior-predictive-distribution-of-sample-count-of-success" class="level3" data-number="10.1.6">
+<h3 data-number="10.1.6" class="anchored" data-anchor-id="posterior-predictive-distribution-of-sample-count-of-success"><span class="header-section-number">10.1.6</span> Posterior predictive distribution of sample count of success</h3>
+<ol type="1">
+<li>Simulate a value of <span class="math inline">\(\theta\)</span> from the <em>posterior</em> distribution.</li>
+<li>Given the value of <span class="math inline">\(\theta\)</span>, construct a spinner that lands on success with probability <span class="math inline">\(\theta\)</span>. Spin the spinner 35 times and count <span class="math inline">\(y\)</span>, the number of spins that land on success.</li>
+<li>Repeat steps 1 and 2 many times, and record the number of successes (out of 35) for each repetition. <strong>Summarize the simulated <span class="math inline">\(y\)</span> values to approximate the <em>posterior</em> predictive distribution.</strong> To approximate the <em>posterior</em> predictive probability that exactly 31 students in a sample of size 35 prefer data as singular, count the number of simulated repetitions that result in 31 successes (<span class="math inline">\(y = 31\)</span>) and divide by the total number of simulated repetitions.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>n_rep <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate values of theta from the posterior</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">sample</span>(theta, n_rep, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> posterior)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># for each simulated value of theta, simulate number of successes from Binomial(35, theta)</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rbinom</span>(n_rep, <span class="at">size =</span> <span class="dv">35</span>, theta_sim)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">data.frame</span>(theta_sim, y_sim)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">theta_sim</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">y_sim</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">31</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">34</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">31</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">27</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">33</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta =</span> <span class="fu">factor</span>(theta_sim)) <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> y_sim)) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">color =</span> theta)) <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"magma"</span>, <span class="at">guide =</span> <span class="st">"none"</span>, <span class="at">limits =</span> <span class="fu">factor</span>(theta)) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">19</span>), <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"y"</span>) <span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta =</span> <span class="fu">factor</span>(theta_sim),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> y_sim) <span class="sc">|&gt;</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(y)) <span class="sc">+</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> theta)) <span class="sc">+</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"magma"</span>, <span class="at">limits =</span> <span class="fu">factor</span>(theta)) <span class="sc">+</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-data-singular-posterior-prediction-sample" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-posterior-prediction-sample" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-posterior-prediction-sample-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-sample-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-posterior-prediction-sample-1.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-posterior-prediction-sample" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-posterior-prediction-sample-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) (theta, y) pairs for samples of size 35: theta simulated from posterior; y simulated from Binomial(35, theta)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-posterior-prediction-sample" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-posterior-prediction-sample-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-sample-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-posterior-prediction-sample-2.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-posterior-prediction-sample" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-posterior-prediction-sample-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Summary of simulated y values to approximate posterior predictive distribution of sample count of success
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-posterior-prediction-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.10: Posterior predictive simulation
+</figcaption>
+</figure>
+</div>
+<p>Law of total probability calculation for posterior predictive probability that <span class="math inline">\(y = 31\)</span> when <span class="math inline">\(n=35\)</span></p>
+<p><span class="math display">\[\begin{align*}
+&amp; \left(\binom{35}{31}(0.1)^{31}(1-0.1)^{4}\right)(0.0000) +
+\left(\binom{35}{31}(0.3)^{31}(1-0.3)^{4}\right)(0.0000)\\
+&amp; + \left(\binom{35}{31}(0.5)^{31}(1-0.5)^{4}\right)(0.0000)
++ \left(\binom{35}{31}(0.7)^{31}(1-0.7)^{4}\right)(0.0201)\\
+&amp; + \left(\binom{35}{31}(0.9)^{31}(1-0.9)^{4}\right)(0.9799)
+\end{align*}\]</span></p>
+<div id="fig-data-singular-posterior-prediction-sample-ltp" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-sample-ltp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-posterior-prediction-sample-ltp" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-posterior-prediction-sample-ltp-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-sample-ltp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-posterior-prediction-sample-ltp-1.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-posterior-prediction-sample-ltp" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-posterior-prediction-sample-ltp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Sample-to-sample distribution of <span class="math inline">\(y\)</span>, the number of successes in samples of size <span class="math inline">\(n=35\)</span> for different values of theta in <a href="#exm-data-singular-prior-predict" class="quarto-xref">Example&nbsp;<span>10.1</span></a>. Color represents the posterior probability of theta, with darker colors corresponding to higher posterior probability.
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-singular-posterior-prediction-sample-ltp" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data-singular-posterior-prediction-sample-ltp-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-singular-posterior-prediction-sample-ltp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-data-singular-posterior-prediction-sample-ltp-2.png" class="img-fluid figure-img" data-ref-parent="fig-data-singular-posterior-prediction-sample-ltp" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-singular-posterior-prediction-sample-ltp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Posterior predictive distribution of <span class="math inline">\(y\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-singular-posterior-prediction-sample-ltp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.11: Posterior predictive distribution
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="continuous-theta-prior-distribution" class="level3" data-number="10.1.7">
+<h3 data-number="10.1.7" class="anchored" data-anchor-id="continuous-theta-prior-distribution"><span class="header-section-number">10.1.7</span> Continuous theta: Prior distribution</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.0001</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># prior</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">=</span> theta <span class="sc">^</span> <span class="dv">2</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">=</span> prior <span class="sc">/</span> <span class="fu">sum</span>(prior)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Lower bound of one-sided 98% prior credible interval</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>prior_cdf <span class="ot">=</span> <span class="fu">cumsum</span>(prior)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>theta[<span class="fu">max</span>(<span class="fu">which</span>(prior_cdf <span class="sc">&lt;=</span> <span class="fl">0.02</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2714</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="intro-prediction_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="continuous-theta-prior-predictive-distribution" class="level3" data-number="10.1.8">
+<h3 data-number="10.1.8" class="anchored" data-anchor-id="continuous-theta-prior-predictive-distribution"><span class="header-section-number">10.1.8</span> Continuous theta: Prior predictive distribution</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">35</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">sample</span>(theta, n_sim, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> prior)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rbinom</span>(n_sim, n, theta_sim)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">data.frame</span>(theta_sim, y_sim)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">theta_sim</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">y_sim</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.9664</td>
+<td style="text-align: right;">34</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.7408</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.6907</td>
+<td style="text-align: right;">23</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9727</td>
+<td style="text-align: right;">34</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7652</td>
+<td style="text-align: right;">27</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.6341</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.8949</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.6150</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.8281</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.8988</td>
+<td style="text-align: right;">28</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(y_sim, <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5% 
+12 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="intro-prediction_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="continuous-theta-posterior-distribution" class="level3" data-number="10.1.9">
+<h3 data-number="10.1.9" class="anchored" data-anchor-id="continuous-theta-posterior-distribution"><span class="header-section-number">10.1.9</span> Continuous theta: Posterior distribution</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># observed data</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">35</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>y_obs <span class="ot">=</span> <span class="dv">31</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># likelihood of observed data for each theta</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>likelihood <span class="ot">=</span> <span class="fu">dbinom</span>(y_obs, n, theta)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior is proportional to product of prior and likelihood</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>product <span class="ot">=</span> prior <span class="sc">*</span> likelihood</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">=</span> product <span class="sc">/</span> <span class="fu">sum</span>(product)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Bound of 98% posterior credible interval</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>posterior_cdf <span class="ot">=</span> <span class="fu">cumsum</span>(posterior)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior 98% central credible interval</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(theta[<span class="fu">max</span>(<span class="fu">which</span>(posterior_cdf <span class="sc">&lt;=</span> <span class="fl">0.01</span>))],</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  theta[<span class="fu">min</span>(<span class="fu">which</span>(posterior_cdf <span class="sc">&gt;=</span> <span class="fl">0.99</span>))])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7238 0.9651</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="intro-prediction_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="continuous-theta-posterior-predictive-distribution" class="level3" data-number="10.1.10">
+<h3 data-number="10.1.10" class="anchored" data-anchor-id="continuous-theta-posterior-predictive-distribution"><span class="header-section-number">10.1.10</span> Continuous theta: Posterior predictive distribution</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">35</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">sample</span>(theta, n_sim, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> posterior)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rbinom</span>(n_sim, n, theta_sim)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">data.frame</span>(theta_sim, y_sim)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">theta_sim</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">y_sim</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.8964</td>
+<td style="text-align: right;">31</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.8938</td>
+<td style="text-align: right;">27</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.8737</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.8360</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.8597</td>
+<td style="text-align: right;">28</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.8756</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7553</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.8895</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.8856</td>
+<td style="text-align: right;">31</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.8013</td>
+<td style="text-align: right;">24</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(y_sim, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 2.5% 97.5% 
+   24    35 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="intro-prediction_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="continuous-theta-posterior-distribution-after-observing-large-sample" class="level3" data-number="10.1.11">
+<h3 data-number="10.1.11" class="anchored" data-anchor-id="continuous-theta-posterior-distribution-after-observing-large-sample"><span class="header-section-number">10.1.11</span> Continuous theta: Posterior distribution after observing large sample</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># observed data</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">1093</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>y_obs <span class="ot">=</span> <span class="dv">865</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># likelihood of observed data for each theta</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>likelihood <span class="ot">=</span> <span class="fu">dbinom</span>(y_obs, n, theta)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior is proportional to product of prior and likelihood</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>product <span class="ot">=</span> prior <span class="sc">*</span> likelihood</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">=</span> product <span class="sc">/</span> <span class="fu">sum</span>(product)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Bound of 98% posterior credible interval</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>posterior_cdf <span class="ot">=</span> <span class="fu">cumsum</span>(posterior)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior 98% central credible interval</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(theta[<span class="fu">max</span>(<span class="fu">which</span>(posterior_cdf <span class="sc">&lt;=</span> <span class="fl">0.01</span>))],</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  theta[<span class="fu">min</span>(<span class="fu">which</span>(posterior_cdf <span class="sc">&gt;=</span> <span class="fl">0.99</span>))])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7619 0.8190</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="intro-prediction_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="continuous-theta-posterior-predictive-distribution-after-observing-large-sample" class="level3" data-number="10.1.12">
+<h3 data-number="10.1.12" class="anchored" data-anchor-id="continuous-theta-posterior-predictive-distribution-after-observing-large-sample"><span class="header-section-number">10.1.12</span> Continuous theta: Posterior predictive distribution (after observing large sample)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">35</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">sample</span>(theta, n_sim, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> posterior)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rbinom</span>(n_sim, n, theta_sim)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">data.frame</span>(theta_sim, y_sim)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">theta_sim</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">y_sim</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.7889</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.7916</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7911</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.7935</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.8025</td>
+<td style="text-align: right;">25</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.7508</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7958</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.8017</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7906</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.7903</td>
+<td style="text-align: right;">28</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(y_sim, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 2.5% 97.5% 
+   23    32 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="intro-prediction_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sleep-hours-prior-distribution" class="level3" data-number="10.1.13">
+<h3 data-number="10.1.13" class="anchored" data-anchor-id="sleep-hours-prior-distribution"><span class="header-section-number">10.1.13</span> Sleep hours: Prior distribution</h3>
+<p>98% prior credible interval for mean sleep hours</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), <span class="fl">7.5</span>, <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6.336826 8.663174</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sleep-hours-prior" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sleep-hours-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-sleep-hours-prior-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sleep-hours-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.12: <a href="#exm-sleep-predict" class="quarto-xref">Example&nbsp;<span>10.7</span></a>: Prior distribution of mean hours of sleep per night
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sleep-hours-prior-predictive-distribution" class="level3" data-number="10.1.14">
+<h3 data-number="10.1.14" class="anchored" data-anchor-id="sleep-hours-prior-predictive-distribution"><span class="header-section-number">10.1.14</span> Sleep hours: Prior predictive distribution</h3>
+<ol type="1">
+<li>Simulate mean sleep hours <span class="math inline">\(\theta\)</span> from Normal(7.5, 0.5) prior distribution</li>
+<li>Given <span class="math inline">\(\theta\)</span>, simulate sleep hours for a single student <span class="math inline">\(y\)</span> from Normal(<span class="math inline">\(\theta\)</span>, 1.5) distribution</li>
+<li>Repeat many times to get many <span class="math inline">\((\theta, y)\)</span> pairs.</li>
+<li><strong>Summarize the simulated <span class="math inline">\(y\)</span> values to approximate the prior predictive distribution of sleep hours</strong></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>n_rep <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate theta from prior distribution</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">rnorm</span>(n_rep, <span class="fl">7.5</span>, <span class="fl">0.5</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate y from Normal(theta, sigma) distribution</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="fl">1.5</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rnorm</span>(n_rep, theta_sim, sigma)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% prior prediction interval</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(y_sim, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    2.5%    97.5% 
+ 4.38855 10.59100 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sleep-hours-prior-predict" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sleep-hours-prior-predict-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-sleep-hours-prior-predict-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sleep-hours-prior-predict-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.13: <a href="#exm-sleep-predict" class="quarto-xref">Example&nbsp;<span>10.7</span></a>: Prior predictive distribution of sleep hours
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sleep-hours-posterior-distribution" class="level3" data-number="10.1.15">
+<h3 data-number="10.1.15" class="anchored" data-anchor-id="sleep-hours-posterior-distribution"><span class="header-section-number">10.1.15</span> Sleep hours: Posterior distribution</h3>
+<p>In principle, the posterior distribution of <span class="math inline">\(\theta\)</span> given the observed sample (6.8, 7.2) can be found via the following.</p>
+<ol type="1">
+<li>Simulate <span class="math inline">\(\theta\)</span> from the Normal(7.5, 0.5) prior distribution</li>
+<li>Given <span class="math inline">\(\theta\)</span>, simulate a sample of size 2 from a <span class="math inline">\(N(\theta, 1.5)\)</span> distribution (rounded to the nearest minute.)</li>
+<li>If the simulated sample is (6.8, 7.2) keep the repetition; otherwise discard it</li>
+<li><strong>Repeat the process until enough non-discarded repetitions are obtained — all corresponding to samples with (6.8, 7.2).</strong> <strong>Summarize the simulated <span class="math inline">\(\theta\)</span> values to approximate the posterior distribution.</strong></li>
+</ol>
+<p>However, the likelihood of producing a sample that matches the observed data is essentially 0, simply because there are so many possible samples (even if we round values to one decimal point and only discard samples for which the sample mean is not 7.0.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>n_rep <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">rep =</span> <span class="dv">1</span><span class="sc">:</span>n_rep,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">theta =</span> <span class="fu">rnorm</span>(n_rep, <span class="fl">7.5</span>, <span class="fl">0.5</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">samples =</span> <span class="fu">map</span>(rep, <span class="sc">~</span><span class="fu">sort</span>(<span class="fu">round</span>(<span class="fu">rnorm</span>(<span class="dv">2</span>, theta, sigma), <span class="dv">1</span>)))) <span class="sc">|&gt;</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">align =</span> <span class="st">'r'</span>, <span class="at">digits =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">rep</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">theta</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">samples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">6.2, 6.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">7.2</td>
+<td style="text-align: right;">4.4, 8.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">5.3, 7.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">6.0, 6.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">4.8, 8.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">6.2, 8.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">4.8, 7.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: right;">6.9, 7.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: right;">6.7, 7.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">7.9, 8.0</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sleep-hours-posterior" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sleep-hours-posterior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-sleep-hours-posterior-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sleep-hours-posterior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.14: <a href="#exm-sleep-predict" class="quarto-xref">Example&nbsp;<span>10.7</span></a>: Posterior distribution of mean hours of sleep per night
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>98% posterior credible interval for mean sleep hours</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), <span class="fl">7.4</span>, <span class="fl">0.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6.469461 8.330539</code></pre>
+</div>
+</div>
+</section>
+<section id="sleep-hours-posterior-predictive-distribution" class="level3" data-number="10.1.16">
+<h3 data-number="10.1.16" class="anchored" data-anchor-id="sleep-hours-posterior-predictive-distribution"><span class="header-section-number">10.1.16</span> Sleep hours: Posterior predictive distribution</h3>
+<ol type="1">
+<li>Simulate mean sleep hours <span class="math inline">\(\theta\)</span> from Normal(7.4, 0.4) <em>posterior</em> distribution</li>
+<li>Given <span class="math inline">\(\theta\)</span>, simulate sleep hours for a single student <span class="math inline">\(y\)</span> from Normal(<span class="math inline">\(\theta\)</span>, 1.5) distribution</li>
+<li>Repeat many times to get many <span class="math inline">\((\theta, y)\)</span> pairs.</li>
+<li><strong>Summarize the simulated <span class="math inline">\(y\)</span> values to approximate the <em>posterior</em> predictive distribution of sleep hours</strong></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>n_rep <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate theta from posterior distribution</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">rnorm</span>(n_rep, <span class="fl">7.4</span>, <span class="fl">0.4</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate y from Normal(theta, sigma) distribution</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="fl">1.5</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rnorm</span>(n_rep, theta, sigma)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% posterior prediction interval</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(y_sim, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     2.5%     97.5% 
+ 4.129875 10.852964 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sleep-hours-posterior-predict" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sleep-hours-posterior-predict-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-sleep-hours-posterior-predict-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sleep-hours-posterior-predict-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.15: <a href="#exm-sleep-predict" class="quarto-xref">Example&nbsp;<span>10.7</span></a>: Posterior predictive distribution of sleep hours
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sleep-hours-posterior-predictive-distribution-after-observing-large-sample" class="level3" data-number="10.1.17">
+<h3 data-number="10.1.17" class="anchored" data-anchor-id="sleep-hours-posterior-predictive-distribution-after-observing-large-sample"><span class="header-section-number">10.1.17</span> Sleep hours: Posterior predictive distribution after observing large sample</h3>
+<ol type="1">
+<li>Simulate mean sleep hours <span class="math inline">\(\theta\)</span> from Normal(7.0, 0.001) <em>posterior</em> distribution</li>
+<li>Given <span class="math inline">\(\theta\)</span>, simulate sleep hours for a single student <span class="math inline">\(y\)</span> from Normal(<span class="math inline">\(\theta\)</span>, 1.5) distribution</li>
+<li>Repeat many times to get many <span class="math inline">\((\theta, y)\)</span> pairs.</li>
+<li><strong>Summarize the simulated <span class="math inline">\(y\)</span> values to approximate the <em>posterior</em> predictive distribution of sleep hours</strong></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>n_rep <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate theta from posterior distribution</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">rnorm</span>(n_rep, <span class="fl">7.0</span>, <span class="fl">0.001</span>)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate y from Normal(theta, sigma) distribution</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="fl">1.5</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rnorm</span>(n_rep, theta_sim, sigma)</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% posterior prediction interval</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(y_sim, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    2.5%    97.5% 
+3.999862 9.965420 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare to Normal(7.0, 1.5)</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="fl">7.0</span>, <span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.060054 9.939946</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sleep-hours-posterior-predict-large-sample" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sleep-hours-posterior-predict-large-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="intro-prediction_files/figure-html/fig-sleep-hours-posterior-predict-large-sample-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sleep-hours-posterior-predict-large-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.16: <a href="#exm-sleep-predict" class="quarto-xref">Example&nbsp;<span>10.7</span></a>: Posterior predictive distribution of sleep hours (after observing large sample)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./comparing-bayesian-and-frequentist.html" class="pagination-link" aria-label="Comparing Bayesian and Frequentist Analysis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Comparing Bayesian and Frequentist Analysis</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./predictive-tuning-and-checking.html" class="pagination-link" aria-label="Predictive Tuning and Checking">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Predictive Tuning and Checking</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,460 @@
+# Introduction to Posterior Simulation
+
+{{< include _r_setup.qmd >}}
+
+{{< include _python_setup.qmd >}}
+
+- All of Bayesian inference is based on the posterior distribution of parameters given sample data.
+- Therefore, the main computational task in a Bayesian analysis is computing, or approximating, the posterior distribution.
+
+::: {#exm-left-handed-normal-prior}
+Suppose we wish to estimate the proportion of Cal Poly students that are left-handed.
+Suppose we want to assume a Normal distribution prior for $\theta$ with mean 0.15 and SD 0.08.
+Also suppose that in a sample of 25 Cal Poly students 5 are left-handed.
+We want to find the posterior distribution.
+
+Note: the Normal distribution prior assigns positive (but small) density outside of (0, 1). So we can either truncate the prior to 0 outside of (0, 1) or just rely on the fact that the likelihood will be 0 for $\theta$ outside of (0, 1) to assign 0 posterior density outside (0, 1).
+:::
+
+1. Write an expression for the shape of the posterior density.
+Is this a recognizable probability distribution?
+\
+\
+\
+\
+\
+
+1. Describe in full detail two methods for approximating the posterior distribution in this situation.
+\
+\
+\
+\
+\
+
+- In most problems it is not possible to find the posterior distribution analytically, and therefore we must approximate it.
+- We have seen two approximation methods: grid approximation and simulation.
+
+::: {#exm-curse-of-dimensionality}
+Suppose you're interested in studying sleep hours of Cal Poly undergraduates.
+You assume that within each of the six colleges sleep hours follow a Normal distribution with a mean and SD for the college.
+You'll collect data on a random sample of students, record their college and sleep hours, and use it to perform a Bayesian analysis.
+:::
+
+1. How many parameters are there in this situation?
+\
+\
+\
+\
+\
+
+1. Suppose you try a grid approximation.
+You create a grid of 100 values over the possible range of values of each parameter (say [3, 13]).
+How many rows would there be in the Bayes table?
+\
+\
+\
+\
+\
+
+- Grid approximation suffers from the "curse of dimensionality" and is not computationally feasible in multi-parameter problems (and most interesting problems are multi-parameter).
+
+
+::: {#exm-describe-posterior-simulation}
+Recall that we have used simulation to approximate posterior distributions in a few situations: @exm-harry-potter-intro-posterior, @exm-data-singular-posterior, @exm-sleep-predict.
+:::
+
+1. Explain the general method for using simulation to approximate a posterior distribution given sample data.
+Careful: don't confuse posterior distributions with posterior predictive distributions.
+\
+\
+\
+\
+\
+
+1. Explain why this method is typically not feasible in practice.
+(It might help to look at the simulation results from the examples referenced above.)
+\
+\
+\
+\
+\
+
+
+
+- We have seen three ways to compute/approximate the posterior distribution
+    - *Math*. Only works in a few special cases (e.g., Beta-Binomial, Normal-Normal, conjugate prior situations).
+    - *Grid approximation*. Not feasible when there are more than just a few parameters.
+    - *Simulation*. By far the most common method, though we have only seen a very naive approach so far.
+- In principle, the posterior distribution $\pi(\theta|y)$ of parameters $\theta$ given observed data $y$ can be approximated via simulation in the following way.
+    - Simulate a $\theta$ value from the prior distribution ($\theta$ could be a vector of parameters, e.g., $\theta = (\mu, \sigma)$).
+    - Given the simulated $\theta$, simulate hypothetical data $y$ from the corresponding conditional distribution of $y$ given $\theta$ ($y$ could be a full sample, or the value of a sample statistic).
+    - Repeat many times and discard $(\theta, y)$ pairs for which the simulated data $y$ is not equal to the observed data $y$
+    - Summarize the simulated $\theta$ values for the remaining pairs (with $y$ equal to the observed data).
+- While this method works in principle, it is a very computationally inefficient way of approximating the posterior distribution, since in most cases (e.g., not-small sample, continuous variables) the probability of replicating the observed data $y$ is essentially 0.
+- Therefore, we need more efficient simulation algorithms for approximating posterior distributions.
+**Markov chain Monte Carlo (MCMC)** methods provide powerful and widely applicable algorithms for simulating from probability distributions, including complex and high-dimensional distributions.
+These algorithms include Metropolis-Hastings, Gibbs sampling, Hamiltonian Monte Carlo (HMC), and No U-Turn sampling (NUTS), among others.
+We will see later some of the ideas behind MCMC algorithms.
+- Regardless of which simulation algorithm we use to approximate the posterior distribution, there are 3 main inputs:
+    - Observed data $y$
+    - Model for the data, $f(y|\theta)$ which depends on parameters $\theta$.
+    (This model determines the likelihood function.)
+    - Prior distribution for parameters $\pi(\theta)$
+- We then employ some simulation algorithm to approximate the posterior distribution of $\theta$ given the observed data $y$, $\pi(\theta|y)$, *without computing the posterior distribution.*
+
+
+
+## Introduction to `brms` {#sec-brms}
+
+- We will rely on the software package [`brms`](https://github.com/paul-buerkner/brms) ("Bayesian Regression Models using Stan") to carry out MCMC simulations.
+- `brms` is an interface for the MCMC software [Stan](https://mc-stan.org/).
+- Here are a few references for using `brms`
+    - [`brms`](https://paul-buerkner.github.io/brms/) site
+    - [*Bayesian Modeling using Stan*](https://bayesball.github.io/BRMS/) by Jim Albert (companion to Albert and Hu textbook)
+    - [*Doing Bayesian Data Analysis in brms and the tidyverse*](https://bookdown.org/content/3686/) by A Solomon Kurz (companion to Kruschke's *Doing Bayesian Data Analysis*)
+    - [Parameterization of Response Distributions in `brms`](https://cran.r-project.org/web/packages/brms/vignettes/brms_families.html)
+    - [`brms` reference manual](https://cran.r-project.org/web/packages/brms/brms.pdf)
+
+
+
+
+```{r}
+library(brms)
+```
+
+we will introduce some basic functionality of `brms` in a few examples we have encountered previously.
+
+Recall @exm-read-book-interval-posterior where we were interested in 
+$\theta$, the population proportion of American adults who have read a book in the last year.
+We assumed a Normal prior distribution for $\theta$ with prior mean 0.4 and prior standard deviation 0.1.
+In a sample of 150 American adults, 113 have read a book in the past year.
+(The real sample was size 1502, but we looked at the smaller sample size first.)
+
+First we define the data.
+We could just define the total number of successes and the sample size.
+However, data is most often input as individual values in un-summarized form (e.g., a csv file with one row for each observational unit), so this is what we'll do.
+We'll create a vector with 113 1s ("successes") and 37 0s ("failures").
+
+```{r}
+data = data.frame(y = c(rep(1, 113), rep(0, 37)))
+                  
+ggplot(data, aes(x = factor(y))) + geom_bar() + labs(x = "y")
+```
+
+Note that since the data contains individual 1/0 values, the likelihood is determined by the *Bernoulli* distribution, a special case of Binomial with $n=1$.
+That is, if $y_i$ denotes an individual value, then $y_i\sim$ Bernoulli($\theta$) = Binomial(1, $\theta$).
+
+Next we fit the model to the data using the function `brm`.
+The three inputs are:
+
+- Input 1: the data  
+`data = data`
+
+- Input 2: model for the data (likelihood)  
+`family = bernoulli(link = identity)`  
+`y ~ 1 # linear model with intercept only`
+
+- Input 3: prior distribution for parameters  
+`prior = prior(normal(0.4, 0.1), class = Intercept)`
+
+- Other arguments specify the details of the numerical algorithm; our specifications below will result in 10000 $\theta$ values simulated from the posterior distribution.
+
+
+
+
+```{r}
+#| cache: true
+
+fit <-
+  brm(data = data, 
+      family = bernoulli(link = identity),
+      formula = y ~ 1,
+      prior(normal(0.4, 0.1), class = Intercept),
+      iter = 11000,
+      warmup = 1000,
+      chains = 1,
+      refresh = 0)
+```
+
+Here is a brief summary of results.
+Notice that "Estimate" is the posterior mean, ""Est.Error" is the posterior standard deviation, and "l-95% CI, u-95% CI" are the endpoints of a posterior 95% credible interval.
+
+```{r}
+summary(fit)
+```
+
+
+Here are some plots.
+The plot on the left represents the posterior distribution of $\theta$.
+
+```{r}
+plot(fit)
+```
+
+The `b_Intercept` row in the `posterior_summary` below contains the posterior mean ("Estimate"), SD ("Est.Error"), median ("Q50"), and endpoints of central 50%, 80%, and 98% credible intervals.
+Compare to the grid approximation in @exm-read-book-interval-posterior; the results are very similar.
+
+
+```{r}
+posterior_summary(fit,
+                  probs = c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99))
+```
+
+There are commands within `brms` for working with simulation output.
+But using `spread_draws` from the `tidybayes` package, we can put the 10000 simulated values into a data frame.
+Then we can summarize the posterior distribution just like we summarize any data set.
+
+Below we save simulated values of `theta` in the `posterior` data frame.
+
+
+```{r}
+library(tidybayes)
+
+posterior = fit |>
+  spread_draws(b_Intercept) |>
+  rename(theta = b_Intercept)
+
+posterior |> head(10) |> kbl() |> kable_styling()
+```
+Now we can plot values of `theta` as usual, e.g., using `ggplot2`.
+
+Here is a histogram of the simulated $\theta$ values, with the approximate posterior density overlaid.
+
+```{r}
+#| warning: false
+
+posterior |>
+  ggplot(aes(x = theta)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior"], fill = "white") +
+  geom_density(linewidth = 1, col = bayes_col["posterior"]) +
+  theme_bw()
+```
+
+
+Here is a plot of the approximate posterior cumulative distribution function.
+
+```{r}
+posterior %>%
+  ggplot(aes(x = theta)) +
+  stat_ecdf(col = bayes_col["posterior"], linewidth = 1) +
+  labs(title = "Posterior cdf of theta",
+       y = "Cumulative probability") +
+  theme_bw()
+
+```
+
+We can use the simulated values to approximate posterior mean and SD as usual.
+
+```{r}
+mean(posterior$theta)
+```
+
+```{r}
+sd(posterior$theta)
+```
+
+
+Quantiles of the posterior distribution of $\theta$ are endpoints of credible intervals.
+
+```{r}
+quantile(posterior$theta, c(0.01, 0.10, 0.25, 0.75, 0.90, 0.99))
+```
+
+We can approximate the posterior probability that $\theta$ is greater than 0.7 as usual.
+
+```{r}
+sum(posterior$theta > 0.7) / length(posterior$theta)
+```
+
+
+Now we'll look at an example with continuous data.
+Recall @exm-temp-data.
+Assume body temperatures (degrees Fahrenheit) of healthy adults follow a Normal distribution with unknown mean $\theta$ and known standard deviation $\sigma=1$.
+(It's unrealistic to assume the population standard deviation is known.
+We'll consider the case of unknown standard deviation later.)
+Suppose we wish to estimate $\theta$, the population mean healthy human body temperature.
+We considered a few priors in @exm-temp-data; here we'll use a Uniform prior on [96.0, 100.0].
+In a recent study, the sample mean body temperature in a sample of 208 healthy adults was 97.7 degrees F.
+
+First we load the data from the file `bodytemps.csv`; the temperature variable is `bodytemp`.
+
+```{r}
+#| warning: false
+
+data = read_csv("bodytemps.csv")
+
+head(data)
+```
+
+
+```{r}
+#| warning: false
+
+data |>
+  ggplot(aes(x = bodytemp)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = "black", fill = "white") +
+  geom_density(linewidth = 1) +
+  theme_bw()
+
+```
+
+Next we fit the model to the data using the function `brm`.
+The three inputs are
+
+
+- Input 1: the data  
+`data = data`
+
+- Input 2: model for the data (likelihood)  
+`family = gaussian`  
+`bodytemp ~ 1 # linear model with intercept (mean) only`
+
+- Input 3: prior distribution for parameters  
+`prior = c(prior(uniform(96, 100), lb = 96, ub = 100, class = Intercept),`
+`          prior(constant(1), class = sigma))`
+
+Note that the Normal (`gaussian`) model for the likelihood assumes two parameters - mean ("intercept") and SD ("sigma") - so we need to specify a prior distribution for both parameters.
+Since we're assuming that SD $\sigma$ is known, we fix its value to be constant.
+
+- Other arguments specify the details of the numerical algorithm; our specifications below will result in 10000 $(\mu, \sigma)$ pairs simulated from the posterior distribution; a few simulated values are displayed below.
+
+
+```{r}
+#| cache: true
+
+fit <- brm(data = data,
+           family = gaussian,
+           bodytemp ~ 1,
+           prior = c(prior(uniform(96, 100), lb = 96, ub = 100, class = Intercept),
+                     prior(constant(1), class = sigma)),
+           iter = 11000,
+           warmup = 1000,
+           chains = 1,
+           refresh = 0)
+
+```
+
+```{r}
+summary(fit)
+```
+
+
+```{r}
+plot(fit)
+```
+
+
+
+
+
+Below we save simulated values of `theta` in the `posterior` data frame.
+
+
+```{r}
+
+posterior = fit |>
+  spread_draws(b_Intercept) |>
+  rename(theta = b_Intercept)
+
+posterior |> head(10) |> kbl() |> kable_styling()
+```
+Here is a histogram of the simulated $\theta$ values, with the approximate posterior density overlaid.
+
+```{r}
+#| warning: false
+
+posterior |>
+  ggplot(aes(x = theta)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior"], fill = "white") +
+  geom_density(linewidth = 1, col = bayes_col["posterior"]) +
+  theme_bw()
+```
+
+
+Here is a plot of the approximate posterior cumulative distribution function.
+
+```{r}
+posterior %>%
+  ggplot(aes(x = theta)) +
+  stat_ecdf(col = bayes_col["posterior"], linewidth = 1) +
+  labs(title = "Posterior cdf of theta",
+       y = "Cumulative probability") +
+  theme_bw()
+
+```
+
+We can use the simulated values to approximate posterior mean and SD as usual.
+
+```{r}
+mean(posterior$theta)
+```
+
+```{r}
+sd(posterior$theta)
+```
+
+
+Quantiles of the posterior distribution of $\theta$ are endpoints of credible intervals.
+
+```{r}
+quantile(posterior$theta, c(0.01, 0.10, 0.25, 0.75, 0.90, 0.99))
+```
+
+We can approximate the posterior probability that $\theta$ is less than 97.8.
+
+```{r}
+sum(posterior$theta < 97.8) / length(posterior$theta)
+```
+
+We can use the simulated values of $\theta$ to approximate the posterior predictive distribution.
+For each simulated value of $\theta$, simulate a $y$ value from a Normal($\theta$, 1) distribution, and summarize the simulate $y$ values.
+
+```{r}
+n_rep = length(posterior$theta)
+
+y_sim = rnorm(n_rep, posterior$theta, sd = 1)
+
+ggplot(data.frame(y_sim),
+       aes(x = y_sim)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+  geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
+  labs(x = "Predicted body temp") +
+  theme_bw()
+
+```
+
+Quantiles of the posterior predictive distribution of $y$ are endpoints of posterior prediction intervals.
+
+```{r}
+quantile(posterior$theta, c(0.025, 0.975))
+```
+
+
+We can use `pp_check` to perform a posterior predictive check: simulate hypothetical samples of size 208 according to the model, and compare to the observed data.
+The plot below contains a histogram of predicted $y$ values for each of the simulated samples, along with a histogram of the observed data.
+
+```{r}
+pp_check(fit, type = "hist")
+```
+
+The default plot output of `pp_check` displays the density of each of the simulated samples overlaid on the estimated density of the observed sample data.
+Note that `ndraws` is the number of simulated *samples*, each sample of size 208.
+
+
+
+
+
+
+```{r}
+pp_check(fit, ndraw = 100)
+```
+
+
+
+
+
+

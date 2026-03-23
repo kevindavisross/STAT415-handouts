@@ -1,0 +1,151 @@
+---
+title: "Logistic"
+format: html
+---
+
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+library(brms)
+```
+
+
+```{r}
+n = 100
+
+x = rnorm(n)
+
+beta0 = 0
+
+beta1 = 1
+
+p = exp(beta0 + beta1 * x) / (1 + exp(beta0 + beta1 * x))
+
+y = rbinom(n, size = 1, p)
+
+data = data.frame(x, y)
+```
+
+```{r}
+plot(x, y)
+```
+
+
+
+```{r}
+
+fit <-
+  brm(data = data, 
+      family = bernoulli(),
+      formula = y ~ x,
+      iter = 3500,
+      warmup = 1000,
+      chains = 4,
+      refresh = 0)
+```
+
+
+```{r}
+prior_summary(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+
+```{r}
+summary(fit)
+```
+
+
+
+## Complete separation
+
+
+
+```{r}
+n = 100
+
+x = rnorm(n)
+
+beta0 = 0
+
+beta1 = 200
+
+p = exp(beta0 + beta1 * x) / (1 + exp(beta0 + beta1 * x))
+
+y = rbinom(n, size = 1, p)
+
+data = data.frame(x, y)
+```
+
+```{r}
+plot(x, y)
+```
+
+
+
+
+```{r}
+
+fit <-
+  brm(data = data, 
+      family = bernoulli(),
+      formula = y ~ x,
+      iter = 3500,
+      warmup = 1000,
+      chains = 4,
+      refresh = 0)
+```
+
+
+```{r}
+prior_summary(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+
+```{r}
+summary(fit)
+```
+
+
+
+
+
+
+```{r}
+
+fit <-
+  brm(data = data, 
+      family = bernoulli(),
+      formula = y ~ x,
+      prior = c(prior(normal(0, 2.5), class = Intercept),
+                prior(normal(0, 2.5), class = b)),
+      iter = 3500,
+      warmup = 1000,
+      chains = 4,
+      refresh = 0)
+```
+
+
+```{r}
+prior_summary(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+
+```{r}
+summary(fit)
+```

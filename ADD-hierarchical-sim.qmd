@@ -1,0 +1,510 @@
+# Introductory Example
+
+{{< include _r_setup.qmd >}}
+
+<!-- {{< include _python_setup.qmd >}} -->
+
+
+## Discrete first
+
+
+## Sim
+
+Choose a good scenario that highlights prior vs posterior, shrinkage, etc
+
+```{r}
+n_rep = 100000
+n1 = 5
+n2 = 10
+
+sim = data.frame(rep = 1:n_rep) |>
+  mutate(p = rbeta(n_rep, 20, 20),
+         p1 = pmax(0, pmin(1, rnorm(n_rep, p, 0.1))),
+         p2 = pmax(0, pmin(1, rnorm(n_rep, p, 0.1))),
+         y1 = rbinom(n_rep, n1, p1),
+         y2 = rbinom(n_rep, n2, p2))
+
+sim |> head(10) |> kbl() |> kable_styling()
+```
+
+```{r}
+n_rep = 100000
+n1 = 5
+n2 = 10
+
+kappa = 20
+
+sim = data.frame(rep = 1:n_rep) |>
+  mutate(p = rbeta(n_rep, 1, 1),
+         p1 = rbeta(n_rep, shape1 = p * kappa, shape2 = (1 - p) * kappa),
+         p2 = rbeta(n_rep, shape1 = p * kappa, shape2 = (1 - p) * kappa),
+         y1 = rbinom(n_rep, n1, p1),
+         y2 = rbinom(n_rep, n2, p2))
+
+sim |> head(10) |> kbl() |> kable_styling()
+```
+
+
+## Prior of (p, p1, p2): Scatterplot of p1, p2, colored by p
+
+```{r}
+ggplot(sim,
+       aes(x = p1,
+           y = p2,
+           color = p)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+```
+
+
+```{r}
+#| layout-ncol: 2
+
+ggplot(sim,
+       aes(x = p1,
+           y = p2,
+           color = p)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim,
+       aes(x = p,
+           y = p2,
+           color = p)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim,
+       aes(x = p1,
+           y = p,
+           color = p)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+
+```
+
+
+
+
+```{r}
+#| layout-ncol: 2
+
+ggplot(sim,
+       aes(x = p1,
+           y = p2,
+           color = p)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim,
+       aes(x = p,
+           y = p2,
+           color = p1)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Blues", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim,
+       aes(x = p1,
+           y = p,
+           color = p2)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Purples", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+
+```
+
+
+
+```{r}
+sim_hist <- sim |>
+  select(p, p1, p2) |>
+  pivot_longer(everything(), names_to = "parameter")
+```
+
+
+```{r}
+ggplot(sim_hist) +
+    stat_density(aes(x = value, color = parameter),
+                     geom = "line", position = "identity") +
+  scale_color_manual(values = c("seagreen", "skyblue", "purple"))
+```
+
+
+
+
+## Fix a few p and look at (p1, p2) to see conditional independence
+
+Fix color so that for given p all dots have same color
+
+```{r}
+#| layout-ncol: 3
+
+
+ggplot(sim |>
+         filter(abs(p - 0.3) < 0.05),
+       aes(x = p1,
+           y = p2,
+           color = p)) +
+  geom_point(alpha = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  labs(title = "p = 0.3") +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim |>
+         filter(abs(p - 0.5) < 0.05),
+       aes(x = p1,
+           y = p2,
+           color = p)) +
+  geom_point(alpha = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  labs(title = "p = 0.5") +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim |>
+         filter(abs(p - 0.7) < 0.05),
+       aes(x = p1,
+           y = p2,
+           color = p)) +
+  geom_point(alpha = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  labs(title = "p = 0.7") +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+```
+
+## Scatterplot of y1, p1, colored by p
+
+Arrange 2x2
+
+```{r}
+#| layout-ncol: 2
+
+ggplot(sim,
+       aes(x = p1,
+           y = y1,
+           color = p)) +
+  geom_jitter(width = 0, height = 0.2, shape = 21, alpha = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  labs(title = "p1 and y1") +
+  scale_x_continuous(limits = c(0, 1))
+
+ggplot(sim,
+       aes(x = p2,
+           y = y2,
+           color = p)) +
+  geom_jitter(width = 0, height = 0.2, shape = 21, alpha = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  labs(title = "p2 and y2") +
+  scale_x_continuous(limits = c(0, 1))
+
+ggplot(sim,
+       aes(x = p1,
+           y = p,
+           color = p)) +
+  geom_point() +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  labs(title = "p1 and p") +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim,
+       aes(x = p2,
+           y = p,
+           color = p)) +
+  geom_point() +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  labs(title = "p2 and p") +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+```
+
+## Condition on observed data
+
+Only keep pairs with observed y1, y2 then redo above scatterplots with all other pairs removed
+
+First show the (p1, y1) scatterplot with row highlighted and then show that corresponding points in the (p1, p) plot with the same highlight color
+
+```{r}
+
+y1_obs = 1
+y2_obs = 7
+
+sim_post <- sim |>
+  filter(y1 == y1_obs,
+         y2 == y2_obs)
+
+sim_post |> head(10) |> kbl() |> kable_styling()
+```
+
+
+Need to keep only values with both y1 and y2
+
+```{r}
+#| layout-ncol: 2
+
+
+ggplot(sim,
+       aes(x = p1,
+           y = y1,
+           color = p)) +
+  geom_jitter(width = 0, height = 0.2, shape = 21, alpha = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  annotate("rect", xmin = 0, xmax = 1,
+           ymin = y1_obs - 0.4, ymax = y1_obs + 0.4, alpha = 0.5,
+           color = "orange",
+           fill = "orange") +
+  labs(title = "p1 and y1, given y1 obs")
+
+ggplot(sim,
+       aes(x = p2,
+           y = y2,
+           color = p)) +
+  geom_jitter(width = 0, height = 0.2, shape = 21, alpha = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  annotate("rect", xmin = 0, xmax = 1,
+           ymin = y2_obs - 0.4, ymax = y2_obs + 0.4, alpha = 0.5,
+           color = "skyblue",
+           fill = "skyblue") +
+  labs(title = "p2 and y2, given y2 obs")
+
+
+ggplot(sim |>
+         mutate(is_y1 = (y1 == y1_obs)),
+       aes(x = p1,
+           y = p,
+           color = is_y1)) +
+  geom_point(alpha = 0.5) +
+  scale_color_manual(values = c("seagreen", "orange")) +
+  labs(title = "p1 and p, given y1 obs")
+
+ggplot(sim |>
+         mutate(is_y2 = (y2 == y2_obs)),
+       aes(x = p2,
+           y = p,
+           color = is_y2)) +
+  geom_point(alpha = 0.5) +
+  scale_color_manual(values = c("seagreen", "orange")) +
+  labs(title = "p2 and p, given y2 obs")
+```
+
+
+```{r}
+#| layout-ncol: 2
+
+
+ggplot(sim,
+       aes(x = p1,
+           y = y1,
+           color = p)) +
+  geom_jitter(width = 0, height = 0.2, shape = 21, alpha = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  annotate("rect", xmin = 0, xmax = 1,
+           ymin = y1_obs - 0.4, ymax = y1_obs + 0.4, alpha = 0.5,
+           color = "orange",
+           fill = "orange") +
+  labs(title = "p1 and y1, given y1 obs")
+
+ggplot(sim,
+       aes(x = p2,
+           y = y2,
+           color = p)) +
+  geom_jitter(width = 0, height = 0.2, shape = 21, alpha = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  annotate("rect", xmin = 0, xmax = 1,
+           ymin = y2_obs - 0.4, ymax = y2_obs + 0.4, alpha = 0.5,
+           color = "orange",
+           fill = "orange") +
+  labs(title = "p2 and y2, given y2 obs")
+
+ggplot(sim_post,
+       aes(x = p1,
+           y = p,
+           color = p)) +
+  geom_point() +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  labs(title = "p2 and y2")
+
+ggplot(sim_post,
+       aes(x = p2,
+           y = p,
+           color = p)) +
+  geom_point() +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  labs(title = "p2 and p")
+```
+
+
+
+
+
+```{r}
+#| layout-ncol: 3
+
+
+ggplot(sim,
+       aes(x = y1,
+           y = y2,
+           color = p)) +
+  geom_jitter(width = 0.2, height = 0.2, shape = 21, alpha = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  annotate("rect", ymin = -Inf, ymax = Inf,
+           xmin = y1_obs - 0.4, xmax = y1_obs + 0.4, alpha = 0.5,
+           color = "orange",
+           fill = "orange") +
+    annotate("rect", xmin = -Inf, xmax = Inf,
+           ymin = y2_obs - 0.4, ymax = y2_obs + 0.4, alpha = 0.5,
+           color = "orange",
+           fill = "orange") +
+  labs(title = "p given observed y1 and y2")
+
+ggplot(sim,
+       aes(x = y1,
+           y = y2,
+           color = p1)) +
+  geom_jitter(width = 0.2, height = 0.2, shape = 21, alpha = 0.2) +
+  scale_color_distiller(palette = "Blues", direction = 1, limits = c(0, 1)) +
+  annotate("rect", ymin = -Inf, ymax = Inf,
+           xmin = y1_obs - 0.4, xmax = y1_obs + 0.4, alpha = 0.5,
+           color = "orange",
+           fill = "orange") +
+    annotate("rect", xmin = -Inf, xmax = Inf,
+           ymin = y2_obs - 0.4, ymax = y2_obs + 0.4, alpha = 0.5,
+           color = "orange",
+           fill = "orange") +
+  labs(title = "p1 given observed y1 and y2")
+
+ggplot(sim,
+       aes(x = y1,
+           y = y2,
+           color = p2)) +
+  geom_jitter(width = 0.2, height = 0.2, shape = 21, alpha = 0.2) +
+  scale_color_distiller(palette = "Purples", direction = 1, limits = c(0, 1)) +
+  annotate("rect", ymin = -Inf, ymax = Inf,
+           xmin = y1_obs - 0.4, xmax = y1_obs + 0.4, alpha = 0.5,
+           color = "orange",
+           fill = "orange") +
+    annotate("rect", xmin = -Inf, xmax = Inf,
+           ymin = y2_obs - 0.4, ymax = y2_obs + 0.4, alpha = 0.5,
+           color = "orange",
+           fill = "orange") +
+  labs(title = "p2 given observed y1 and y2")
+
+```
+
+
+
+## Posterior of (p, p1, p2): Scatterplot of p1, p2, colored by p
+
+```{r}
+ggplot(sim_post,
+       aes(x = p1,
+           y = p2,
+           color = p)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+```
+
+
+```{r}
+#| layout-ncol: 2
+
+ggplot(sim_post,
+       aes(x = p1,
+           y = p2,
+           color = p)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim_post,
+       aes(x = p,
+           y = p2,
+           color = p)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim_post,
+       aes(x = p1,
+           y = p,
+           color = p)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+
+```
+
+
+
+
+```{r}
+#| layout-ncol: 2
+
+ggplot(sim_post,
+       aes(x = p1,
+           y = p2,
+           color = p)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Greens", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim_post,
+       aes(x = p,
+           y = p2,
+           color = p1)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Blues", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggplot(sim_post,
+       aes(x = p1,
+           y = p,
+           color = p2)) +
+  geom_point(alpha  = 0.2) +
+  scale_color_distiller(palette = "Purples", direction = 1, limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+
+```
+
+
+```{r}
+sim_post_hist <- sim_post |>
+  select(p, p1, p2) |>
+  pivot_longer(everything(), names_to = "parameter")
+```
+
+
+```{r}
+ggplot(sim_post_hist) +
+    stat_density(aes(x = value, color = parameter),
+                     geom = "line", position = "identity") +
+  scale_color_manual(values = c("seagreen", "skyblue", "purple"))
+```
+

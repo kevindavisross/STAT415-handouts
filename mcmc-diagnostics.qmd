@@ -1,0 +1,471 @@
+#  Some Diagnostics for MCMC Simulation {#sec-mcmc-diagnostics}
+
+{{< include _r_setup.qmd >}}
+
+<!-- {{< include _python_setup.qmd >}} -->
+
+
+
+
+
+- The goal we wish to achieve with MCMC is to simulate from a  probability distribution of interest (e.g., the posterior distribution).
+- The idea of MCMC is to algorithmically build a Markov chain whose long run distribution is the probability distribution of interest.
+Then we can simulate a sample from the probability distribution, and use the simulated values to summarize and investigate characteristics of the probability distribution,  by running the Markov chain for a sufficiently large number of steps.
+- But how do we know that the MCMC algorithm works?
+Some questions of interest:
+    - Does the algorithm produce samples that are *representative* of the target distribution of interest?
+    - Are estimates of characteristics of the distribution (e.g., posterior mean, posterior standard deviation, 98% credible region) based on the simulated Markov chain *accurate* and stable?
+    - Is the algorithm *efficient*, in terms of time or computing power required to run?
+
+
+
+::: {#exm-burnin}
+Recall @exm-mcmc-beta in which we used a Metropolis algorithm to simulate from a Beta(5, 24) distribution.
+Given current state $\theta_c$, the proposal was generated from a $N(\theta_c,\delta)$ distribution, where $\delta$ was a specified value (determining what constitutes the "neighborhood" in the continuous random walk analog).
+The algorithm also needs some initial value of $\theta$ to start with; in @exm-mcmc-beta we used an initial value of 0.5.
+What is the impact of the initial value?
+
+The following plots display the values of the first 100 steps, 1000 steps, and 10000 steps --- and their densities --- for 5 different runs of the Metropolis chain each starting from a different initial value: 0.1, 0.3, 0.5, 0.7, 0.9.
+The value of $\delta$ is 0.005.
+(Note: we're setting the $\delta$ value to be very small to illustrate a point.)
+What do you notice in the plots?
+Does the initial value influence the results?
+:::
+\
+\
+\
+\
+\
+
+```{r}
+#| echo: false
+#| message: false
+
+Nruns = 5
+x0 = c(0.1, 0.3, 0.5, 0.7, 0.9)
+ninit = 200
+alpha = 5
+beta = 24
+N = 10000
+sigma = 0.005
+
+Tn = matrix(rep(NA, N * Nruns), nrow = N)
+for (r in 1:Nruns){
+  Tn[1,r] = x0[r]
+  for (i in 2:N){
+    t = Tn[i-1, r]
+    u = rnorm(1, t, sigma)
+    a = min(1, dbeta(u, alpha, beta) / dbeta(t, alpha, beta))
+    Tn[i,r] = sample(c(t, u), 1, prob = c(1 - a, a)) 
+  }
+}
+
+colnames(Tn) = paste("chain", 1:Nruns)
+
+Tn = as.data.frame(Tn) |>
+  mutate(step = row_number()) |>
+  relocate(step)
+  
+
+Tn |> head(10) |> kbl() |> kable_styling()
+```
+
+
+
+```{r}
+#| label: fig-burnin-trace
+#| echo: false
+#| fig-cap: "Trace plots for five chains with different starting states"
+#| fig-subcap: 
+#|   - "First 100 steps for each chain"
+#|   - "First 1000 steps for each chain"
+#|   - "First 10000 steps for each chain"
+#| layout-ncol: 3
+
+Tn |> filter(step <= 100) |>
+  pivot_longer(cols = !step,
+                   names_to = "chain",
+                   values_to = "theta") |>
+  ggplot(aes(x = step,
+             y = theta,
+             col = chain)) +
+  geom_line(aes(linetype = chain)) +
+  scale_color_viridis_d(direction = -1) +
+  theme_bw()
+
+Tn |> filter(step <= 1000) |>
+  pivot_longer(cols = !step,
+                   names_to = "chain",
+                   values_to = "theta") |>
+  ggplot(aes(x = step,
+             y = theta,
+             col = chain)) +
+  geom_line(aes(linetype = chain)) +
+  scale_color_viridis_d(direction = -1) +
+  theme_bw()
+
+Tn |> pivot_longer(cols = !step,
+                   names_to = "chain",
+                   values_to = "theta") |>
+  ggplot(aes(x = step,
+             y = theta,
+             col = chain)) +
+  geom_line(aes(linetype = chain)) +
+  scale_color_viridis_d(direction = -1) +
+  theme_bw()
+
+```
+
+
+
+```{r}
+#| label: fig-burnin-density
+#| echo: false
+#| fig-cap: "Density plots for five chains with different starting states"
+#| fig-subcap: 
+#|   - "First 100 steps for each chain"
+#|   - "First 1000 steps for each chain"
+#|   - "First 10000 steps for each chain"
+#| layout-ncol: 3
+
+Tn |> filter(step <= 100) |>
+  pivot_longer(cols = !step,
+                   names_to = "chain",
+                   values_to = "theta") |>
+  ggplot(aes(x = theta,
+             col = chain)) +
+  geom_density(aes(linetype = chain), linewidth = 1) +
+  scale_color_viridis_d(direction = -1) +
+  theme_bw()
+
+Tn |> filter(step <= 1000) |>
+  pivot_longer(cols = !step,
+                   names_to = "chain",
+                   values_to = "theta") |>
+  ggplot(aes(x = theta,
+             col = chain)) +
+  geom_density(aes(linetype = chain), linewidth = 1) +
+  scale_color_viridis_d(direction = -1) +
+  theme_bw()
+
+Tn |> pivot_longer(cols = !step,
+                   names_to = "chain",
+                   values_to = "theta") |>
+  ggplot(aes(x = theta,
+             col = chain)) +
+  geom_density(aes(linetype = chain), linewidth = 1) +
+  scale_color_viridis_d(direction = -1) +
+  theme_bw()
+
+```
+
+
+
+
+- The goal of an MCMC simulation is to simulate a *representative* sample of values from the target distribution.
+- While an MCMC algorithm should converge eventually to the target distribution, it might take some time to get there.
+- **Warm up** (or "warm up") refers to the process of discarding the first several hundred or thousand steps of the chain to allow for a "settling in" period.
+Only values simulated after the warm up period are used to approximate the target distribution.
+- In practice, it is common to use a warm up period of several hundred or thousands of steps.
+- To get a better idea of how long the warm up period should be, run the chain starting from several disperse initial conditions to see how long it takes for the paths to "overlap".
+- After warm up period, examine trace plots or density plots for multiple chains; if the plots do not "overlap" then there is evidence that the chains have not converged, so they might not be producing representative samples from the target distribution, and  therefore a longer warm up period is needed.
+- In `brms`:
+    - `iter` is the total number of steps for each single chain
+    - `warmup` is the number of steps to discard
+    - `chains` is the number of chains to run
+    - For example `iter = 3500`, `warmup = 1000`, `chains = 4` will produce 3500 - 1000 = 2500 values for each of 4 chains, resulting in 10000 simulated values in total
+- The **Gelman-Rubin statistic** (a.k.a., shrink factor, "R-hat") is a numerical check of convergence based on a measure of variance between chains relative to variability with chains.
+- The idea is that if multiple chains have settled into representative sampling, then the average difference between chains should be equal to the average difference within chains (i.e., across steps).
+Roughly, if multiple chains are all producing representative samples from the target distribution, then given a current value, it shouldn’t matter if you take the next value from the chain or if you hop to another chain.
+- Thus, after the warm up period, the shrink factor should be close to 1.
+
+
+
+
+::: {#exm-mcmc-dependence}
+Continuing @exm-burnin.
+Recall that we used a Metropolis algorithm to simulate from a Beta(5, 24) distribution.
+Given current state $\theta_c$, the proposal was generated from a $N(\theta_c,\delta)$ distribution, where $\delta$ was a specified value (determining what constitutes the "neighborhood" in the continuous random walk analog).
+
+The following plots display the results of three different runs, one each for $\delta=0.01$, $\delta=0.1$, $\delta=1$, all with an initial value of 0.5.
+Describe the differences in the behavior of the chains.
+Which chain seems "best"?
+Why?
+:::
+\
+\
+\
+\
+\
+
+```{r}
+#| echo: false
+
+Nruns = 3
+x0 = c(0.5)
+ninit = 200
+alpha = 5
+beta = 24
+N = 10000
+sigma = c(0.01, 0.1, 1)
+
+Tn = matrix(rep(NA,N*Nruns),nrow=N)
+for (r in 1:Nruns){
+  Tn[1,r] = x0
+  for (i in 2:N){
+    t = Tn[i-1,r]
+    u = rnorm(1,t,sigma[r])
+    a = min(1, dbeta(u, alpha, beta)/dbeta(t, alpha, beta))
+    Tn[i,r] = sample(c(t,u),1,prob=c(1-a,a)) 
+  }
+}
+par(mfcol=c(2,3))
+nstop =c(ninit,N)
+for (r in 1:Nruns){
+  for(nn in nstop){
+    plot(Tn[1:nn,r],type="l", main=paste("delta=",sigma[r], "; first ",nn," steps",sep=""),
+         xlab="n",
+         ylab = "Xn",
+         ylim=c(0,1))
+  }
+}
+
+```
+
+
+
+
+- The values of a Markov chain at different steps are *dependent*.
+- If the degree of dependence is too high, the chain will tend to get "stuck", requiring a large number of steps to fully explore the target distribution of interest.
+
+
+
+
+
+
+::: {#exm-mcmc-acf}
+Continuing @exm-mcmc-dependence with $\delta = 0.1$, the following plots display the actual values of the chain (after warm up) and the values lagged by 1, 5, and 10 time steps.
+Are the values at different steps dependent?
+In what way are they not too dependent?
+:::
+\
+\
+\
+\
+\
+
+```{r}
+#| echo: false
+
+
+nplot = 1000:1100
+T = Tn[,2]
+Tplot=T[nplot]
+lags = c(1,5,10)
+Tlag = matrix(rep(NA,length(nplot)*length(lags)),nrow=length(nplot))
+par(mfcol=c(2,length(lags)))
+for (i in 1:length(lags)){
+  l = lags[i]
+  Tlag[,i] = T[l+nplot]
+  matplot(cbind(Tplot,Tlag[,i]), type="l",xlab="step",ylab="value; lagged value",
+          main=paste("lag=",l))
+  plot(Tplot,Tlag[,i],xlab="value",ylab="lagged value",
+       main=paste("correlation=",round(cor(Tplot,Tlag[,i]),3),sep=""))
+}
+
+```
+
+
+- An autocorrelation plot displays the autocorrelation within in a chain as a function of lag.
+- If the ACF takes too long to decay to 0, the chain exhibits a high degree of dependence and will tend to get stuck in place.
+
+
+
+```{r}
+#| echo: false
+library(coda)
+
+par(mfrow=c(1,Nruns),
+    mar=c(5,4,0,2) + 0.1)
+for (r in 1:Nruns){
+  acf(Tn[-(1:1000),r])
+      title(paste("delta=",sigma[r],"; ESS=", round(effectiveSize(Tn[-(1:1000),r]),0),sep=""),line=-1)
+}
+```
+
+
+
+::: {#exm-mcmc-se}
+Continuing @exm-mcmc-dependence involving Metropolis sampling from a Beta(5, 24) posterior distribution.
+We know that the posterior mean is $5/29=0.172$.
+But what if we want to approximate this via simulation?
+:::
+
+1. Suppose you simulated 10000 *independent* values from a Beta(5, 24) distribution, e.g. using `rbeta`.
+How would you use the simulated values to estimate the posterior mean?
+\
+\
+\
+\
+\
+
+1. What is the *standard error* of your estimate from the previous part?
+What does the standard error measure?
+How could you use simulation to approximate the standard error?
+\
+\
+\
+\
+\
+
+1. Now suppose you simulated 10000 from a Metropolis chain (after warm up).
+How would you use the simulated values to estimate the posterior mean?
+What does the standard error measure in this case?
+Could you use the formula from the previous part to compute the standard error?
+Why?
+\
+\
+\
+\
+\
+
+1. Consider the three chains in Example @exm-mcmc-dependence corresponding to the three $\delta$ values 0.01, 0.1, and 1.
+Which chain provides the most reliable estimate of the posterior mean?
+Which chain yields the smallest standard error of this estimate?
+\
+\
+\
+\
+\
+
+- The **effective sample size (ESS)** is a measure of how much independent information there is in an autocorrelated chain.
+- The effective sample size of a chain with $N$ steps (after warm up) is
+$$
+\text{ESS} = \frac{N}{1+2\sum_{\ell=1}^\infty \text{ACF}(\ell)}
+$$
+where the infinite sum is typically cut off at some upper lag (say $\ell=20$).
+    - For a completely independent chain, the autocorrelation would be 0 for all lags and the ESS would just be the number of steps $N$.
+    - The more quickly the ACF decays to 0, the larger the ESS.
+    - The more slowly the ACF decays to 0, the smaller the ESS.
+- The **Monte Carlo standard error (MCSE)** is the standard error of a statistic generated based on an MCMC algorithm.
+- The MCSE of a statistic measures the run-to-run variability of values of the statistic over many runs of the chain of the same number of steps.
+- For many statistics (means, proportions) the MCSE based on a chain with effective sample size ESS  is on the order of $\frac{1}{\sqrt{\text{ESS}}}$.
+
+
+
+
+```{r}
+#| echo: false
+
+
+# beta - MCSE
+nreps = 500
+means = matrix(rep(NA, nreps*3), ncol=3)
+cilowers = matrix(rep(NA, nreps*3), ncol=3)
+for (j in 1:nreps){
+Nruns = 3
+ninit = 200
+alpha = 5
+beta = 24
+N = 1000
+sigma = c(0.01, 0.1, 1)
+
+Tn = matrix(rep(NA,N*Nruns),nrow=N)
+for (r in 1:Nruns){
+  Tn[1,r] = runif(1,0,1)
+  for (i in 2:N){
+    t = Tn[i-1,r]
+    u = rnorm(1,t,sigma[r])
+    a = min(1, dbeta(u, alpha, beta)/dbeta(t, alpha, beta))
+    Tn[i,r] = sample(c(t,u),1,prob=c(1-a,a)) 
+  }
+}
+means[j,] = apply(Tn, 2, mean)
+cilowers[j,] = apply(Tn, 2, quantile, probs=0.005)
+}
+par(mfcol=c(2,3))
+for (k in 1:3){
+  hist(means[,k], xlab="Estimate of mean", xlim=c(0.1, 0.40),
+       main=paste("delta=",sigma[k],sep=""))
+  hist(cilowers[,k], main="", xlab="Estimate of lower CI endpoint", xlim=c(0, 0.20))
+}
+
+```
+
+
+
+## Notes
+
+This is the `brms` code for the Beta-Binomial example in this section, including some of the diagnostic plots and statistics.
+
+```{r}
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+
+```{r}
+data = data.frame(y = c(rep(1, 4), rep(0, 25)))
+```
+
+```{r}
+
+fit <-
+  brm(data = data, 
+      family = bernoulli(link = identity),
+      formula = y ~ 1,
+      prior(beta(1, 3), class = Intercept, lb = 0, ub = 1),
+      iter = 3500,
+      warmup = 1000,
+      chains = 4,
+      refresh = 0)
+```
+
+```{r}
+summary(fit)
+```
+
+
+```{r}
+plot(fit)
+```
+
+
+```{r}
+posterior = fit |>
+  spread_draws(b_Intercept) |>
+  rename(theta = b_Intercept)
+
+posterior |> head(10) |> kbl() |> kable_styling()
+```
+
+```{r}
+
+posterior |>
+  mutate(chain = .chain) |>
+  mcmc_dens_overlay(pars = vars(theta))
+```
+
+
+```{r}
+posterior |>
+  mutate(chain = .chain) |> 
+  mcmc_acf(pars = vars(theta), lags = 20) 
+```
+
+```{r}
+# rhat(fit)
+```
+
+```{r}
+neff_ratio(fit)
+```
+
+```{r}
+neff_ratio(fit)["b_Intercept"] |> 
+  mcmc_neff() +
+  yaxis_text(hjust = 0) 
+```
+
+

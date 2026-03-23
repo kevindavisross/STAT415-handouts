@@ -1,0 +1,6 @@
+"0","posterior = fit |>"
+"0","  spread_draws(b_Intercept, sigma, nu) |>"
+"0","  rename(mu = b_Intercept) |>"
+"0","  mutate(sd = sigma * sqrt(nu / (nu - 2)))"
+"0",""
+"0","posterior |> head(10) |> kbl() |> kable_styling()"

@@ -1,0 +1,560 @@
+# Bayesian Analyis of a Numerical Variable {#sec-mean-t}
+
+{{< include _r_setup.qmd >}}
+
+<!-- {{< include _python_setup.qmd >}} -->
+
+
+
+
+
+
+
+
+
+
+- When the distribution of the measured variable is symmetric and unimodal, the population mean $\mu$ is often the main parameter of interest.
+However, the population SD $\sigma$ also plays an important role.
+- We have previously assumed that the measured numerical variable follows a conditional Normal($\mu$, $\sigma$) distribution.
+That is, we assumed a Normal likelihood function.
+- However, the assumption of Normality is not always justified, even when the distribution of the measured variable is symmetric and unimodal.
+
+
+::: {#exm-birthweight-prior}
+Assume that birthweights (grams) of human babies follow a Normal distribution with unknown mean $\mu$ and unknown standard deviation $\sigma$.
+(1 pound $\approx$ 454 grams.)
+:::
+
+1. Considering $\mu$ in isolation, what seems like a reasonable prior distribution for $\mu$?
+\
+\
+\
+\
+\
+
+1. What does the parameter $\sigma$ represent?
+What is a reasonable prior distribution for $\sigma$?
+\
+\
+\
+\
+\
+
+
+1. Assume a Normal(3400, 100) prior distribution for $\mu$, a Normal(600, 200) prior distribution for $\sigma$, and that $\mu$ and $\sigma$ are independent.
+Explain how you could use simulation to approximate the prior predictive distribution of birthweights.
+Run the simulation and summarize the results.
+Does the choice of prior seem reasonable?
+\
+\
+\
+\
+\
+
+
+::: {#exm-birthweight-posterior}
+@sec-birthweight-data summarizes data on a random sample^[There are about 4 million live births in the U.S. per year.  The data is available at the [CDC website](https://www.cdc.gov/nchs/data_access/vitalstatsonline.htm). We're only using a random sample to cut down on computation time.] of 1000 live births in the U.S. in 2001.
+:::
+
+
+1. Inspect the sample data; does it seem reasonable to assume birthweights follow a Normal distribution?
+\
+\
+\
+\
+\
+
+1. Regardless of your answer to the previous question, continue to assume the conditional Normal($\mu$, $\sigma$) model for birthweights, with prior distributions as in the previous example.
+Use `brms` to find the posterior distribution.
+Briefly describe the posterior distribution.
+\
+\
+\
+\
+\
+
+1. How could you use simulation to approximate the posterior predictive distribution of birthweights?
+Run the simulation and find a 99% posterior prediction interval.
+\
+\
+\
+\
+\
+
+1. What percent of values in the observed *sample* fall outside the prediction interval?
+What does that tell you?
+\
+\
+\
+\
+\
+
+1. Run a posterior predictive check.
+Does it indicate any problems?
+\
+\
+\
+\
+\
+
+
+
+- If the observed data is relatively unimodal and symmetric but has more extreme values than can be accommodated by a Normal likelihood, a $t$-distribution or other distribution with heavy tails can be used to model the likelihood.
+- For "Student" t-distributions, the *degrees of freedom* parameter $\nu \ge 1$ controls how heavy the tails are.
+    - When $\nu$ is small, the tails are much heavier than for a Normal distribution, leading to a higher frequency of extreme values.
+    - As $\nu$ increases, the tails get lighter and a $t$-distribution gets closer to a Normal distribution.
+    - For $\nu$ greater than 30 or so, there is very little different between a $t$-distribution and a Normal distribution except in the extreme tails.
+- The degrees of freedom parameter $\nu$ is sometimes referred to as the "Normality parameter", with larger values of $\nu$ indicating a population distribution that is closer to Normal.
+
+
+```{r}
+#| echo: false
+
+
+u = seq(-5, 5, 0.0001)
+
+plot(u, dnorm(u), type = "l", ylim = c(0, dnorm(0)), xlim = range(u), col = "skyblue", lty = 3, ylab = "Density", xlab = "Variable")
+lines(u, dt(u, 1), type = "l", ylim = c(0, dnorm(0)), xlim = range(u), col = "orange")
+lines(u, dt(u, 3), lty = 2, type = "l", ylim = c(0, dnorm(0)), xlim = range(u), col = "seagreen")
+legend("topleft", c("Normal(0, 1)", "t(1)", "t(3)"), lty = c(3, 1, 2), col = c("skyblue", "orange", "seagreen"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+::: {#exm-birthweight-posterior-t}
+Continuing the birthweight example, we'll now model the distribution of birthweights with a conditional $t(\mu, \sigma, \nu)$ distribution.
+:::
+
+
+1. How many parameters is the likelihood function based on?
+What are they?
+\
+\
+\
+\
+\
+
+1. What does assigning a prior distribution to the Normality parameter $\nu$ represent?
+\
+\
+\
+\
+\
+
+
+1. Software packages like `brms` will choose a prior for you if you don't specify one.
+(Basically, the software will run some prior predictive tuning to find a choice of prior that results in a reasonable scale for the response variable.)
+Change `family` from `gaussian` to `student` and fit the model with `brm`.
+Run `prior_summary()`; what prior distribution did `brms` assume for `nu`?
+\
+\
+\
+\
+\
+
+
+1. Consider the posterior distribution for $\nu$.
+Based on this posterior distribution, is it plausible that birthweights follow a Normal distribution?
+\
+\
+\
+\
+\
+
+1. Consider the posterior distribution for $\sigma$.
+What seems strange about this distribution?
+(Hint: consider the sample SD.)
+\
+\
+\
+\
+\
+
+1. Using the `brms` output, create a plot of the posterior distribution of $\sigma\sqrt{\frac{\nu}{\nu-2}}$.
+Does this posterior distribution of the population standard deviation seem more reasonable in light of the sample data? 
+\
+\
+\
+\
+\
+
+
+- The standard deviation of a Normal($\mu$, $\sigma$) distribution is $\sigma$.
+- However, the standard deviation of a $t(\mu, \sigma, \nu)$ distribution is not $\sigma$; rather it is $\sigma\sqrt{\frac{\nu}{\nu-2}}>\sigma$ (as long as $\nu>2$; if $\nu\le 2$ then the SD is infinite/undefined).
+- When $\nu$ is large, $\sqrt{\frac{\nu}{\nu-2}}\approx 1$, and so the standard deviation is approximately $\sigma$.
+However, it can make a difference when $\nu$ is small.
+
+
+::: {#exm-birthweight-posterior-predict-t}
+Continuing the previous example.
+:::
+
+1. How could you use simulation to approximate the posterior predictive distribution of birthweights?
+Run the simulation and find a 99% posterior prediction interval.
+How does it compare to the predictive interval from the model with the Normal likelihood?
+\
+\
+\
+\
+\
+
+1. Run a posterior predictive check.
+Which model seems to fit the data better: the one based on the Normal likelihood or the $t$ likelihood?
+\
+\
+\
+\
+\
+
+
+
+- While we do want a model that fits the data well, we also do not want to risk overfitting the data.
+- In particular, we do not want a few extreme outliers to unduly influence the model.
+- However, likelihood models based on distributions, like $t$, with heavier tails than Normal often provide more flexible and robust models.
+- Moreover, accommodating the tails often improves the fit in the center of the distribution too.  
+- In models with multiple parameters, there can be dependencies between parameters, so interpreting the marginal posterior distribution of any single parameter can be difficult.
+- It is often more helpful to consider predictive distributions, which accounts for the joint distribution of all parameters.
+- Interpreting predictive distributions is often more intuitive since predictive distributions live on the scale of the measured variable.
+
+
+
+
+## Notes
+
+### Prior predictive distribution (Normal likelihood)
+
+```{r}
+#| warning: false
+
+n_rep = 10000
+
+mu_sim = rnorm(n_rep, 3400, sd = 100)
+
+sigma_sim = pmax(0.001, rnorm(n_rep, 600, 200))
+
+y_sim = rnorm(n_rep, mu_sim, sigma_sim)
+
+ggplot(data.frame(y_sim),
+       aes(x = y_sim)) + 
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["prior_predict"],
+                 fill = "white") +
+  geom_density(col = bayes_col["prior_predict"],
+               linewidth = 1) +
+  labs(x = "Birthweight (y, grams)") +
+  theme_bw()
+```
+
+
+### Sample data {#sec-birthweight-data}
+
+
+```{r}
+data = read_csv("birthweight.csv")
+
+head(data)
+```
+
+
+```{r}
+summary(data$birthweight)
+
+sd(data$birthweight)
+```
+
+
+```{r}
+ggplot(data,
+       aes(x = birthweight)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 50,
+                 col = "black", fill = "white") +
+  geom_density(linewidth = 1) +
+  theme_bw()
+```
+
+
+### Posterior distribution (Normal likelihood)
+
+
+```{r}
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+
+```{r}
+#| cache: true
+
+
+fit <- brm(data = data,
+           family = gaussian,
+           birthweight ~ 1,
+           prior = c(prior(normal(3400, 100), class = Intercept),
+                     prior(normal(600, 200), class = sigma)),
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+summary(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+```{r}
+pairs(fit,
+      off_diag_args = list(alpha = 0.1))
+```
+
+
+```{r}
+posterior = fit |>
+  spread_draws(b_Intercept, sigma) |>
+  rename(mu = b_Intercept)
+
+posterior |> head(10) |> kbl() |> kable_styling()
+```
+
+
+### Posterior predictive distribution (Normal likelihood)
+
+
+
+```{r}
+n_rep = nrow(posterior)
+
+posterior <- posterior |>
+  mutate(y_sim = rnorm(n_rep,
+                       mean = posterior$mu,
+                       sd = posterior$sigma))
+
+posterior |> head(10) |> kbl() |> kable_styling()
+
+```
+
+
+```{r}
+ggplot(posterior,
+       aes(x = y_sim)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+  geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
+  labs(x = "Predicted birthweight (grams)") +
+  theme_bw()
+```
+
+
+```{r}
+# plot the cdf
+ggplot(posterior,
+       aes(x = y_sim)) + 
+  stat_ecdf(col = bayes_col["prior_predict"],
+            linewidth = 1) +
+  labs(x = "Birthweight (grams)",
+       y = "cdf") +
+  theme_bw()
+```
+
+```{r}
+quantile(posterior$y_sim, c(0.005, 0.995))
+```
+
+
+
+```{r}
+sum(data$birthweight < quantile(posterior$y_sim, 0.005)) / length(data$birthweight)
+
+sum(data$birthweight > quantile(posterior$y_sim, 0.995)) / length(data$birthweight)
+```
+
+### Posterior predictive checking (Normal likelihood)
+
+```{r}
+pp_check(fit, ndraw = 100)
+```
+
+
+```{r}
+pp_check(fit, ndraw = 100, type = "ecdf_overlay")
+```
+
+### Posterior distribution ($t$ likelihood)
+
+
+
+```{r}
+#| cache: true
+
+fit <- brm(data = data,
+           family = student,
+           birthweight ~ 1,
+           prior = c(prior(normal(3400, 100), class = Intercept),
+                     prior(normal(600, 200), class = sigma)),
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+prior_summary(fit)
+```
+
+
+```{r}
+summary(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+```{r}
+pairs(fit,
+      off_diag_args = list(alpha = 0.1))
+```
+
+```{r}
+posterior = fit |>
+  spread_draws(b_Intercept, sigma, nu) |>
+  rename(mu = b_Intercept) |>
+  mutate(sd = sigma * sqrt(nu / (nu - 2)))
+
+posterior |> head(10) |> kbl() |> kable_styling()
+```
+
+
+
+```{r}
+posterior |>
+  ggplot(aes(x = sd)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior"], fill = "white") +
+  geom_density(linewidth = 1, col = bayes_col["posterior"]) +
+  theme_bw()
+```
+
+
+### Posterior predictive distribution ($t$ likelihood)
+
+
+
+```{r}
+n_rep = nrow(posterior)
+
+posterior <- posterior |>
+  mutate(y_sim = mu + sigma * rt(n_rep, nu))
+
+posterior |> head(10) |> kbl() |> kable_styling()
+
+```
+
+
+```{r}
+ggplot(posterior,
+       aes(x = y_sim)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+  geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
+  labs(x = "Predicted birthweight (grams)") +
+  theme_bw()
+```
+
+
+```{r}
+# plot the cdf
+ggplot(posterior,
+       aes(x = y_sim)) + 
+  stat_ecdf(col = bayes_col["prior_predict"],
+            linewidth = 1) +
+  labs(x = "Birthweight (grams)",
+       y = "cdf") +
+  theme_bw()
+```
+
+
+```{r}
+quantile(posterior$y_sim, c(0.005, 0.995))
+```
+
+```{r}
+sum(data$birthweight < quantile(posterior$y_sim, 0.005)) / length(data$birthweight)
+
+sum(data$birthweight > quantile(posterior$y_sim, 0.995)) / length(data$birthweight)
+```
+
+
+### Posterior predictive checking ($t$ likelihood)
+
+```{r}
+pp_check(fit, ndraw = 100) +
+  scale_x_continuous(limits = c(0, 8000))
+```
+
+
+```{r}
+pp_check(fit, ndraw = 100, type = "ecdf_overlay")  +
+  scale_x_continuous(limits = c(0, 8000))
+```
+
+
+### Default `brms` priors ($t$ likelihood)
+
+
+```{r}
+#| cache: true
+
+fit <- brm(data = data,
+           family = student,
+           birthweight ~ 1,
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+prior_summary(fit)
+```
+
+
+```{r}
+summary(fit)
+```
+
+
+```{r}
+plot(fit)
+```
+
+
+```{r}
+pairs(fit,
+      off_diag_args = list(alpha = 0.1))
+```
+
+
+```{r}
+pp_check(fit, ndraw = 100)  +
+  scale_x_continuous(limits = c(0, 8000))
+```
+
+

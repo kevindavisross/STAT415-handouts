@@ -1,0 +1,49 @@
+# Introduction to Estimation
+
+{{< include _r_setup.qmd >}}
+
+{{< include _python_setup.qmd >}}
+
+## References
+
+https://m-clark.github.io/bayesian-basics/preface.html
+
+https://m-clark.github.io/workshops/bayesian/01_intro.html#introduction
+
+
+Read this paper by Gelman about prior https://www.mdpi.com/1099-4300/19/10/555
+
+Look at this Gelan & Vehtari Teaching Statistics book https://users.aalto.fi/~ave/ActiveStatistics.pdf
+
+Listen to this Gelman podcast about teaching statistics https://learnbayesstats.com/episode/106-active-statistics-two-truths-a-lie-andrew-gelman/
+
+
+
+## How informative is the prior?
+
+https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations#how-informative-is-the-prior
+
+Gelman has proposed the following as a practical check on how informative your prior might be:
+
+"Here’s an idea for not getting tripped up with default priors: For each parameter (or other quantity of interest), compare the posterior sd to the prior sd. If the posterior sd for any parameter is more than 0.1 times the prior sd, then print out a note: “The prior distribution for this parameter is informative.” Then the user can go back and check that the default prior makes sense for this particular example."
+
+If you’re using rstanarm or brms, the bayestestR package will do this check for you.
+
+
+## brms
+
+- do `posterior_predict` earlier (first time is currently in Skew Normal)
+
+
+## $t$ likelihood
+
+- Discuss how I didn't adjust prior for $\sigma$ to account for $\nu$, so my prior is pulling me towards overestimating $\sigma$
+- Add notes about including other variables
+- Add notes about how outliers are influencing the SD; only way to get out to the outliers with a Normal distribution is to overestimate the SD. $t$ better accommodates the outliers in a way that improves the whole fit.
+
+
+## Skew Normal
+
+- Credible interval for median (or quantile)? For a $(\mu, \sigma, \alpha)$ simulated from joint posterior simulate 10000 $y$ values and find the median; this approximates the median $m$ for this $(\mu, \sigma, \alpha)$ combo. Repeat for each of the simulated $(\mu, \sigma, \alpha)$ values and summarize the $m$ values to get posterior distribution of $m$, and then posterior credible interval.
+- Add notes about what's a party? how long? Type (dinner versus house party). There are other things that explain variability that we want to incorporate.
+

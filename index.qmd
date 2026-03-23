@@ -1,0 +1,6 @@
+# Preface {.unnumbered}
+
+
+Handouts containing examples, exercises, and notes covering selected topics from Cal Poly STAT 415.
+
+Some of the examples use the R package @brms.

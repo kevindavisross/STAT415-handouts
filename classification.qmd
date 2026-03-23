@@ -1,0 +1,637 @@
+# Naive Bayes Classification {#sec-classification}
+
+{{< include _r_setup.qmd >}}
+
+<!-- {{< include _python_setup.qmd >}} -->
+
+
+We have seen how to fit Bayesian regression models for predicting numerical variables.
+Now we will introduce a Bayesian *classification* method for predicting *categorical* variables.
+The goal is to "classify" observations according to which category (class) they belong to.
+
+
+*This handout corresponds to [Chapter 14](https://www.bayesrulesbook.com/chapter-14.html) of [@johnson2022].*
+
+
+
+There exist multiple penguin species throughout Antarctica, including the *Adelie* (A), *Chinstrap* (C), and *Gentoo* (G).
+Our goal will be to classify penguins according to their species given characteristics like weight or bill length.
+(Throughout "penguin" refers to an Antarctic penguin of one of these three species.)
+
+
+
+::: {#exm-classification-prior}
+Suppose first that we have no information about a randomly selected penguin (other than it's an Antarctic penguin from one of these three species).
+:::
+
+1. How might we formulate a prior distribution for the species of the penguin?
+Would we necessarily assume equal prior probability for the three species?
+\
+\
+\
+\
+\
+
+1. Suppose that among Antarctic penguins of these three species, 44.2% of Adelie, 19.8% are Chinstrap, and 36.0% are Gentoo.
+Start to set up a Bayes table.
+\
+\
+\
+\
+\
+
+
+
+::: {#exm-classification-categorical-predictor}
+Now suppose we know that a randomly selected penguin is below average weight (that is, below 4200g).
+:::
+
+1. What is the next column of the Bayes table to fill in?
+What information would we need to do so?
+\
+\
+\
+\
+\
+
+1. Suppose that 83.4% of Adelie penguins are below average weight, 89.7% of Chinstrap penguins are below average weight, and 4.9% of Gentoo penguins are below average weight.
+Among these three species, the likelihood of being below average weight is greatest for Chinstrap. 
+Does that mean we should necessarily classify the penguin to be Chinstrap?
+Why?
+\
+\
+\
+\
+\
+
+1. Complete the Bayes table and find the posterior probability of each species given that the penguin is below average weight.
+\
+\
+\
+\
+\
+
+1. If the penguin is below average weight, what species would you classify it as?
+Why?
+\
+\
+\
+\
+\
+
+1. Now suppose the the penguin is not below average weight.
+Compute the posterior probability of each species given that the penguin is not below average weight.
+What species would you classify it as?
+Why?
+\
+\
+\
+\
+\
+
+1. Suppose that you classify any randomly selected penguin based on whether or not it is below average weight.
+What is the posterior probability that you classify the penguin correctly?
+\
+\
+\
+\
+\
+
+
+
+::: {#exm-classification-numerical-predictor}
+Now suppose we know that a randomly selected penguin has a bill length of 50mm.
+We'll start by assuming we don't know yet whether or not it is below average weight.
+:::
+
+1. Start to create a Bayes table.
+What is the prior?
+What is the next column of the Bayes table to fill in?
+What information would we need to do so?
+\
+\
+\
+\
+\
+
+1. Suppose that bill lengths (mm) follow a N(38.8, 2.66) distribution for Adelie, a N(48.8, 3.34) distribution for Chinstrap, and a N(47.5, 3.08) distribution for Gentoo.
+How would you fill in the likelihood column?
+\
+\
+\
+\
+\
+
+1. Among these three species, the likelihood of having of a 50mm bill is greatest for Chinstrap.
+Does that mean we should necessarily classify the penguin to be Chinstrap?
+Why?
+\
+\
+\
+\
+\
+
+1. Complete the Bayes table and find the posterior probability of each species given that the penguin has a 50mm bill.
+\
+\
+\
+\
+\
+
+1. If the species has a 50mm bill, what species would you classify it as?
+Why?
+\
+\
+\
+\
+\
+
+1. Now suppose before measuring bill length we had already known that the penguin was below average weight.
+How would our Bayes table have changed?
+If we don't change the likelihood column, what are we assuming?
+\
+\
+\
+\
+\
+
+
+1. Compute the posterior probability of each species given that the penguin is below average weight with a 50mm bill, assuming conditional independence between weight and bill length.
+Given a species with these characteristics, what species would you classify it as?
+Why?
+\
+\
+\
+\
+\
+
+
+
+
+- **Naive Bayes classification** uses Bayes rule to predict the class of a categorical response variable $y$ given predictor variables $x_1, \ldots, x_p$
+- Predictor variables can be categorical or numerical
+- Naive Bayes classification assumes that predictors are *conditionally independent* given each class
+- Naive Bayes classification typically assumes that any numerical predictor variable is conditionally Normal
+- Given observed data
+    - Prior probabilities for the response variable are estimated to be the observed sample proportion for each class
+    - For a categorical predictor $x$, the likelihood of value $\tilde{x}$ is estimated to be the observed sample proportion of $\tilde{x}$ within each class
+    - For a numerical predictor $x$, the likelihood is computed assuming that within each class values of the predictor follow a Normal distribution with mean and SD estimated to be the sample mean and SD within each class.
+
+
+
+::: {#exm-classification-two-predictors}
+Now suppose we know that a penguin has a bill length of 50mm and a flipper length of 195mm.
+(We'll ignore whether or not it is below average weight for this example.)
+:::
+
+1. Starting with our original prior, what is the "evidence" that the likelihood is based on?
+What information do we need to fill in the likelihood column?
+\
+\
+\
+\
+\
+
+1. Suppose that flipper lengths (mm) follow a N(190, 6.54) distribution for Adelie, a N(196, 7.13) distribution for Chinstrap, and a N(217, 6.48) distribution for Gentoo.
+(Recall that bill lengths (mm) follow a N(38.8, 2.66) distribution for Adelie, a N(48.8, 3.34) distribution for Chinstrap, and a N(47.5, 3.08) distribution for Gentoo.)
+How would you fill in the likelihood column?
+What are we assuming?
+\
+\
+\
+\
+\
+
+
+
+1. Complete the Bayes table and find the posterior probability of each species given that the penguin has a 50mm bill and a 195mm flipper.
+\
+\
+\
+\
+\
+
+1. If the species has a 50mm bill and a 195mm flipper, what species would you classify it as?
+Why?
+\
+\
+\
+\
+\
+
+
+
+
+
+
+
+
+
+## Notes
+
+### Given below average weight
+
+```{r}
+class = c("A", "C", "G")
+
+prior = c(0.442, 0.198, 0.360)
+
+# likelihood of below average weight (evidence) given each species (class)
+likelihood = c(0.834, 0.897, 0.049) 
+
+product = prior * likelihood
+
+posterior = product / sum(product)
+
+posterior_given_below_average_weight = posterior
+
+bayes_table = data.frame(class,
+                         prior,
+                         likelihood,
+                         product,
+                         posterior)
+
+bayes_table |>
+  adorn_totals("row") |>
+  kbl(digits = 4) |>
+  kable_styling()
+```
+
+### Given not below average weight
+
+```{r}
+class = c("A", "C", "G")
+
+prior = c(0.442, 0.198, 0.360)
+
+# likelihood of not below average weight (evidence) given each species (class)
+likelihood = c(1 - 0.834, 1 - 0.897, 1 - 0.049) 
+
+product = prior * likelihood
+
+posterior = product / sum(product)
+
+bayes_table = data.frame(class,
+                         prior,
+                         likelihood,
+                         product,
+                         posterior)
+
+bayes_table |>
+  adorn_totals("row") |>
+  kbl(digits = 4) |>
+  kable_styling()
+```
+
+### Given 50mm bill
+
+
+
+```{r}
+class = c("A", "C", "G")
+
+prior = c(0.442, 0.198, 0.360)
+
+# likelihood of 50mm bill (evidence) given each species (class)
+likelihood = c(dnorm(50, 38.8, 2.66),
+               dnorm(50, 48.8, 3.34),
+               dnorm(50, 47.5, 3.08))
+
+product = prior * likelihood
+
+posterior = product / sum(product)
+
+bayes_table = data.frame(class,
+                         prior,
+                         likelihood,
+                         product,
+                         posterior)
+
+bayes_table |>
+  adorn_totals("row") |>
+  kbl(digits = 4) |>
+  kable_styling()
+```
+
+
+### Given 50mm bill and below average weight
+
+
+```{r}
+class = c("A", "C", "G")
+
+prior = posterior_given_below_average_weight
+
+# likelihood of 50mm (evidence) given each species (class)
+likelihood = c(dnorm(50, 38.8, 2.66),
+               dnorm(50, 48.8, 3.34),
+               dnorm(50, 47.5, 3.08))
+
+product = prior * likelihood
+
+posterior = product / sum(product)
+
+bayes_table = data.frame(class,
+                         prior,
+                         likelihood,
+                         product,
+                         posterior)
+
+bayes_table |>
+  adorn_totals("row") |>
+  kbl(digits = 4) |>
+  kable_styling()
+```
+
+
+
+### Given 50mm bill and 195mm flipper
+
+
+```{r}
+class = c("A", "C", "G")
+
+prior = c(0.442, 0.198, 0.360)
+
+# likelihood of 50mm bill (evidence) given each species (class)
+likelihood_bill = c(dnorm(50, 38.8, 2.66),
+                    dnorm(50, 48.8, 3.34),
+                    dnorm(50, 47.5, 3.08))
+
+# likelihood of 195mm flipper (evidence) given each species (class)
+likelihood_flipper = c(dnorm(195, 190, 6.54),
+                       dnorm(195, 196, 7.13),
+                       dnorm(195, 217, 6.48))
+
+# assume conditional independence of bill and flipper given species (class)
+likelihood = likelihood_bill * likelihood_flipper
+
+product = prior * likelihood
+
+posterior = product / sum(product)
+
+bayes_table = data.frame(class,
+                         prior,
+                         likelihood_bill,
+                         likelihood_flipper,
+                         likelihood,
+                         product,
+                         posterior)
+
+bayes_table |>
+  adorn_totals("row") |>
+  kbl(digits = 6) |>
+  kable_styling()
+```
+
+### Data
+
+*This code is taken from [Chapter 14](https://www.bayesrulesbook.com/chapter-14.html) of [@johnson2022].*
+
+```{r}
+library(bayesrules)
+
+
+# Load data
+data(penguins_bayes)
+penguins <- penguins_bayes
+
+head(penguins)
+```
+
+Estimated prior distribution
+
+```{r}
+penguins |>
+  tabyl(species)
+```
+
+Estimated likelihood of below average weight
+
+
+```{r}
+penguins |>
+  select(species, above_average_weight) |>
+  na.omit() |>
+  tabyl(species, above_average_weight) |>
+  adorn_totals(c("row", "col"))
+```
+
+
+```{r}
+ggplot(penguins |>
+         drop_na(above_average_weight), 
+       aes(fill = above_average_weight,
+           x = species)) + 
+  geom_bar(position = "fill")
+```
+
+
+Estimated likelihood of 50mm bill
+
+
+```{r}
+ggplot(penguins,
+       aes(x = bill_length_mm,
+           col = species)) + 
+  geom_density(linewidth = 1) + 
+  geom_vline(xintercept = 50, linetype = "dashed")
+```
+
+
+```{r}
+penguins |>
+  group_by(species) |>
+  summarize(mean = mean(bill_length_mm, na.rm = TRUE), 
+            sd = sd(bill_length_mm, na.rm = TRUE))
+```
+
+
+
+```{r}
+ggplot(penguins, aes(x = bill_length_mm, color = species)) + 
+  stat_function(fun = dnorm, args = list(mean = 38.8, sd = 2.66), 
+                aes(color = "Adelie")) +
+  stat_function(fun = dnorm, args = list(mean = 48.8, sd = 3.34),
+                aes(color = "Chinstrap")) +
+  stat_function(fun = dnorm, args = list(mean = 47.5, sd = 3.08),
+                aes(color = "Gentoo")) + 
+  geom_vline(xintercept = 50, linetype = "dashed")
+```
+
+
+
+Estimated likelihood of 195mm bill
+
+
+```{r}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           col = species)) + 
+  geom_density(linewidth = 1) + 
+  geom_vline(xintercept = 195, linetype = "dashed")
+```
+
+
+```{r}
+penguins |>
+  group_by(species) |>
+  summarize(mean = mean(flipper_length_mm, na.rm = TRUE), 
+            sd = sd(flipper_length_mm, na.rm = TRUE))
+```
+
+
+
+```{r}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           color = species)) + 
+  stat_function(fun = dnorm, args = list(mean = 190, sd = 6.54), 
+                aes(color = "Adelie")) +
+  stat_function(fun = dnorm, args = list(mean = 196, sd = 7.13),
+                aes(color = "Chinstrap")) +
+  stat_function(fun = dnorm, args = list(mean = 217, sd = 6.48),
+                aes(color = "Gentoo")) + 
+  geom_vline(xintercept = 195, linetype = "dashed")
+```
+
+Flipper length and bill length
+
+```{r}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = species)) + 
+  geom_point()
+```
+
+### Naive Bayes Classification with `e1071` package
+
+```{r}
+library(e1071)
+```
+
+
+```{r}
+our_penguin <- data.frame(above_average_weight = "0",
+                          bill_length_mm = 50,
+                          flipper_length_mm = 195)
+```
+
+
+#### Given below average weight
+
+```{r}
+naive_model_weight = naiveBayes(species ~ above_average_weight,
+                                data = penguins)
+
+naive_model_weight
+```
+
+
+```{r}
+predict(naive_model_weight,
+        newdata = our_penguin,
+        type = "raw")
+```
+
+
+
+#### Given 50mm bill
+
+```{r}
+naive_model_bill = naiveBayes(species ~ bill_length_mm,
+                                data = penguins)
+
+naive_model_bill
+```
+
+
+```{r}
+predict(naive_model_bill,
+        newdata = our_penguin,
+        type = "raw")
+```
+
+
+#### Given 50mm bill and below average weight
+
+```{r}
+naive_model_weight_and_bill = naiveBayes(species ~ above_average_weight + bill_length_mm,
+                                         data = penguins)
+
+naive_model_weight_and_bill
+```
+
+
+```{r}
+predict(naive_model_weight_and_bill,
+        newdata = our_penguin,
+        type = "raw")
+```
+
+
+#### Given 50mm bill and 195mm flipper
+
+```{r}
+naive_model_flipper_and_bill = naiveBayes(species ~ flipper_length_mm + bill_length_mm,
+                                          data = penguins)
+
+naive_model_flipper_and_bill
+```
+
+
+```{r}
+predict(naive_model_flipper_and_bill,
+        newdata = our_penguin,
+        type = "raw")
+```
+
+
+#### Evaluation of flipper length and bill length model
+
+Can classify each of the penguins in the data set
+
+
+
+```{r}
+penguins <- penguins %>%
+  mutate(predicted_species = predict(naive_model_flipper_and_bill, newdata = .))
+```
+
+
+```{r}
+penguins |> 
+  select(bill_length_mm, flipper_length_mm, species, predicted_species) |>
+  head(10) |>
+  kbl() |> kable_styling()
+```
+
+Then check classification against actual species to see how well the classification algorithm works within the sample.
+
+```{r}
+penguins |>
+  tabyl(species, predicted_species) |>
+  adorn_percentages("row") |>
+  adorn_pct_formatting(digits = 2) |>
+  adorn_ns()
+```
+
+
+We can use cross-validation to estimate how well our algorithm would classify new penguins outside of the data set.
+
+```{r}
+naive_cv <-
+  naive_classification_summary_cv(model = naive_model_flipper_and_bill,
+                                  data = penguins,
+                                  y = "species",
+                                  k = 10)
+
+naive_cv$cv
+```
+
+
+
+
+
+

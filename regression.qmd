@@ -1,0 +1,911 @@
+# Bayesian Simple Linear Regression Model {#sec-regression}
+
+{{< include _r_setup.qmd >}}
+
+<!-- {{< include _python_setup.qmd >}} -->
+
+
+
+
+
+
+
+Regression is one of the most widely used statistical techniques for modeling relationships between variables.
+We will now consider a Bayesian treatment of *simple linear regression*.
+We'll use the following example throughout.
+
+[Percent body fat](https://en.wikipedia.org/wiki/Body_fat_percentage) (PBF, total mass of fat divided by total body mass) is an indicator of physical fitness level, but it is difficult to measure accurately.
+Body mass index (BMI), which is easily computed based on height and weight ($\text{BMI} = \frac{\text{weight in kg}}{\text{(height in m)}^2}$), is another commonly used measure^[But BMI has its own problems; see <http://fivethirtyeight.com/features/bmi-is-a-terrible-measure-of-health/>.].
+What is the relationship between BMI and percent body fat?
+How can we use a person's BMI to estimate their percent body fat?
+
+We'll fit a Bayesian model for predicting percent body fat from BMI using data  on a nationally representative sample of 2157 U.S. males from the [National Health and Nutrition Examination Survey (NHANES)](http://www.cdc.gov/nchs/nhanes/about_nhanes.htm).
+
+
+
+
+
+
+::: {#exm-regression-prior}
+Consider the assumptions of a Bayesian simple linear regression model for predicting percent body fat from BMI.
+:::
+
+
+1. What are the assumptions of the simple linear regression model?
+(There are many different regression models.
+We're referring to the one that is usually the first one you see in introductory statistics.
+Sometimes the assumptions are summarized with the acronym "LINE".)
+\
+\
+\
+\
+\
+
+1. What are the parameters in the model?
+That is, what do we need to put a prior distribution on (in order to eventually get a posterior distribution given sample data)?
+What do the parameters represent in context?
+\
+\
+\
+\
+\
+
+1. Suggest a prior distribution.
+Explain your reasoning.
+\
+\
+\
+\
+\
+
+1. Describe in full detail how you would simulate the prior predictive distribution of percent body fat for males with a BMI of 20.
+\
+\
+\
+\
+\
+\
+
+1. Simulate the prior predictive distribution of percent body fat for a range of BMI values.
+Do the distributions seem reasonable?
+If not, experiment with different priors until you find one that produces a reasonable prior predictive distribution.
+\
+\
+\
+\
+\
+
+
+
+
+
+- Consider data on a numerical response variable $y$ and a numerical explanatory (or predictor) variable $x$.
+A **simple linear regression model** of $y$ on $x$ assumes:
+    -  *Linearity*: the conditional mean of $y$ is *linear* in $x$; for some slope $\beta_1$ and intercept $\beta_0$:
+    $$
+    \text{E}(y|x) = \beta_0 + \beta_1 x
+    $$
+    - *Independence*: $y_1,\ldots, y_n$ are independent^[In a Bayesian context, we assume conditional independence of $y_1, \ldots, y_n$ given the parameters $\beta_0, \beta_1, \sigma$]
+    - *Normality*: for each $x$, the conditional distribution of $y$ given $x$ is Normal
+    - *Equal variance*: the conditional variance of $y$ does not depend on $x$
+    $$
+    \text{Var}(y|x) = \sigma^2
+    $$
+- The regression model is *conditional*.
+That is, we make assumptions about and perform inference for the conditional distribution of the response variable $y$ given values of the explanatory variable $x$.
+Therefore, even when we technically have a sample of pairs $(x_i,y_i)$ from a bivariate distribution, we will always condition on the values of $x$ and treat them as non-random.
+- Linearity is an assumption: we assume there is some "true" population *regression line* $\beta_0 + \beta_1 x$ which specifies the conditional *mean* of the response variable for each value of the explanatory variable.
+- The above set of assumptions can be stated more compactly as
+$$
+y_i \sim N\left( \beta_0 + \beta_1 x_i, \sigma^2\right), \text{ and } y_1, \ldots, y_n \text{ are independent}
+$$
+Equivalently,
+$$
+y_i = \beta_0 + \beta_1 x_i + \varepsilon_i, \text{ where } \varepsilon_i, \ldots, \varepsilon_n \text{ are i.i.d. } N(0, \sigma).
+$$
+- The parameters of the above model are $\beta_0$, $\beta_1$, and $\sigma$.
+- $\sigma_y^2$ denotes the variance of the response variable $y$ with respect to its overall mean, while $\sigma^2$ denotes the variance of values of the response variable  about the true regression line.
+Thus, $\sigma^2 = (1-\rho^2)\sigma^2_y$, where $\rho$ is the population correlation between the explanatory and response variables.
+
+
+::: {#exm-regression-freq}
+@sec-regression-sample summarizes the sample data.
+Before fitting a Bayesian model, we'll examine the usual frequentist results.
+:::
+
+
+
+
+
+1. Find and interpret the slope of the fitted regression line.
+\
+\
+\
+\
+\
+
+1. Find and interpret a 95% confidence interval for the slope of the regression line.
+(How do you interpret 95% confidence?)
+\
+\
+\
+\
+\
+
+1. Find the equation of the fitted regression line.
+\
+\
+\
+\
+\
+
+1. Find and interpret the fitted value for men with a BMI of 20 kg/m^2^.
+\
+\
+\
+\
+\
+
+1. Find and interpret a 95% confidence interval based on the fitted value for men with a BMI of 20 kg/m^2^.
+\
+\
+\
+\
+\
+
+1. Find and interpret a point estimate of $\sigma$.
+\
+\
+\
+\
+\
+\
+
+1. Find and interpret a 95% *prediction* interval for men with a BMI of 20 kg/m^2^.
+\
+\
+\
+\
+\
+
+
+
+
+::: {#exm-regression-posterior}
+Now we'll fit a Bayesian model and find the posterior distribution.
+:::
+
+
+
+1. Suppose there are just two observations of (BMI, PBF): (15, 20) and (40, 30).
+How would you compute the likelihood?
+\
+\
+\
+\
+\
+
+1. Use `brms` to fit the model to the full sample data.
+Run some diagnostic checks; does the MCMC algorithm seem to be working efficiently?
+\
+\
+\
+\
+\
+
+1. Inspect the joint posterior distribution of $\beta_0$ and $\beta_1$.
+What do you notice?
+Why do you think this happens?
+\
+\
+\
+\
+\
+
+1. Now suppose we replace BMI ($x$) with its centered version ($x - \bar{x}$).
+What does the parameter $\beta_0$ represent in this model?
+Suggest a prior distribution for $\beta_0$ (considering it in isolation).
+\
+\
+\
+\
+\
+
+1. Use `brms` to fit the model using centered BMI as the explanatory variable.
+Inspect the joint posterior distribution of $\beta_0$ and $\beta_1$.
+What do you notice?
+Why do you think this happens?
+\
+\
+\
+\
+\
+
+
+
+::: {#exm-regression-conclusions}
+Now we'll summarize and report conclusions based on the posterior distribution, using the model with centered BMI.
+:::
+
+
+1. Describe the posterior distribution of $\beta_1$.
+Find and interpret 50%, 80%, and 98% posterior credible intervals for $\beta_1$.
+\
+\
+\
+\
+\
+
+1. What does the parameter $\mu_{20} = \beta_0 + \beta_1(20 -\bar{x})$ represent in context?
+Explain how you could approximate the posterior distribution of $\mu_{20}$.
+Then approximate the posterior distribution, describe it, and
+find and interpret a 98% posterior credible interval for $\mu_{20}$.
+\
+\
+\
+\
+\
+
+1. Describe the posterior distribution of $\sigma$.
+Find and interpret 50%, 80%, and 98% posterior credible intervals for $\sigma$.
+\
+\
+\
+\
+\
+
+1. Compare the results of the Bayesian and frequentist analyses. 
+How are they similar?
+How are they different?
+\
+\
+\
+\
+\
+
+::: {#exm-regression-prediction}
+Now we'll use the fitted model to predict percent body fat.
+:::
+
+1. Explain how you could approximate the posterior predictive distribution of percent body fat for men with a BMI of 20 kg/m^2^.
+\
+\
+\
+\
+\
+
+1. Find and interpret a 95% posterior prediction interval for men with a BMI of 20 kg/m^2^.
+\
+\
+\
+\
+\
+
+
+1. Compare the 95% posterior prediction interval with the corresponding frequentist 95% prediction interval.
+How are they similar?
+How are they different?
+\
+\
+\
+\
+\
+
+
+1. Suggest how you could perform a posterior predictive check.
+Then use software to perform the check.
+Does the model seem reasonable based on the data?
+\
+\
+\
+\
+\
+
+
+
+- There are a number of ways the assumptions of the simple linear regression model could be revised.
+- We could assume the mean of $y$ changes with $x$ is a non-linear way (e.g., quadratic).
+- We could assume distributions other than Normal in the likelihood.
+For example, we could assume a $t$-distribution if outliers were an issue.
+- We could assume the conditional variance of $y$ also changes with $x$.
+- We could include multiple explanatory variables $x$.
+- Each of the above would be a change in the *likelihood*, perhaps introducing additional parameters.
+
+
+::: {#exm-regression-brms}
+Now we'll investigate sensitivity of the results to choice of prior.
+Rerun the model (using centered BMI) but let `brms` choose the prior.
+Compare the results of the two Bayesian models; are the results very sensitive to the choice of prior?
+:::
+\
+\
+\
+\
+\
+
+
+
+## Notes
+
+
+### Prior predictive tuning
+
+
+- We'll start with a prior distribution under which $\beta_0$, $\beta_1$, and $\sigma$ are independent.
+- A quick Google search reveals that for men [percent body fat ranges from about 6% to 30%](https://www.webmd.com/diet/features/body-fat-measurement), and [BMI ranges from about 15 to 35 kg/m^2^](https://www.cdc.gov/healthyweight/assessing/bmi/adult_bmi/index.html).
+- The overall range of percent body fat is about 6% to 30%, but we would expect less variability among men of the same BMI.
+If we assume percent body fat varies by about 5 percentage points among men of the same BMI, we can choose a prior for $\sigma$ that has a mean of 5, say Exponential(1/5) (to reflect $\sigma>0$).
+- We expect a positive association between percent body fat and BMI, so we want a prior for $\beta_1$ that places most of its credibility on positive values.
+Disregarding measurement units, the two variables take values on fairly similar numerical scales (6 to 30, 15 to 35).
+For the slope $\beta_1$, we might assume a Normal prior with a mean of 1 and a standard deviation of 0.5 (to keep most of the credibility on positive values, reflecting prior belief in positive association).
+- The intercept $\beta_0$, in principle, represents the percent body fat for a man with a BMI of 0, so  we might assume a Normal prior with a mean of 0 and a standard deviation of 1 (to put most of the prior credibility near 0).
+(We'll see another way to think about this parameter soon.)
+In summary, our prior distribution on the parameters $(\beta_0, \beta_1, \sigma)$ assumes
+    - $\beta_0$, $\beta_1$, and $\sigma$ are independent
+    - $\sigma \sim$ Exponential(1/5)
+    - $\beta_1\sim$ Normal(1, 0.5)
+    - $\beta_0\sim$ Normal(0, 1)
+
+Prior predictive distribution for BMI of 20
+
+```{r}
+n_rep = 10000
+
+# value of x
+x = 20
+
+# simulate parameters from prior distribution
+beta0 = rnorm(n_rep, 0, 1)
+beta1 = rnorm(n_rep, 1, 0.5)
+sigma = rexp(n_rep, 1 / 5)
+
+# simulate values of percent body fat based on assumptions of regression model
+y = rnorm(n_rep, beta0 + beta1 * x, sigma)
+
+hist(y, xlab = "Prior predicted PBF(%) for BMI of 20 kg/m^2",
+     breaks = 100,
+     col = bayes_col["prior_predict"])
+```
+
+
+Prior predictive distribution for many values of BMI
+
+```{r}
+n_rep = 1000
+
+# a range of values of x
+x = runif(n_rep, 15, 35)
+
+# simulate parameters from prior distribution
+beta0 = rnorm(n_rep, 0, 1)
+beta1 = rnorm(n_rep, 1, 0.5)
+sigma = rexp(n_rep, 1 / 5)
+
+# simulate values of percent body fat based on assumptions of regression model
+y = rnorm(n_rep, beta0 + beta1 * x, sigma)
+
+# scatter plot or prior predicted values
+plot(x, y,
+     xlab = "BMI (kg/m^2)", ylab = "Prior predicted percent body fat (%)",
+     col = bayes_col["prior_predict"])
+```
+
+What regression lines might look like according to prior distribution
+
+```{r}
+# number of lines to plot
+n_lines = 100
+
+# blank scatterplot - just set the plot area and scale
+plot(x, y, xlab = "BMI (kg/m^2)", ylab = "Percent body fat (%)", type = "n",
+ xlim = c(15, 35),
+ ylim = c(0, 30))
+
+# plot each of the simulated lines
+# using slope and intercept simulated from prior distribution
+for (l in 1:n_lines){
+  abline(beta0[l], beta1[l], col = bayes_col["prior"], lwd = 1)
+}
+```
+
+### Prior predictive distribution
+
+After some tuning, our prior distribution on the parameters $(\beta_0, \beta_1, \sigma)$ assumes
+
+- $\beta_0$, $\beta_1$, and $\sigma$ are independent
+- $\sigma \sim$ Exponential(1/1.5)
+- $\beta_1\sim$ Normal(0.5, 0.1)
+- $\beta_0\sim$ Normal(2, 2)
+
+Prior predictive distributions
+
+```{r}
+n_rep = 1000
+
+# a range of values of x
+x = runif(n_rep, 15, 35)
+
+# simulate parameters from prior distribution
+beta0 = rnorm(n_rep, 2, 2)
+beta1 = rnorm(n_rep, 0.5, 0.1)
+sigma = rexp(n_rep, 1 / 1.5)
+
+# simulate values of percent body fat based on assumptions of regression model
+y = rnorm(n_rep, beta0 + beta1 * x, sigma)
+
+# scatter plot or prior predicted values
+plot(x, y,
+     xlab = "BMI (kg/m^2)", ylab = "Prior predicted percent body fat (%)",
+     col = bayes_col["prior_predict"])
+```
+
+
+```{r}
+# number of lines to plot
+n_lines = 100
+
+# blank scatterplot - just set the plot area and scale
+plot(x, y, xlab = "BMI (kg/m^2)", ylab = "Percent body fat (%)", type = "n",
+ xlim = c(15, 35),
+ ylim = c(0, 30))
+
+# plot each of the simulated lines
+# using slope and intercept simulated from prior distribution
+for (l in 1:n_lines){
+  abline(beta0[l], beta1[l], col = bayes_col["prior"], lwd = 1)
+}
+```
+
+
+### Sample data {#sec-regression-sample}
+
+```{r}
+data = read_csv("nhanes_males.csv")
+
+data |> head() |> kbl() |> kable_styling()
+```
+
+```{r}
+c(summary(data$BMI), SD = sd(data$BMI))
+```
+
+```{r}
+c(summary(data$PBF), SD = sd(data$PBF))
+```
+
+```{r}
+cor(data$BMI, data$PBF)
+```
+
+
+```{r}
+data_plot = ggplot(data, 
+                   aes(x = BMI, y = PBF)) +
+  geom_point(shape = 1, size = 2) +
+  labs(x = "BMI (kg/m^2)",
+       y = "Percent body fat (%)") +
+  theme_bw()
+
+data_plot
+```
+
+
+### Frequentist results
+
+```{r}
+freq = lm(PBF ~ BMI, data)
+
+summary(freq)
+```
+
+Confidence interval for mean response
+
+```{r}
+x_new = data.frame(BMI = 20)
+
+predict(freq, newdata = x_new, interval = "confidence", se.fit = TRUE)
+```
+
+```{r}
+#| warning: false
+
+data_plot +
+  geom_smooth(method = lm,
+              col = bayes_col["likelihood"],
+              fill = bayes_col["likelihood"])
+```
+
+Prediction intervals
+
+```{r}
+x_new = data.frame(BMI = 20)
+
+predict(freq, newdata = x_new, interval = "prediction")
+```
+
+```{r}
+#| warning: false
+
+predictions <- predict(freq, interval = "predict")
+
+data |>
+  cbind(predictions) |>
+  ggplot(aes(x = BMI, y = PBF)) +
+  geom_point(shape = 1, size = 2) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr),
+              fill = bayes_col["likelihood"], alpha = 0.4) +
+  labs(x = "BMI (kg/m^2)",
+       y = "Percent body fat (%)") +
+  theme_bw()
+
+
+```
+
+
+
+
+### Posterior distribution
+
+
+```{r}
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+
+
+```{r}
+fit <- brm(data = data,
+           family = gaussian(),
+           PBF ~ 1 + BMI,
+           prior = c(prior(normal(2, 2), class = Intercept),
+                     prior(normal(0.5, 0.1), class = b),
+                     prior(exponential(0.667), class = sigma)),
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+summary(fit)
+```
+
+
+```{r}
+plot(fit)
+```
+
+
+```{r}
+pairs(fit)
+```
+
+
+```{r}
+mcmc_dens_overlay(fit, pars = vars(b_Intercept, b_BMI, sigma))
+```
+
+
+
+```{r}
+neff_ratio(fit)[c("b_Intercept", "b_BMI", "sigma")]
+```
+
+```{r}
+neff_ratio(fit)[c("b_Intercept", "b_BMI", "sigma")] |> 
+  mcmc_neff() +
+  yaxis_text(hjust = 0) 
+```
+
+
+### Posterior distribution, model using centered BMI
+
+```{r}
+data = data |>
+  mutate(BMI_c = BMI - mean(BMI))
+```
+
+
+```{r}
+fit_c <- brm(data = data,
+           family = gaussian(),
+           PBF ~ 1 + BMI_c,
+           prior = c(prior(normal(18, 2), class = Intercept),
+                prior(normal(0.5, 0.1), class = b),
+                prior(exponential(0.667), class = sigma)),
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+summary(fit_c)
+```
+
+
+```{r}
+color_scheme_set("viridis")
+
+plot(fit_c)
+```
+
+
+```{r}
+pairs(fit_c)
+```
+
+
+
+```{r}
+neff_ratio(fit_c)[c("b_Intercept", "b_BMI_c", "sigma")]
+```
+
+
+```{r}
+neff_ratio(fit_c)[c("b_Intercept", "b_BMI_c", "sigma")] |> 
+  mcmc_neff() +
+  yaxis_text(hjust = 0) 
+```
+
+
+Posterior distribution of regression slope
+
+```{r}
+mcmc_intervals(fit_c,
+               pars = c("b_BMI_c"),
+               prob = 0.5,
+               prob_outer = 0.98)
+```
+
+```{r}
+#| layout-nrow: 3
+
+color_scheme_set("teal")
+
+mcmc_areas(fit_c,
+           pars = c("b_BMI_c"),
+           prob = 0.5,
+           point_est = "median")
+
+mcmc_areas(fit_c,
+           pars = c("b_BMI_c"),
+           prob = 0.8,
+           point_est = "median")
+
+mcmc_areas(fit_c,
+           pars = c("b_BMI_c"),
+           prob = 0.98,
+           point_est = "median")
+```
+
+
+
+
+Posterior distribution of $\sigma$
+
+```{r}
+mcmc_intervals(fit_c,
+               pars = c("sigma"),
+               prob = 0.5,
+               prob_outer = 0.98)
+```
+
+```{r}
+#| layout-nrow: 3
+
+mcmc_areas(fit_c,
+           pars = c("sigma"),
+           prob = 0.5,
+           point_est = "median")
+
+mcmc_areas(fit_c,
+           pars = c("sigma"),
+           prob = 0.8,
+           point_est = "median")
+
+mcmc_areas(fit_c,
+           pars = c("sigma"),
+           prob = 0.98,
+           point_est = "median")
+```
+
+
+
+Posterior distribution of mean response
+
+```{r}
+posterior_c = fit_c |>
+  spread_draws(b_Intercept, b_BMI_c, sigma) |>
+  mutate(mu_20 = b_Intercept + b_BMI_c * (20 - mean(data$BMI)))
+
+posterior_c |> head(10) |> kbl() |> kable_styling()
+```
+
+
+```{r}
+posterior_c |>
+  ggplot(aes(x = mu_20)) +
+  stat_halfeye(.width = c(0.80, 0.98),
+               fill = bayes_col["posterior"]) +
+  theme_bw()
+```
+
+
+
+```{r}
+quantile(posterior_c$mu_20, c(0.01, 0.99))
+```
+
+
+
+### Posterior prediction
+
+
+```{r}
+posterior_c = posterior_c |>
+  mutate(y_pred_20 = mu_20 + sigma * rnorm(nrow(posterior_c), 0, 1))
+
+posterior_c |> head(10) |> kbl() |> kable_styling()
+```
+
+
+```{r}
+ggplot(posterior_c,
+       aes(x = y_pred_20)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+  geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
+  labs(x = "Posterior predicted PBF(%) for BMI of 20 kg/m^2") +
+  theme_bw()
+```
+
+```{r}
+quantile(posterior_c$y_pred_20, c(0.025, 0.975))
+```
+
+
+
+```{r}
+predictive_interval(fit_c,
+                    newdata = data.frame(BMI_c = 20 - mean(data$BMI)),
+                    prob = 0.95)
+```
+
+
+### Posterior predictive checking
+
+4 simulated samples
+
+```{r}
+data |>
+  add_predicted_draws(fit_c, ndraws = 4) %>%
+  ggplot(aes(x = BMI_c, y = PBF)) +
+    geom_point(aes(y = .prediction,
+                   group = .draw), size = 0.2) + 
+    facet_wrap(~ .draw)
+```
+
+Posterior predictive check of response
+
+```{r}
+color_scheme_set("purple")
+
+pp_check(fit_c, ndraw = 100)
+
+```
+
+`posterior_predict` simulates a sample of size 2157, using the observed $x$ values, for each of the 10000 simulated triples from the posterior distribution, resulting in a 10000 x 2157 matrix.
+
+```{r}
+predictions <- posterior_predict(fit_c)
+
+dim(predictions)
+```
+
+
+We can use these predictions to plot posterior prediction intervals for a range of BMI values.
+
+```{r}
+ppc_intervals(data$PBF,
+              yrep = predictions,
+              x = data$BMI, 
+              prob = 0.5,
+              prob_outer = 0.95)
+```
+
+
+
+
+
+### Sensitivity: using `brms` default prior
+
+
+
+```{r}
+get_prior(data = data,
+          family = gaussian(),
+          PBF ~ 1 + BMI_c)
+```
+
+
+```{r}
+fit_brms_prior <- brm(data = data,
+           family = gaussian(),
+           PBF ~ 1 + BMI_c,
+           sample_prior = TRUE,
+           iter = 3500,
+           warmup = 1000,
+           chains = 4,
+           refresh = 0)
+```
+
+
+```{r}
+summary(fit_brms_prior)
+```
+
+
+```{r}
+color_scheme_set("viridis")
+
+plot(fit_brms_prior)
+```
+
+
+```{r}
+pairs(fit_brms_prior)
+```
+
+
+
+```{r}
+neff_ratio(fit_brms_prior)[c("b_Intercept", "b_BMI_c", "sigma")]
+```
+
+
+```{r}
+neff_ratio(fit_brms_prior)[c("b_Intercept", "b_BMI_c", "sigma")] |> 
+  mcmc_neff() +
+  yaxis_text(hjust = 0) 
+```
+
+
+```{r}
+color_scheme_set("purple")
+
+pp_check(fit_brms_prior, ndraw = 100)
+
+```
+
+```{r}
+predictions_b <- posterior_predict(fit_brms_prior)
+
+dim(predictions_b)
+```
+
+
+
+
+```{r}
+ppc_intervals(data$PBF,
+              yrep = predictions_b,
+              x = data$BMI, 
+              prob = 0.5,
+              prob_outer = 0.95)
+```
+
+Leave-one-out (LOO) cross-validation to compare models.
+
+```{r}
+LOO(fit_c, fit_brms_prior)
+```
+
+
+
+
+

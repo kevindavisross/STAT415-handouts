@@ -1,0 +1,257 @@
+\newif\ifanswers
+\answerstrue % comment out to hide answers
+\documentclass[11pt]{article}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=blue}
+\usepackage{fancyhdr}
+\usepackage{enumerate}
+\usepackage[margin=1.0in]{geometry}
+\parskip 0.20cm
+%\usepackage{parskip}
+\parindent 0.0cm
+
+\usepackage{epsfig}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{amsmath}
+%\usepackage{showkeys}
+
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{color}
+
+\newcounter{mysection}
+%\addtocounter{mysection}{00}
+
+%\pagestyle{fancy}
+%\renewcommand{\headrulewidth}{0.0pt}
+%\cfoot{00-\thepage}
+
+\theoremstyle{definition}
+\newtheorem{numbered_item}{Definition}[mysection]
+\newtheorem{thm}[numbered_item]{Theorem}
+\newtheorem{lem}[numbered_item]{Lemma}
+\newtheorem{fact}[numbered_item]{Fact}
+\newtheorem{cor}[numbered_item]{Corollary}
+\newtheorem{exer}[numbered_item]{Exercise}
+\newtheorem{ques}[numbered_item]{Question}
+\newtheorem{defn}[numbered_item]{Definition}
+\newtheorem{remark}[numbered_item]{Remark}
+\newtheorem{example}[numbered_item]{Example}
+
+\newcommand*{\graphpath}{C:/Users/kjross/Documents/Handout_graphs}%
+
+\newenvironment{my_enumerate}{
+	\begin{enumerate}%[a)]
+		\setlength{\itemsep}{0pt}
+		\setlength{\parskip}{0pt}
+		\setlength{\topsep}{0pt}
+		\setlength{\partopsep}{-1pt}
+		\setlength{\parsep}{-1pt}}{\end{enumerate}
+}
+
+\newenvironment{my_itemize}{
+	\begin{itemize}
+		\setlength{\itemsep}{0pt}
+		\setlength{\parskip}{0pt}
+		\setlength{\topsep}{0pt}
+		\setlength{\partopsep}{-1pt}
+		\setlength{\parsep}{-1pt}}{\end{itemize}
+}
+
+\newcommand{\bee}{\begin{my_enumerate}}
+	\newcommand{\eee}{\end{my_enumerate}}
+\newcommand{\bei}{\begin{my_itemize}}
+	\newcommand{\eei}{\end{my_itemize}}
+
+\newcommand{\vbefore}{\vspace{-0.5cm}}
+\newcommand{\vs}{\vspace{1in}}
+\newcommand{\vvs}{\vspace{0.5in}}
+\newcommand{\nvs}{\vspace{-1in}}
+\newcommand{\nvvs}{\vspace{-0.5in}}
+
+
+\newcommand{\IP}{\textrm{P}}
+\newcommand{\E}{\textrm{E}}
+\newcommand{\Var}{\textrm{Var}}
+\newcommand{\Cov}{\textrm{Cov}}
+\newcommand{\SD}{\textrm{SD}}
+\newcommand{\SE}{\textrm{SE}}
+\newcommand{\Corr}{\textrm{Corr}}
+\newcommand{\Xbar}{\bar{X}}
+\newcommand{\xbar}{\bar{x}}
+\newcommand{\Ybar}{\bar{Y}}
+\newcommand{\ybar}{\bar{y}}
+\newcommand{\yhat}{\hat{y}}
+\newcommand{\bhat}{\hat{\beta}}
+\newcommand{\lik}{\textrm{lik}}
+\newcommand{\thetahat}{\hat{\theta}}
+\newcommand{\sumi}{\sum_{i=1}^n}
+\newcommand{\ans}{\textbf{Solution: }}
+\newcommand{\ep}{\epsilon}
+\newcommand{\mse}{\textrm{MSE}}
+\newcommand{\power}{\textrm{power}}
+
+
+\begin{document}
+
+
+You wish to predict $y$, the length (feet), of sharks from $x$, their jaw width (inches).  The following displays data on a sample of 44 sharks.
+\begin{figure}[h!]
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=1\linewidth]{\graphpath/shark-bayes}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=1\linewidth]{\graphpath/shark-bayes2}
+	\end{minipage}
+\end{figure}
+
+A Bayesian model is fit to the data.  There are many packages available; we have been using \texttt{brms/Stan} but another popular choice is \texttt{JAGS/rjags}. The code on the left below is a subset of JAGS code. The table on the right and the plots below are summaries of the posterior distribution approximated by JAGS.  You can assume the model has been coded and implemented correctly.  Note that $\beta_0$ is represented by \texttt{beta[1]} and $\beta_1$ is represented by \texttt{beta[2]}. Also, note that in JAGS the second parameter of a Normal distribution is the precision, not the SD.
+\\
+
+
+\begin{minipage}{.65\textwidth}
+	\begin{verbatim}
+model_string <- "model{
+   for(i in 1:n){
+      y[i] ~ dnorm(mu[i], 1 / sigma ^ 2)
+      mu[i] <- beta[1] + beta[2] * (x[i] - mean(x))
+   }
+   for(j in 1:2){
+      beta[j] ~ dnorm(0, 1 / 100 ^ 2)
+   }
+   sigma ~ dunif(1 / 1000, 1000)
+}"
+
+	\end{verbatim}
+\end{minipage}
+\begin{minipage}{.35\textwidth}
+	\begin{verbatim}
+	          Mean     SD 
+	beta[1]   15.584   0.193
+	beta[2]    0.795   0.070
+	sigma      1.274   0.144
+	\end{verbatim}
+\end{minipage}
+
+\begin{figure}[h!]
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=1.0\linewidth]{\graphpath/shark-bayes-post-hist}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=1.0\linewidth]{\graphpath/shark-bayes-post-scatter}
+	\end{minipage}
+\end{figure}
+\newpage
+\bee
+\item For each of the following, explain how you could have made an educated guess for the mean of its posterior distribution \emph{without} the simulation.  That is, the posterior means are provided; you have to justify why they are what they are without refering to the JAGS output.
+(Hint: what would the frequentist results be? How do Bayesian results generally relate to frequentist results?)
+\bee
+\item $\beta_1$, remember this is coded as \texttt{beta[2]}
+
+
+\ifanswers
+
+
+The posterior mean is a compromise between the prior mean and the sample statistic. The prior is relatively flat, so the posterior mean should be pretty close to the value of the observed statistic.  The observed regression slope is $0.875(2.55/2.81) = 0.794$
+\fi 
+\item $\beta_0$, remember this is coded as \texttt{beta[1]}
+
+
+\ifanswers
+
+
+Similar to the previous part; compute the sample regression intercept.
+\fi 
+\item \texttt{sigma}
+
+
+\ifanswers
+
+
+Similar to part a). Compute the observed RMSE $2.55\sqrt{1-0.875^2}=1.24$
+
+\fi 
+\eee  
+\item Find a 98\% posterior credible for $\beta_1$, and write a clearly worded sentence interpreting this interval in context.
+
+\ifanswers
+
+
+The posterior distribution for $\beta_1$ is approximately Normal with posterior mean 0.795 and posterior SD 0.07, so a 98\% posterior credible interval has endpoints $0.795\pm2.33\times 0.07$. There is a posterior probability of 98\% that a one inch increase in jaw width is associated with between a 0.63 and 0.96 foot increase in length on average.
+
+\fi 
+\item Explain in full detail how you would use simulation to find a 98\% posterior \emph{credible} interval corresponding to $x=20$.
+
+\ifanswers
+
+\ans
+\bei
+\item Simulate a $(\beta_0, \beta_1)$ pair from their joint posterior distribution (\texttt{brms} or \texttt{JAGS} will already have done this)
+\item Given $(\beta_0, \beta_1)$ compute $\mu_{20} = \beta_0 + \beta_1(20-\bar{x})$.
+\item Repeat many times and summarize the values of $\mu_{20}$. The endpoints of a 98\% posterior credible interval would be the 1st and 99th percentiles of simulated $\mu_{20}$ values.
+\eei 
+
+\fi 
+
+
+\item Explain in full detail how you would use simulation to find a 98\% posterior \emph{prediction} interval corresponding to $x=20$.
+
+\ifanswers
+
+\ans
+\bei
+\item Simulate a $(\beta_0, \beta_1, \sigma)$ trio from their joint posterior distribution (\texttt{brms} or \texttt{JAGS} will already have done this)
+\item Given $(\beta_0, \beta_1)$ compute $\mu_{20} = \beta_0 + \beta_1(20-\bar{x})$.
+\item Simulate $y$ from a $N(\mu_{20}, \sigma)$ distribution
+\item Repeat many times and summarize the values of $y$. The endpoints of a 98\% posterior prediction interval would be the 1st and 99th percentiles of simulated $y$ values.
+\eei 
+
+\fi 
+
+
+
+\item Consider the intervals from the two previous parts. One of the intervals has endpoints
+[18.3, 19.7] and the other has endpoints [15.0, 23.0]. Identify which interval is the credible interval and which is the prediction interval, and write a clearly worded sentence
+interpreting each of the intervals in context.
+
+
+\ifanswers
+
+\ans
+The prediction interval will be much wider than the credible interval, so the prediction interval us [15.0, 23.0]
+
+There is posterior 98\% credibility that the \emph{mean} length for sharks with a jaw width of 20 inches is between 18.3 and 19.7 feet.
+
+There is posterior probability of 98\% that the length of a shark with a jaw width of 20 inches is between 15.0 and 23.0 feet.
+Roughly, we predict that 98\% of sharks with a jaw width of 20 inches have a length between 15.0 and 23.0 feet.
+
+\fi 
+%
+%\item Let $\theta=\beta_0 + \beta_1(20 - 15.7)$. Find a 98\% posterior credible for $\theta$, and write a clearly worded sentence interpreting this interval in context.
+
+%\ifanswers
+%(This maybe involves a little more probability than we covered.)
+%
+%From the scatterplot, it appears that the posterior distribution of $(\beta_0,\beta_1)$ is Bivariate Normal and $\beta_0$ and $\beta_1$ are independent.
+%Since $\theta$ is a linear combination of BVN $(\beta_0, \beta_1)$ it will have a Normal distribution.
+%The posterior mean of $\theta$ is $15.6+(0.8)(20-15.7)=19.0$.
+%Since $\beta_0$ and $\beta_1$ are independent in the posterior, the posterior variance of $\theta$ is
+%\[
+%\Var(\beta_0) + (20-15.7)^2\Var(\beta_1) = 0.193^2 +(20-15.7)^20.07^2
+%\]
+%The posterior SD is 0.36. So a 95\% posterior credible interval for $\theta$ has endpoints $19.0 \pm 2.33\times 0.36$.
+%There is 95
+%\% posterior credibility that the mean length of sharks with a jaw width of 20 inches is between 18.3 and 19.7 feet.
+%\fi 
+\eee 
+\end{document}

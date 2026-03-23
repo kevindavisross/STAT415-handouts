@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>25&nbsp; Introduction to Bayesian Model Comparison – STAT415 Handouts</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./classification.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./model-comparison.html"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">STAT415 Handouts</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introductory-activity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introductory Activity</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introductory-example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introductory Example</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-ideas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Ideas of Bayesian Reasoning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretations-probstat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Interpretations of Probability and Statistics</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayes-rule.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bayes Rule</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro-estimation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Introduction to Estimation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro-inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./normal-mean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introduction to Inference for a Population Mean</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparing-bayesian-and-frequentist.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Comparing Bayesian and Frequentist Analysis</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro-prediction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Prediction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./predictive-tuning-and-checking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Predictive Tuning and Checking</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./beta-binomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Beta-Binomial Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./considering-priors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Considering Prior Distributions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./posterior-simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Introduction to Posterior Simulation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./poisson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Bayesian Analysis of Poisson Count Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./normal-normal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Normal-Normal Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multi-parameter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Introduction to Multi-Parameter models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mean-t.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Bayesian Analyis of a Numerical Variable</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./numerical-skew.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">More Bayesian Analyis of a Numerical Variable</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparing-two-means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Comparing Two Means</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Introduction to Markov Chain Monte Carlo (MCMC) Simulation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mcmc-diagnostics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Some Diagnostics for MCMC Simulation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Bayesian Simple Linear Regression Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./model-comparison.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#odds-and-bayes-factors" id="toc-odds-and-bayes-factors" class="nav-link active" data-scroll-target="#odds-and-bayes-factors"><span class="header-section-number">25.1</span> Odds and Bayes factors</a></li>
+  <li><a href="#posterior-probability-of-models" id="toc-posterior-probability-of-models" class="nav-link" data-scroll-target="#posterior-probability-of-models"><span class="header-section-number">25.2</span> Posterior probability of models</a></li>
+  <li><a href="#model-averaging" id="toc-model-averaging" class="nav-link" data-scroll-target="#model-averaging"><span class="header-section-number">25.3</span> Model averaging</a></li>
+  <li><a href="#accounting-for-model-complexity" id="toc-accounting-for-model-complexity" class="nav-link" data-scroll-target="#accounting-for-model-complexity"><span class="header-section-number">25.4</span> Accounting for model complexity</a></li>
+  <li><a href="#sensitivity-of-model-comparison-to-prior" id="toc-sensitivity-of-model-comparison-to-prior" class="nav-link" data-scroll-target="#sensitivity-of-model-comparison-to-prior"><span class="header-section-number">25.5</span> Sensitivity of model comparison to prior</a></li>
+  <li><a href="#hypothesis-testing-just-dont-do-it" id="toc-hypothesis-testing-just-dont-do-it" class="nav-link" data-scroll-target="#hypothesis-testing-just-dont-do-it"><span class="header-section-number">25.6</span> Hypothesis testing (just don’t do it)</a></li>
+  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes"><span class="header-section-number">25.7</span> Notes</a>
+  <ul class="collapse">
+  <li><a href="#odds-and-bayes-factors-1" id="toc-odds-and-bayes-factors-1" class="nav-link" data-scroll-target="#odds-and-bayes-factors-1"><span class="header-section-number">25.7.1</span> Odds and Bayes factors</a></li>
+  <li><a href="#posterior-probability-of-models-1" id="toc-posterior-probability-of-models-1" class="nav-link" data-scroll-target="#posterior-probability-of-models-1"><span class="header-section-number">25.7.2</span> Posterior probability of models</a></li>
+  <li><a href="#model-averaging-1" id="toc-model-averaging-1" class="nav-link" data-scroll-target="#model-averaging-1"><span class="header-section-number">25.7.3</span> Model averaging</a></li>
+  <li><a href="#accounting-for-model-complexity-1" id="toc-accounting-for-model-complexity-1" class="nav-link" data-scroll-target="#accounting-for-model-complexity-1"><span class="header-section-number">25.7.4</span> Accounting for model complexity</a></li>
+  <li><a href="#sensitivity-of-model-comparison-to-prior-1" id="toc-sensitivity-of-model-comparison-to-prior-1" class="nav-link" data-scroll-target="#sensitivity-of-model-comparison-to-prior-1"><span class="header-section-number">25.7.5</span> Sensitivity of model comparison to prior</a></li>
+  <li><a href="#hypothesis-testing-just-dont-do-it-1" id="toc-hypothesis-testing-just-dont-do-it-1" class="nav-link" data-scroll-target="#hypothesis-testing-just-dont-do-it-1"><span class="header-section-number">25.7.6</span> Hypothesis testing (just don’t do it)</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-model-comparison" class="quarto-section-identifier"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- {{< include _python_setup.qmd >}} -->
+<ul>
+<li>A Bayesian model is composed of both a model for the data (likelihood) and a prior distribution on model parameters</li>
+<li><strong>Model selection</strong> usually refers to comparing different models<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> for the data (likelihoods); for example, selecting which predictors to include in a regression or classification model, selecting between Normal or <span class="math inline">\(t\)</span> error distribution, comparing a hierarchical model to a pooled model, etc.</li>
+<li>But model selection can also concern choosing between models with the same likelihood but different priors.</li>
+<li>In Bayesian model comparison, prior probabilities are assigned to each of the models, and these probabilities are updated given the data according to Bayes rule.</li>
+</ul>
+<section id="odds-and-bayes-factors" class="level2" data-number="25.1">
+<h2 data-number="25.1" class="anchored" data-anchor-id="odds-and-bayes-factors"><span class="header-section-number">25.1</span> Odds and Bayes factors</h2>
+<ul>
+<li>The <strong>odds</strong> of an event is a ratio involving the probability that the event occurs and the probability that the event does not occur <span class="math display">\[
+\text{odds}(A)  = \frac{P(A)}{P(A^c)} = \frac{P(A)}{1-P(A)}
+\]</span></li>
+<li>In many situations (e.g., gambling) odds are reported as odds <em>against</em> <span class="math inline">\(A\)</span>, that is, the odds of <span class="math inline">\(A^c\)</span>: <span class="math inline">\(P(A^c)/P(A)\)</span>.</li>
+<li>The probability of an event can be obtained from odds <span class="math display">\[
+P(A) = \frac{\text{odds}(A)}{1+\text{odds}(A)}
+\]</span></li>
+</ul>
+<div id="exm-bayes-false-positive" class="theorem example">
+<p><span class="theorem-title"><strong>Example 25.1</strong></span> The ELISA test for HIV was widely used in the mid-1990s for screening blood donations. As with most medical diagnostic tests, the ELISA test is not perfect. If a person actually carries the HIV virus, experts estimate that this test gives a positive result 97.7% of the time. (This number is called the <em>sensitivity</em> of the test.) If a person does not carry the HIV virus, ELISA gives a negative (correct) result 92.6% of the time (the <em>specificity</em> of the test). Estimates at the time were that 0.5% of the American public carried the HIV virus (the <em>base rate</em>).</p>
+</div>
+<ol type="1">
+<li><p>Calculate the <em>prior odds</em> of a randomly selected American having the HIV virus, before taking an ELISA test.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Suppose that a randomly selected American tests positive. Compute the posterior probability that the person actually carries the virus. (Why is this probability so small?)<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Calculate the <em>posterior odds</em> of a randomly selected American having the HIV virus, given a positive test result.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>By what factor has the <em>odds</em> of carrying HIV increased, given a positive test result, as compared to before the test? This is called the <strong>Bayes factor</strong>.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Suppose you were given the prior odds and the Bayes factor. How could you compute the posterior odds?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Compute the ratio of the likelihoods of testing positive, for those who carry HIV and for those who do not carry HIV. What do you notice?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<ul>
+<li>The <strong>Bayes factor (BF)</strong> in favor of hypothesis <span class="math inline">\(H\)</span> given evidence <span class="math inline">\(E\)</span> is defined to be the ratio of the posterior odds to the prior odds <span class="math display">\[
+BF = \frac{\text{posterior odds}}{\text{prior odds}} = \frac{P(H|E)/P(H^c|E)}{P(H)/P(H^c)}
+\]</span></li>
+<li>The Bayes factor in favor of hypothesis <span class="math inline">\(H\)</span> given evidence <span class="math inline">\(E\)</span> can be calculated as the <em>ratio of the likelihoods</em> <span class="math display">\[
+BF = \frac{P(E|H)}{P(E|H^c)}
+\]</span></li>
+<li><strong>Odds form of Bayes rule</strong> <span class="math display">\[\begin{align*}
+\frac{P(H|E)}{P(H^c|E)} &amp; =  \frac{P(H)}{P(H^c)} \times \frac{P(E|H)}{P(E|H^c)}
+\\
+\text{posterior odds} &amp; = \text{prior odds} \times \text{Bayes factor}
+\end{align*}\]</span></li>
+</ul>
+</section>
+<section id="posterior-probability-of-models" class="level2" data-number="25.2">
+<h2 data-number="25.2" class="anchored" data-anchor-id="posterior-probability-of-models"><span class="header-section-number">25.2</span> Posterior probability of models</h2>
+<div id="exm-biased-coins" class="theorem example">
+<p><span class="theorem-title"><strong>Example 25.2</strong></span> Suppose I have some trick coins<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, some of which are biased in favor of landing on heads, and some of which are biased in favor of landing on tails. I will select a trick coin at random; let <span class="math inline">\(\theta\)</span> be the probability that the selected coin lands on heads in any single flip. I will flip the coin <span class="math inline">\(n\)</span> times and use the data to decide about the direction of its bias. This can be viewed as a choice between two models</p>
+<ul>
+<li>Model 1: the coin is biased in favor of landing on heads</li>
+<li>Model 2: the coin is biased in favor of landing on tails</li>
+</ul>
+</div>
+<ol type="1">
+<li><p>Assume that in model 1 the prior distribution for <span class="math inline">\(\theta\)</span> is Beta(7.5, 2.5). Suppose in <span class="math inline">\(n=10\)</span> flips there are 6 heads. Use simulation to approximate the probability of observing 6 heads in 10 flips <em>given that model 1 is correct</em>.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Assume that in model 2 the prior distribution for <span class="math inline">\(\theta\)</span> is Beta(2.5, 7.5). Suppose in <span class="math inline">\(n=10\)</span> flips there are 6 heads. Use simulation to approximate the probability of observing 6 heads in 10 flips <em>given that model 2 is correct</em>.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Suppose I flip the coin 10 times and 6 of the flips land on heads. Use the simulation results to approximate and interpret the Bayes Factor in favor of model 1 given 6 heads in 10 flips.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Suppose our prior probability for each model was 0.5. Find the posterior probability of each model given 6 heads in 10 flips.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Suppose I know I have a lot more tail biased coins, so my prior probability for model 1 was 0.1. Find the posterior probability of each model given 6 heads in 10 flips.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+</section>
+<section id="model-averaging" class="level2" data-number="25.3">
+<h2 data-number="25.3" class="anchored" data-anchor-id="model-averaging"><span class="header-section-number">25.3</span> Model averaging</h2>
+<div id="exm-biased-coins-averaging" class="theorem example">
+<p><span class="theorem-title"><strong>Example 25.3</strong></span> Continuing <a href="#exm-biased-coins" class="quarto-xref">Example&nbsp;<span>25.2</span></a>. Now suppose I want to predict the number of heads in the next 10 flips of the selected coin, given that there were 6 heads in the first 10 flips.</p>
+</div>
+<ol type="1">
+<li><p>Use simulation to approximate the posterior predictive distribution of the number of heads in the next 10 flips given 6 heads in the first 10 flips <em>given that model 1 is the correct model</em>. In particular, approximate the posterior predictive probability that there are 7 heads in the next 10 flips <em>given then model 1 is the correct model</em>.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Use simulation to approximate the posterior predictive distribution of the number of heads in the next 10 flips given 6 heads in the first 10 flips <em>given that model 2 is the correct model</em>. In particular, approximate the posterior predictive probability that there are 7 heads in the next 10 flips <em>given then model 2 is the correct model</em>.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Suppose our prior probability for each model was 0.5. Use simulation to approximate the posterior predictive distribution of the number of heads in the next 10 flips given 6 heads in the first 10 flips. In particular, approximate the posterior predictive probability that there are 7 heads in the next 10 flips.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<ul>
+<li>Bayesian model comparison can be viewed as Bayesian estimation in a hierarchical model with an extra level for “model”.</li>
+<li>In Bayesian model comparison, prior probabilities are assigned to each of the models, and these probabilities are updated given the data according to Bayes rule.</li>
+<li>When several models are under consideration, the Bayesian model is the full hierarchical structure which spans all models being compared.</li>
+<li>Thus, the most complete posterior prediction takes into account all models, weighted by their posterior probabilities.</li>
+<li>That is, prediction is accomplished by taking a weighted average across the models, with weights equal to the posterior probabilities of the models. This is called <strong>model averaging</strong>.</li>
+</ul>
+</section>
+<section id="accounting-for-model-complexity" class="level2" data-number="25.4">
+<h2 data-number="25.4" class="anchored" data-anchor-id="accounting-for-model-complexity"><span class="header-section-number">25.4</span> Accounting for model complexity</h2>
+<div id="exm-biased-coins2" class="theorem example">
+<p><span class="theorem-title"><strong>Example 25.4</strong></span> Suppose again I select a coin, with probability of heads <span class="math inline">\(\theta\)</span>, but now the decision is whether the coin is fair. Suppose we consider the two models</p>
+<ul>
+<li>“Must be fair” model: prior distribution for <span class="math inline">\(\theta\)</span> is Beta(500, 500)</li>
+<li>“Anything is possible” model: prior distribution for <span class="math inline">\(\theta\)</span> is Beta(1, 1)</li>
+</ul>
+</div>
+<ol type="1">
+<li><p>Suppose we observe 15 heads in 20 flips. Use simulation to approximate the Bayes factor in favor of the “must be fair” model given 15 heads in 20 flips. Which model does the Bayes factor favor?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Suppose we observe 11 heads in 20 flips. Use simulation to approximate the Bayes factor in favor of the “must be fair” model given 11 heads in 20 flips. Which model does the Bayes factor favor?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>The “anything is possible” model has any value available to it, including 0.5 and the sample proportion 0.55. Why then is the “must be fair” option favored in the previous part?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<ul>
+<li>Complex models generally have an inherent advantage over simpler models because complex models have many more options available, and one of those options is likely to fit the data better than any of the fewer options in the simpler model.</li>
+<li>However, we don’t always want to just choose the more complex model. Always choosing the more complex model overfits the data.</li>
+<li>Bayesian model comparison naturally compensates for discrepancies in model complexity.</li>
+<li>In more complex models, prior probabilities are diluted over the many options available.</li>
+<li>The numerator and denominator in the Bayes factor are <em>average</em> likelihoods: the likelihood of the data averaged over each possible value of <span class="math inline">\(\theta\)</span>.</li>
+<li>Even if a complex model has some particular combination of parameters that fit the data well, the prior probability of that particular combination is likely to be small because the prior is spread more thinly than for a simpler model, which pulls down the average likelihood of the complex model.</li>
+<li>Thus, in Bayesian model comparison, a simpler model can “win” if the data are consistent with it, even if the complex model fits well.</li>
+</ul>
+</section>
+<section id="sensitivity-of-model-comparison-to-prior" class="level2" data-number="25.5">
+<h2 data-number="25.5" class="anchored" data-anchor-id="sensitivity-of-model-comparison-to-prior"><span class="header-section-number">25.5</span> Sensitivity of model comparison to prior</h2>
+<div id="exm-biased-coins3" class="theorem example">
+<p><span class="theorem-title"><strong>Example 25.5</strong></span> Continuing <a href="#exm-biased-coins3" class="quarto-xref">Example&nbsp;<span>25.5</span></a> where we considered the two models</p>
+<ul>
+<li>“Must be fair” model: prior distribution for <span class="math inline">\(\theta\)</span> is Beta(500, 500)</li>
+<li>“Anything is possible” model: prior distribution for <span class="math inline">\(\theta\)</span> is Beta(1, 1)</li>
+</ul>
+<p>Suppose we observe 65 heads in 100 flips.</p>
+</div>
+<ol type="1">
+<li><p>Use simulation to approximate the Bayes factor in favor of the “must be fair” model given 65 heads in 100 flips. Which model does the Bayes factor favor?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>We have discussed different notions of a “non-informative/vague” prior. We often think of Beta(1, 1) = Uniform(0, 1) as a non-informative prior, but there are other considerations. In particular, a Beta(0.01, 0.01) is often used a non-informative prior in this context. Think of a Beta(0.01, 0.01) prior like an approximation to the improper Beta(0, 0) prior based on “no prior successes or failures”. Suppose now that the “anything is possible” model corresponds to a Beta(0.01, 0.01) prior distribution for <span class="math inline">\(\theta\)</span>. Use simulation to approximate the Bayes factor in favor of the “must be fair” model given 65 heads in 100 flips. Which model does the Bayes factor favor?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Is the <em>choice of model</em> — that is, which model the Bayes factor favors — sensitive to the change of prior distribution within the “anything is possible” model?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>For each of the two “anything is possible” priors, find the posterior distribution of <span class="math inline">\(\theta\)</span> and a 98% posterior credible interval for <span class="math inline">\(\theta\)</span> given 65 heads in 100 flips. Is <em>estimation of <span class="math inline">\(\theta\)</span></em> within the “anything is possible” model sensitive to the change in the prior distribution for <span class="math inline">\(\theta\)</span>?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<ul>
+<li>In Bayesian <em>estimation of continuous parameters within a model</em>, the posterior distribution is typically not too sensitive to changes in prior (provided that there is a reasonable amount of data and the prior is not too strict).</li>
+<li>In contrast, in Bayesian <em>model comparison</em>, the posterior probabilities of the models and the Bayes factors can be extremely sensitive to the choice of prior distribution within each model.</li>
+<li>When comparing different models, prior distributions on parameters within each model should be equally informed. One strategy is to use a small set of “training data” to inform the prior of each model before comparing.</li>
+</ul>
+<div id="exm-biased-coins4" class="theorem example">
+<p><span class="theorem-title"><strong>Example 25.6</strong></span> Continuing <a href="#exm-biased-coins3" class="quarto-xref">Example&nbsp;<span>25.5</span></a> where we considered two priors in the “anything is possible model”: Beta(1, 1) and Beta(0.1, 0.1). We will again compare the “anything is possible model” to the “must be fair” model which corresponds to a Beta(500, 500) prior.</p>
+<p>Suppose we observe 65 heads in 100 flips.</p>
+</div>
+<ol type="1">
+<li><p>Assume the “anything is possible” model corresponds to the Beta(1, 1) prior. Suppose that in the first 10 flips there were 6 heads. Compute the posterior distribution of <span class="math inline">\(\theta\)</span> in each of the models <em>after the first 10 flips</em>. Then use simulation to approximate the Bayes factor in favor of the “must be fair” model given 59 heads in the remaining 90 flips, using the posterior distribution of <span class="math inline">\(\theta\)</span> after the first 10 flips as the prior distribution in the simulation. Which model does the Bayes factor favor?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Repeat the previous part assuming the “anything is possible” model corresponds to the Beta(0.01, 0.01) prior. Compare with the previous part.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+</section>
+<section id="hypothesis-testing-just-dont-do-it" class="level2" data-number="25.6">
+<h2 data-number="25.6" class="anchored" data-anchor-id="hypothesis-testing-just-dont-do-it"><span class="header-section-number">25.6</span> Hypothesis testing (just don’t do it)</h2>
+<div id="exm-hypothesis-test" class="theorem example">
+<p><span class="theorem-title"><strong>Example 25.7</strong></span> Consider a null hypothesis significance test of <span class="math inline">\(H_0:\theta=0.5\)</span> versus <span class="math inline">\(H_1:\theta\neq 0.5\)</span>. How does this situation resemble the previous problems in this section?</p>
+</div>
+<p><br>
+<br>
+<br>
+<br>
+<br>
+</p>
+<ul>
+<li>A null hypothesis significance test can be viewed as a problem of Bayesian model selection in which one model has a prior distribution that places all its credibility on the null hypothesized value. However, is it really plausible that the parameter is <em>exactly</em> equal to the hypothesized value?</li>
+<li>Unfortunately, this model-comparison (Bayes factor) approach to testing can be extremely sensitive to the choice of prior corresponding to the alternative hypothesis.</li>
+<li>An alternative Bayesian approach to testing involves choosing a <strong>region of practical equivalence (ROPE).</strong> A ROPE indicates a range of parameter values that are considered to be “practically equivalent” to the null hypothesized value.
+<ul>
+<li>A credible interval for the parameter can be compared to the ROPE to see if they overlap.</li>
+<li>How do you choose the ROPE? That determines on the practical application.</li>
+</ul></li>
+<li>In general, traditional testing of point null hypotheses (that is, “<em>no</em> effect/difference”) is not a primary concern in Bayesian statistics.</li>
+<li>Rather, the <em>posterior distribution</em> provides all relevant information to make decisions about practically meaningful issues. Ask research questions that are important in the context of the problem and use the posterior distribution to answer them.</li>
+</ul>
+<div id="exm-uniform-color-bf" class="theorem example">
+<p><span class="theorem-title"><strong>Example 25.8</strong></span> Recall a previous application: Does uniform color give athletes an advantage over their competitors? To investigate this question, Hill and Barton (<em>Nature</em>, 2005) examined the records in the 2004 Olympic Games for four combat sports: boxing, tae kwon do, Greco-Roman wrestling, and freestyle wrestling. Competitors in these sports were randomly assigned to wear either a red or a blue uniform. Let the parameter <span class="math inline">\(\theta\)</span> represent the probability that a competitor wearing <em>red</em> wins a match.</p>
+<p>In this context, we might say that if the probability of winning by the competitor wearing red is between 0.49 and 0.51, then any color advantage is small enough to be considered unimportant. That is, we might consider the interval [0.49, 0.51] as a ROPE for 0.5. Therefore, we consider a null hypothesis of <span class="math inline">\(H_0: 0.49 \le \theta \le 0.51\)</span> and an alternative that <span class="math inline">\(\theta\)</span> is outside of [0.49, 0.51].</p>
+<p>The researchers collected data on a sample of 457 matches; the competitor wearing red won in 248 of the matches.</p>
+</div>
+<ol type="1">
+<li><p>Assume a Uniform(0, 1) = Beta(1, 1) prior distribution for <span class="math inline">\(\theta\)</span>. Compute the prior odds in favor of the alternative hypothesis, the posterior odds in favor of the alternative hypothesis, and the Bayes Factor in favor of the alternative hypothesis given the sample data. (You can compute probabilities using <code>pbeta</code>; you don’t need simulation.) Which hypothesis does the Bayes factor favor?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Assume a Beta(10, 10) prior distribution for <span class="math inline">\(\theta\)</span>. Compute the prior odds in favor of the alternative hypothesis, the posterior odds in favor of the alternative hypothesis, and the Bayes Factor in favor of the alternative hypothesis given the sample data. (You can compute probabilities using <code>pbeta</code>; you don’t need simulation.) Which hypothesis does the Bayes factor favor?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Assume a Beta(200, 200) prior distribution for <span class="math inline">\(\theta\)</span>. Compute the prior odds in favor of the alternative hypothesis, the posterior odds in favor of the alternative hypothesis, and the Bayes Factor in favor of the alternative hypothesis given the sample data. (You can compute probabilities using <code>pbeta</code>; you don’t need simulation.) Which hypothesis does the Bayes factor favor?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Is the Bayes Factor sensitive to the choice of prior?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Consider each of the three prior distributions in this example. Which of the three prior distribution places the highest prior probability on the alternative hypothesis being true? Which of the three prior distribution leads to the largest Bayes factor in favor of the alternative hypothesis? Can you explain why?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<div id="exm-uniform-color-bf" class="theorem example">
+<p><span class="theorem-title"><strong>Example 25.9</strong></span> Continuing <a href="#exm-uniform-color-bf" class="quarto-xref">Example&nbsp;<span>25.9</span></a>. An alternative to hypothesis testing is to just use credible intervals to determine ranges of plausible values for the parameters, and to assess any hypotheses or regions of practical equivalence in light of the credible values.</p>
+</div>
+<ol type="1">
+<li><p>Assume a Uniform(0, 1) = Beta(1, 1) prior for <span class="math inline">\(\theta\)</span>. Compute a posterior 98% credible interval for <span class="math inline">\(\theta\)</span> given the sample data.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Assume a Beta(10, 10) prior for <span class="math inline">\(\theta\)</span>. Compute a posterior 98% credible interval for <span class="math inline">\(\theta\)</span> given the sample data.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Assume a Beta(200, 200) prior for <span class="math inline">\(\theta\)</span>. Compute a posterior 98% credible interval for <span class="math inline">\(\theta\)</span> given the sample data.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Are the posterior 98% credible intervals highly sensitive to the choice of prior?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Assuming this is a representative sample, does the data provide evidence that <span class="math inline">\(\theta\)</span> lies outside of [0.49, 0.51]?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+</section>
+<section id="notes" class="level2" data-number="25.7">
+<h2 data-number="25.7" class="anchored" data-anchor-id="notes"><span class="header-section-number">25.7</span> Notes</h2>
+<section id="odds-and-bayes-factors-1" class="level3" data-number="25.7.1">
+<h3 data-number="25.7.1" class="anchored" data-anchor-id="odds-and-bayes-factors-1"><span class="header-section-number">25.7.1</span> Odds and Bayes factors</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">hypothesis</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">prior</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">likelihood</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">product</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">posterior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Carries HIV</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">0.9770</td>
+<td style="text-align: right;">0.0049</td>
+<td style="text-align: right;">0.0622</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Does not carry HIV</td>
+<td style="text-align: right;">0.995</td>
+<td style="text-align: right;">0.0740</td>
+<td style="text-align: right;">0.0736</td>
+<td style="text-align: right;">0.9378</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sum</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.0785</td>
+<td style="text-align: right;">1.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ratio</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">13.2027</td>
+<td style="text-align: right;">0.0663</td>
+<td style="text-align: right;">0.0663</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="posterior-probability-of-models-1" class="level3" data-number="25.7.2">
+<h3 data-number="25.7.2" class="anchored" data-anchor-id="posterior-probability-of-models-1"><span class="header-section-number">25.7.2</span> Posterior probability of models</h3>
+<p>Prior predictive probability of observing 6 heads in 10 flips given that model 1 is correct</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="fl">7.5</span>, <span class="fl">2.5</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">10</span>, theta)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>l1 <span class="ot">=</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">6</span>) <span class="sc">/</span> Nrep</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>l1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.12379</code></pre>
+</div>
+</div>
+<p>Prior predictive probability of observing 6 heads in 10 flips given that model 2 is correct</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="fl">2.5</span>, <span class="fl">7.5</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">10</span>, theta)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>l2 <span class="ot">=</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">6</span>) <span class="sc">/</span> Nrep</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>l2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.042013</code></pre>
+</div>
+</div>
+<p>Bayes factor in favor of model 1 given 6 heads in 10 flips</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>l1 <span class="sc">/</span> l2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.946469</code></pre>
+</div>
+</div>
+</section>
+<section id="model-averaging-1" class="level3" data-number="25.7.3">
+<h3 data-number="25.7.3" class="anchored" data-anchor-id="model-averaging-1"><span class="header-section-number">25.7.3</span> Model averaging</h3>
+<p>If model 1 is correct the prior is Beta(7.5, 2.5) so the posterior after observing 6 heads in 10 flips is Beta(13.5, 6.5).</p>
+<ul>
+<li>Simulate a value of <span class="math inline">\(\theta\)</span> from a Beta(13.5, 6.5) distribution</li>
+<li>Given <span class="math inline">\(\theta\)</span>, simulate a value of <span class="math inline">\(y\)</span> from a Binomial(10, <span class="math inline">\(\theta\)</span>) distribution.</li>
+<li>Repeat many times and summarize the <span class="math inline">\(y\)</span> values</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="fl">7.5</span> <span class="sc">+</span> <span class="dv">6</span>, <span class="fl">2.5</span> <span class="sc">+</span> <span class="dv">4</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">10</span>, theta)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">table</span>(y) <span class="sc">/</span> Nrep,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a> <span class="at">ylab =</span> <span class="st">"Posterior predictive probability"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a> <span class="at">main =</span> <span class="st">"Given Model 1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="model-comparison_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>If model 2 is correct the prior is Beta(2.5, 7.5) so the posterior after observing 6 heads in 10 flips is Beta(8.5, 11.5).</p>
+<ul>
+<li>Simulate a value of <span class="math inline">\(\theta\)</span> from a Beta(8.5, 11.5) distribution</li>
+<li>Given <span class="math inline">\(\theta\)</span>, simulate a value of <span class="math inline">\(y\)</span> from a Binomial(10, <span class="math inline">\(\theta\)</span>) distribution.</li>
+<li>Repeat many times and summarize the <span class="math inline">\(y\)</span> values</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="fl">2.5</span> <span class="sc">+</span> <span class="dv">6</span>, <span class="fl">7.5</span> <span class="sc">+</span> <span class="dv">4</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">10</span>, theta)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">table</span>(y) <span class="sc">/</span> Nrep,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a> <span class="at">ylab =</span> <span class="st">"Posterior predictive probability"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a> <span class="at">main =</span> <span class="st">"Given Model 2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="model-comparison_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We saw in a previous part that with a 0.5/0.5 prior on model and 6 heads in 10 flips, the posterior probability of model 1 is 0.747 and of model 2 is 0.253. We now add another stage to our simulation</p>
+<ul>
+<li><em>Simulate a model</em>: model 1 with probability 0.747 and model 2 with probability 0.253</li>
+<li>Given the model simulate a value of <span class="math inline">\(\theta\)</span> from its posterior distribution: Beta(13.5, 6.5) if model 1, Beta(8.5, 11.5) if model 2.</li>
+<li>Given <span class="math inline">\(\theta\)</span> simulate a value of <span class="math inline">\(y\)</span> from a Binomial(10, <span class="math inline">\(\theta\)</span>) distribution</li>
+</ul>
+<p>The simulation results are below. We can also find the posterior predictive probability of 7 heads in the next 10 flips using the law of total probability to combine the results from the two previous parts: <span class="math inline">\((0.747)(0.216)+(0.253)(0.076) = 0.18\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">7.5</span>, <span class="fl">2.5</span>) <span class="sc">+</span> <span class="dv">6</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">7.5</span>) <span class="sc">+</span> <span class="dv">4</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>model <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">size =</span> Nrep, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.747</span>, <span class="fl">0.253</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, alpha[model], beta[model])</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">10</span>, theta)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">table</span>(y) <span class="sc">/</span> Nrep,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Posterior predictive probability"</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Model Average"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="model-comparison_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="accounting-for-model-complexity-1" class="level3" data-number="25.7.4">
+<h3 data-number="25.7.4" class="anchored" data-anchor-id="accounting-for-model-complexity-1"><span class="header-section-number">25.7.4</span> Accounting for model complexity</h3>
+<p>A sample proportion of 15/20 = 0.75 does not seem consistent with the “must be fair” model, so we expect the Bayes Factor to favor the “anything in possible” model.</p>
+<p>The Bayes Factor is the ratio of the likelihoods (of 15/20). To approximate the likelihood of 15 heads in 20 flips for the “must be fair” model</p>
+<ul>
+<li>Simulate a value <span class="math inline">\(\theta\)</span> from a Beta(500, 500) distribution</li>
+<li>Given <span class="math inline">\(\theta\)</span>, simulate a value <span class="math inline">\(y\)</span> from a Binomial(20, <span class="math inline">\(\theta\)</span>) distribution</li>
+<li>Repeat many times and the proportion of simulated repetitions that yield a <span class="math inline">\(y\)</span> of 15.</li>
+</ul>
+<p>Approximate the likelihood of 15 heads in 20 flips for the “anything is possible” model similarly, but with a Beta(1, 1) distribution.</p>
+<p>The Bayes factor is the ratio of the likelihoods, about 0.323 in favor of the “must be fair” model. That is, the Bayes factor favors the “anything is possible” model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>theta1 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="dv">500</span>, <span class="dv">500</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">20</span>, theta1)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>theta2 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">20</span>, theta2)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">15</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3231564</code></pre>
+</div>
+</div>
+<p>Similar to the previous part but with different data; now we compute the likelihood of 11 heads in 20 flips. The Bayes factor is about 3.34. Thus, the Bayes factor favors the “must be fair” model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">11</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">11</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.344222</code></pre>
+</div>
+</div>
+</section>
+<section id="sensitivity-of-model-comparison-to-prior-1" class="level3" data-number="25.7.5">
+<h3 data-number="25.7.5" class="anchored" data-anchor-id="sensitivity-of-model-comparison-to-prior-1"><span class="header-section-number">25.7.5</span> Sensitivity of model comparison to prior</h3>
+<p>The simulation is similar to the ones in the previous example, just with different data. The Bayes Factor is about 0.13 in favor of the “must be fair” model. So the Bayes Factor favors the “anything is possible” model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>theta1 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="dv">500</span>, <span class="dv">500</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">100</span>, theta1)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>theta2 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">100</span>, theta2)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">65</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">65</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1316002</code></pre>
+</div>
+</div>
+<p>The simulation is similar to the one in the previous part, just with a different prior. The Bayes Factor is about 5.7 in favor of the “must be fair” model. So the Bayes Factor favors the “must be fair” model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>theta1 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="dv">500</span>, <span class="dv">500</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">100</span>, theta1)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>theta2 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="fl">0.01</span>, <span class="fl">0.01</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">100</span>, theta2)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">65</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">65</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6.089109</code></pre>
+</div>
+</div>
+<p>Even though they’re both non-informative priors, the Beta(1, 1) and Beta(0.01, 0.01) priors leads to very different Bayes factors and decisions. The <em>choice of model</em> does appear to be sensitive to the choice of prior distribution.</p>
+<p>However, at least in this case, the <em>estimation of <span class="math inline">\(\theta\)</span></em> within the “anything is possible” model does not appear to be sensitive to the choice of prior.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), <span class="dv">1</span> <span class="sc">+</span> <span class="dv">65</span>, <span class="dv">1</span> <span class="sc">+</span> <span class="dv">35</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5339654 0.7517155</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), <span class="fl">0.01</span> <span class="sc">+</span> <span class="dv">65</span>, <span class="fl">0.01</span> <span class="sc">+</span> <span class="dv">35</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5358690 0.7552979</code></pre>
+</div>
+</div>
+</section>
+<section id="hypothesis-testing-just-dont-do-it-1" class="level3" data-number="25.7.6">
+<h3 data-number="25.7.6" class="anchored" data-anchor-id="hypothesis-testing-just-dont-do-it-1"><span class="header-section-number">25.7.6</span> Hypothesis testing (just don’t do it)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rope</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>rope_lb <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">-</span> <span class="fl">0.01</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>rope_ub <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.01</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># data</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">457</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="dv">248</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Beta(1, 1) prior for <span class="math inline">\(\theta\)</span>: Bayes factor in favor of alternative</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>prior_prob <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="fu">pbeta</span>(rope_ub, alpha, beta) <span class="sc">-</span> <span class="fu">pbeta</span>(rope_lb, alpha, beta))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>prior_odds <span class="ot">=</span> prior_prob <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> prior_prob)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>post_prob <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="fu">pbeta</span>(rope_ub, alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y) <span class="sc">-</span> <span class="fu">pbeta</span>(rope_lb, alpha <span class="sc">+</span> y , beta <span class="sc">+</span> n <span class="sc">-</span> y))</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>post_odds <span class="ot">=</span> post_prob <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_prob)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>post_odds <span class="sc">/</span> prior_odds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2740815</code></pre>
+</div>
+</div>
+<p>Beta(10, 10) prior for <span class="math inline">\(\theta\)</span>: Bayes factor in favor of alternative</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>prior_prob <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="fu">pbeta</span>(rope_ub, alpha, beta) <span class="sc">-</span> <span class="fu">pbeta</span>(rope_lb, alpha, beta))</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>prior_odds <span class="ot">=</span> prior_prob <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> prior_prob)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>post_prob <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="fu">pbeta</span>(rope_ub, alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y) <span class="sc">-</span> <span class="fu">pbeta</span>(rope_lb, alpha <span class="sc">+</span> y , beta <span class="sc">+</span> n <span class="sc">-</span> y))</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>post_odds <span class="ot">=</span> post_prob <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_prob)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>post_odds <span class="sc">/</span> prior_odds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.931962</code></pre>
+</div>
+</div>
+<p>Beta(200, 200) prior for <span class="math inline">\(\theta\)</span>: Bayes factor in favor of alternative</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">200</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">200</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>prior_prob <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="fu">pbeta</span>(rope_ub, alpha, beta) <span class="sc">-</span> <span class="fu">pbeta</span>(rope_lb, alpha, beta))</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>prior_odds <span class="ot">=</span> prior_prob <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> prior_prob)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>post_prob <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="fu">pbeta</span>(rope_ub, alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y) <span class="sc">-</span> <span class="fu">pbeta</span>(rope_lb, alpha <span class="sc">+</span> y , beta <span class="sc">+</span> n <span class="sc">-</span> y))</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>post_odds <span class="ot">=</span> post_prob <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_prob)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>post_odds <span class="sc">/</span> prior_odds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.805793</code></pre>
+</div>
+</div>
+<p>Beta(1, 1) prior for <span class="math inline">\(\theta\)</span>: Credible interval</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4882458 0.5961777</code></pre>
+</div>
+</div>
+<p>Beta(10, 10) prior for <span class="math inline">\(\theta\)</span>: Credible interval</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4876717 0.5935857</code></pre>
+</div>
+</div>
+<p>Beta(200, 200) prior for <span class="math inline">\(\theta\)</span>: Credible interval</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">200</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">200</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4830347 0.5623168</code></pre>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-doingba2015" class="csl-entry" role="listitem">
+<em>Doing Bayesian Data Analysis</em>. 2015. Elsevier. <a href="https://doi.org/10.1016/c2012-0-00477-2">https://doi.org/10.1016/c2012-0-00477-2</a>.
+</div>
+</div>
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Tools that are commonly used in frequentist analysis — such as cross-validation — can be applied to compare Bayesian models. However, we’re going to focus on some specifically Bayesian model comparison ideas.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The coin flipping examples in this section are adapted from Chapter 10 of <span class="citation" data-cites="doingba2015">(<a href="references.html#ref-doingba2015" role="doc-biblioref"><em>Doing Bayesian Data Analysis</em> 2015</a>)</span>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./classification.html" class="pagination-link" aria-label="Naive Bayes Classification">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

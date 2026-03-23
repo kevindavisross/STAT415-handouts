@@ -1,0 +1,400 @@
+# Introduction to Bayesian Hierarchical Models {#sec-hierarchical}
+
+{{< include _r_setup.qmd >}}
+
+{{< include _python_setup.qmd >}}
+
+
+
+In a **Bayesian hierarchical^[Hierarchical models are often called *multilevel, mixed effects, or random effects models*.] model**, the model for the data depends on certain parameters, and those parameters in turn depend on other parameters.
+Hierarchical modeling provides a framework for building
+complex and high-dimensional models from simple and
+low-dimensional building blocks.
+
+
+Suppose we want to estimate the true, long run free throw percentage for each basketball player currently on the Philadelphia 76ers^[Along with one bonus "player" who will illustrate some ideas.].
+That is, we want to estimate each player's true probability of successfully scoring on any free throw attempt.
+We'll consider data from games in the 2022-2023 NBA season obtained from [basketball-reference](https://www.basketball-reference.com/teams/PHI/2023.html#totals::17) as of Feb 27, summarized in @sec-hierarchical-sample.
+
+```{r}
+#| include: false
+#| echo: false
+#| warning: false
+
+data = read_csv("sixers.csv") |>
+  rename(FTpct = "FT%")
+
+```
+
+
+
+::: {#exm-hier-intro}
+Let $\theta_j$ denote player $j$'s true (long run) FT percentage; for example, $\theta_{\text{Embiid}}$, $\theta_{\text{Harden}}$, etc.
+Let $n_j$ denote the number of free throw attempts and $y_j$ the number of free throws made for player $j$.
+:::
+
+1. One way to estimate $\theta_j$ is to pool all the data together.
+Over the `r nrow(data)` players in the data set, there are `r sum(data$FTA)` attempts, of which `r sum(data$FT)` were successful, for an overall free throw percentage of `r 100 * round(sum(data$FT) / sum(data$FTA), 3)`%.  The sample mean free throw percentage, among players with nonzero attempts, is `r 100 * round(mean(data$FTpct, na.rm = TRUE), 3)`%.
+So we could just estimate each $\theta_j$ with the overall free throw percentage (or the sample mean free throw percentage).
+What are some issues with this approach?
+\
+\
+\
+\
+\
+
+1. At the other extreme, we could estimate $\theta_j$ using just the attempts for player $j$.
+For example, use only the attempts for Embiid to estimate $\theta_{\text{Embiid}}$, only the attempts for Harden to estimate $\theta_{\text{Harden}}$, etc.
+What are some issues with this approach?
+(Hint: consider the players with no attempts, or few attempts.)
+\
+\
+\
+\
+\
+
+1. In a Bayesian model, the $\theta_j$'s would have a prior distribution.
+We could assume a Bayesian model with a prior in which all $\theta_j$ are independent.
+What are some issues with this approach?
+\
+\
+\
+\
+\
+
+::: {#exm-hier-hyper}
+Let's first consider just a single player with true (long run) free throw percentage $\theta$.
+Given $n$ independent attempts, conditional on $\theta$, we might assume that $y$ follows a Binomial($n, \theta$) distribution.
+:::
+
+1. If we imagine the player is randomly selected from among current NBA players, how might we interpret the prior distribution for $\theta$?
+\
+\
+\
+\
+\
+
+1. The prior distribution for $\theta$ has a prior mean; let's denote it $\mu$.
+How might we interpret $\mu$?
+\
+\
+\
+\
+\
+
+1. The prior mean $\mu$ is also a parameter, so we could place a prior distribution on it.
+What would the prior distribution on $\mu$ represent?
+\
+\
+\
+\
+\
+
+1. In this model $\mu$ and $\theta$ are dependent.
+Why is this dependence useful?
+\
+\
+\
+\
+\
+
+1. The prior distribution for $\theta$ has a prior standard deviation; let's denote it $\sigma$.
+How might we interpret $\sigma$?
+\
+\
+\
+\
+\
+
+1. The prior standard deviation $\sigma$ is also a parameter, so we could place a prior distribution on it.
+What would the prior distribution on $\sigma$ represent?
+\
+\
+\
+\
+\
+
+
+- A Bayesian hierarchical model consists of the following layers in the hierarchy.
+    1. A model for the data $y$ which depends on model parameters $\theta$ and is represented by the likelihood $f(y|\theta)$.
+        - The model usually involves multiple parameters.
+        Generically, $\theta$ represents a vector of parameters that show up in the likelihood function.
+        - Remember: While the likelihood for a particular $y$ sample is computed by evaulating the conditional density of $y$ given $\theta$, the likelihood function is *a function of $\theta$, treating the data $y$ as fixed*.
+    1. A (joint) prior distribution for the model parameter $\theta$, denoted $\pi(\theta|\phi)$, which depends on *hyperparameters* $\phi$.
+    1. A *hyperprior* distribution, i.e., a prior distribution for the hyperparameters, denoted $\pi(\phi)$.
+(Again, $\phi$ generically represents a vector of hyperparameters.)
+- The above specification implicitly assumes that the data distribution and likelihood function only depend on $\theta$; the hyperparameters only affect $y$ through $\theta$.
+That is, the general hierarchical model above assumes that the data $y$ and hyperparameters $\phi$ are conditionally independent given the model parameters $\theta$, so the likelihood satisfies
+$$
+f(y|\theta, \phi) = f(y|\theta)
+$$
+The joint prior distribution on parameters and hyperparameters is
+$$
+\pi(\theta, \phi) = \pi(\theta|\phi)\pi(\phi)
+$$
+- Given the observed data $y$, we find the joint posterior density of the parameters and hyperparameters, denoted $\pi(\theta, \phi|y)$, using Bayes rule: posterior $\propto$ likelihood $\times$ prior.
+\begin{align*}
+\pi(\theta, \phi|y) & \propto f(y|\theta, \phi)\pi(\theta, \phi)\\
+& \propto f(y|\theta)\pi(\theta|\phi)\pi(\phi)
+\end{align*}
+- In Bayesian hierarchical models, there will generally be dependence between parameters.
+But dependence among parameters is actually useful for several reasons:
+    - The dependence is natural and meaningful in the problem context.
+    - If parameters are dependent, then all data can inform parameter estimates.
+
+
+::: {#exm-hier-model}
+Now suppose want to estimate the free throw percentages for $J$ NBA players, given data consisting of the number of free throws attempted $n_j$ and made $y_j$ by player $j$.
+Specify a hierarchical model, including your choice of prior distribution.
+How many parameters are there in the model?
+:::
+\
+\
+\
+\
+\
+
+
+::: {#exm-hier-hyper-post}
+Use software to fit the Bayesian model using the 76ers data.
+Summarize the posterior distribution of $\mu$.
+:::
+\
+\
+\
+\
+\
+
+
+::: {#exm-hier-post}
+For each player $j$, consider the posterior mean and posterior SD of $\theta_j$.
+:::
+
+
+1. What is the posterior mean of $\theta_j$ for players with no attempts?
+Why does this make sense?
+\
+\
+\
+\
+\
+
+1. Why is the posterior mean of $\theta_j$ not the same for players with no attempts?
+\
+\
+\
+\
+\
+
+
+1. For which players is the posterior mean closest to the observed free throw percentage?
+Why?
+\
+\
+\
+\
+\
+
+1. Which players have the smallest posterior SDs?
+Why?
+\
+\
+\
+\
+\
+
+1. Find and interpret 50%, 80%, and 98% posterior credible intervals for Joel Embiid.
+\
+\
+\
+\
+\
+
+1. Find and interpret 50%, 80%, and 98% posterior credible intervals for Kevin Ross.
+\
+\
+\
+\
+\
+
+
+
+
+
+## Notes
+
+
+### Sample data {#sec-hierarchical-sample}
+
+```{r}
+#| warning: false
+
+data = read_csv("sixers.csv") |>
+  rename(FTpct = "FT%") |>
+  arrange(desc(FTA)) 
+```
+
+
+```{r}
+data |>
+  select(Player, FTA, FT, FTpct) |>
+  kbl() |> kable_styling()
+```
+
+
+
+### Approximating the posterior distribution
+
+`brms` is structured around linear models.
+In the situation of this example, `brms` wants to fit a logistic regression model.
+Rather than doing that, I used another software program, JAGS, to fit our current model.
+Don't worry about the syntax.
+Just notice that the inputs are: (1) the data, (2) the model for the data which determines the likelihood (`dbinom`), and (3) the prior (`dbeta`) and hyperprior (`dnorm`).
+And the output is an approximation of the posterior distribution of the parameters.
+
+
+
+```{r}
+
+library(rjags)
+
+player = data$Player
+y = data$FT
+n = data$FTA
+J = length(y)
+
+# specify the model: likelihood, prior, hyperprior
+
+model_string <- "model{
+
+  # Likelihood
+  for (j in 1:J){
+    y[j] ~ dbinom(theta[j], n[j])
+  }
+
+  # Prior Beta(alpha, beta)
+  # We put hyperpriors on the mean mu and the SD sigma,
+  # So we need to convert to shape parameters alpha and beta
+  
+  for (j in 1:J){
+    theta[j] ~ dbeta(mu * (mu * (1 - mu) / sigma ^ 2 - 1), (1 - mu) * (mu * (1 - mu) / sigma ^ 2 - 1))
+  }
+  
+  # Hyperprior, phi=(mu, sigma)
+  # In JAGS the second parameter of dnorm is precision = 1 / SD ^ 2
+  
+  mu ~ dnorm(0.75, 1 / 0.05 ^ 2)
+  sigma ~ dnorm(0.08, 1 / 0.02 ^ 2)
+}"
+
+dataList = list(y = y, n = n, J = J)
+
+model <- jags.model(file = textConnection(model_string), 
+                    data = dataList)
+
+update(model, n.iter = 1000)
+
+posterior_sample <- coda.samples(model,
+                       variable.names = c("theta", "mu", "sigma"),
+                       n.iter = 10000,
+                       n.chains = 5)
+```
+
+
+```{r}
+head(posterior_sample)
+
+```
+
+
+
+
+```{r}
+summary(posterior_sample)
+```
+
+
+### Posterior distribution of $\mu$
+
+```{r}
+mu_post = as.matrix(posterior_sample)[, "mu"]
+
+hist(mu_post, breaks = 100)
+
+quantile(mu_post, c(0.01, 0.10, 0.25, 0.5, 0.75, 0.90, 0.99))
+```
+
+### Posterior mean and SD of $\theta_j$s
+
+```{r}
+player_summary = data.frame(player, n, y, y / n)
+names(player_summary) = c("player", "FTA", "FT", "FTpct")
+
+# In posterior_sample list, the first two entries correspond to mu and sigma,
+# so we remove them.
+
+player_summary[c("posterior_mean", "posterior_SD")] =
+  summary(posterior_sample)$statistics[-(1:2), c("Mean", "SD")]
+
+
+player_summary |> kbl(digits = 4) |> kable_styling()
+```
+
+
+
+```{r}
+#| warning: false
+
+player_summary |>
+  select(player, FTpct, posterior_mean) |>
+  pivot_longer(!player, names_to = "source", values_to = "value") |>
+  mutate(label = if_else(source == "FTpct", player, "")) |>
+  ggplot(aes(x = source,
+           y = value,
+           group = player,
+           col = player,
+           label = label)) +
+  scale_color_discrete() +
+  geom_point() +
+  geom_text(hjust = 1, size = 3) + 
+  geom_line(alpha = 0.5) +
+  theme(legend.position = "none")
+```
+
+### Posterior distribution of $\theta_{\text{Embiid}}$
+
+```{r}
+mu_post = as.matrix(posterior_sample)[, "theta[1]"]
+
+hist(mu_post, breaks = 100)
+
+quantile(mu_post, c(0.01, 0.10, 0.25, 0.5, 0.75, 0.90, 0.99))
+```
+
+
+### Posterior distribution of $\theta_{\text{Ross}}$
+
+```{r}
+mu_post = as.matrix(posterior_sample)[, "theta[19]"]
+
+hist(mu_post, breaks = 100)
+
+quantile(mu_post, c(0.01, 0.10, 0.25, 0.5, 0.75, 0.90, 0.99))
+```
+
+
+
+[`ShinyStan`](https://mc-stan.org/users/interfaces/shinystan) provides a nice interface to interactively investigate the posterior distribution.
+
+```{r}
+#| eval: false
+
+library(shinystan)
+
+sixers_sso <- as.shinystan(posterior_sample, model_name = "76ers Free Throws")
+sixers_sso <- drop_parameters(sixers_sso, pars = c("sigma"))
+launch_shinystan(sixers_sso)
+```
+
+
+
