@@ -25,7 +25,7 @@ The goal here is to just think about these questions, and not to compute any pro
 1. The probability that you roll doubles in a turn of a board game.
 1. The probability that a “randomly selected” Cal Poly student is a California resident.
 1. The probability that the high temperature in San Luis Obispo tomorrow is above 70 degrees F.
-1. The probability that President Biden wins the 2024 U.S. Presidential Election.
+1. The probability that a Democratic candidate wins the 2028 U.S. Presidential election.
 1. The probability that extraterrestrial life currently exists somewhere in the universe.
 1. The probability that you ate an apple on April 17, 2009.
 \
@@ -49,32 +49,32 @@ As the name suggests, different individuals (or probabilistic models) might have
 
 
 ::: {#exm-probability-tiktok}
-What is your subjective probability that Professor Ross has a TikTok account?
+What is your subjective probability that Professor Ross has ever attended a "famous" sporting event (like the Superbowl, a World Series game 7, an NCAA tournament game with a famous shot, an Olympic final, etc)?
 Consider the following two bets, and suppose you must choose only one.
 :::
 
-A.  You win $100 if Professor Ross has a TikTok account, and you win nothing otherwise.
+A.  You win $100 if Professor Ross has attended a famous sporting event, and you win nothing otherwise.
 A.  A box contains 40 green and 60 gold marbles that are otherwise identical.
 The marbles are thoroughly mixed and one marble is selected at random.
 You win $100 if the selected marble is green, and you win nothing otherwise.
 
 1. Which of the above bets would you prefer?
 Or are you completely indifferent?
-What does this say about your subjective probability that Professor Ross has a Tik Tok account?
+What does this say about your subjective probability that Professor Ross has attended a famous sporting event?
 \
 \
 \
 
 1. If you preferred bet B to bet A, consider bet C which has a similar setup to B but now there are 20 green and 80 gold marbles.
 Do you prefer bet A or bet C?
-What does this say about your subjective probability that Professor Ross has a Tik Tok account? 
+What does this say about your subjective probability that Professor Ross has attended a famous sporting event? 
 \
 \
 \
 
 1. If you preferred bet A to bet B, consider bet D which has a similar setup to B but now there are 60 green and 40 gold marbles.
 Do you prefer bet A or bet D?
-What does this say about your subjective probability that Professor Ross has a Tik Tok account?
+What does this say about your subjective probability that Professor Ross has attended a famous sporting event?
 \
 \
 \
@@ -87,12 +87,12 @@ Can you zero in on your subjective probability?
 
 ::: {#exm-worldseries-proportional}
 
-Suppose your subjective probabilities for the 2023 NBA champion satisfy the following conditions.
+Suppose your subjective probabilities for the 2026 NBA champion satisfy the following conditions.
 
-- The Nuggets and 76ers are equally likely to win
-- The Grizzlies are 1.5 times more likely than the Nuggets to win
-- The Celtics are 2 times more likely than the Grizzlies to win
-- The winner is as likely to be among these four teams --- Celtics, Grizzlies, 76ers, Nuggets --- as not.
+- The Nuggets and Spurs are equally likely to win
+- The Celtics are 1.5 times more likely than the Nuggets to win
+- The Thunder are 2 times more likely than the Celtics to win
+- The winner is as likely to be among these four teams --- Thunder, Celtics, Spurs, Nuggets --- as not.
 :::
 
 1. Construct a table of your subjective probabilities.
@@ -112,49 +112,33 @@ According to this model, what would you expect the results of 10000 repetitions 
 
 ::: {#exm-instructor-age-subjective-prob}
 
-How old do you think Professor Ross currently is? Consider age on a continuous scale, e.g., you might be 20.73 or 21.36 or 19.50.
+How many miles are on the odometer of Professor Ross's car?
+Consider mileage on a continous scale.
 
-In this example, you will use probability to quantify your uncertainty about your instructor's age.
+In this example, you will use probability to quantify your uncertainty about the mileage.
 You only need to give ballpark estimates of your subjective probabilities, but you might consider what kinds of bets you would be willing to accept.
 :::
 
 
-1.  What is your subjective probability that your instructor is at most 30 years old?
-More than 30 years old?
+1.  What is your subjective probability that the mileage is at most 50000?
+More than 50000?
 (What must be true about these two probabilities?)
+You're welcome to try with values other than 50000.
 \
 \
 \
 
-1.  What is your subjective probability that your instructor is at most 60 years old?
-More than 60 years old?
+1. Fill in the blank: your subjective probability that the mileage is at most [blank] years old is equal to 50%.
 \
 \
 \
 
-1.  What is your subjective probability that your instructor is at most 40 years old?
-More than 40 years old?
+1. Fill in the blanks: your subjective probability that the mileage is between [blank] and [blank] years old is equal to 98%.
 \
 \
 \
 
-1.  What is your subjective probability that your instructor is at most 50 years old?
-More than 50 years old?
-\
-\
-\
-
-1. Fill in the blank: your subjective probability that your instructor is at most [blank] years old is equal to 50%.
-\
-\
-\
-
-1. Fill in the blanks: your subjective probability that your instructor is between [blank] and [blank] years old is equal to 95%.
-\
-\
-\
-
-1.  Let $\theta$ represent your instructor's age at 8:00am on Jan 12, 2023.
+1.  Let $\theta$ represent the current mileage.
 Use your answers to the previous parts to sketch a continuous probability density function to represent your *subjective probability distribution* for $\theta$.
 \
 \
@@ -178,12 +162,12 @@ Like probabilities themselves, probability distributions of random variables can
 
 ::: {#exm-instructor-age-subjective-prob-examples}
 
-Continuing the previous example, @fig-interpretations-four-densities displays the subjective probability distribution of the instructor's age for four students.  
+Continuing the previous example, @fig-interpretations-four-densities displays the subjective probability distribution of mileage for four students.  
 :::
 
 
 
-![Plausibility assessments of four students](/figures/intro-four-densities.png){#fig-interpretations-four-densities}
+![Plausibility assessments of four students](/figures/intro-four-densities.png){#fig-interpretations-four-densities-mileage}
 
 
 
@@ -204,7 +188,7 @@ Continuing the previous example, @fig-interpretations-four-densities displays th
 <!-- ``` -->
 
 
-1. Since age is treated as a continuous random variable, each of the above plots is a probability "density".
+1. Since mileage is treated as a continuous random variable, each of the above plots is a probability "density".
 Explain briefly what this means.
 How is probability represented in density plots like these?
 \
@@ -213,21 +197,14 @@ How is probability represented in density plots like these?
 \
 \
 
-1. Rank the students in terms of their subjective probability that the instructor is at most 40 years old.
+1. Rank the students in terms of their subjective probability that the mileage is at most 50000.
 \
 \
 \
 \
 \
 
-1. Rank the students in terms of their answers to the question: your subjective probability that your instructor is at most [blank] years old is equal to 50%.
-\
-\
-\
-\
-\
-
-1. Rank the students in terms of their uncertainty about the instructor's age.  Who is the most uncertain?  The least?
+1. Rank the students in terms of their uncertainty about the mileage.  Who is the most uncertain?  The least?
 \
 \
 \
@@ -240,7 +217,8 @@ How is probability represented in density plots like these?
 
 ::: {#exm-harry-potter-movie-book-subjective}
 
-Let $\theta_b$ represent the proportion of current Cal Poly students who have ever read any of the books in the *Harry Potter* series.  Let $\theta_m$ represent the proportion of current Cal Poly students who have ever seen any of the movies in the *Harry Potter* series.
+Let $\theta_b$ represent the proportion of current Cal Poly students who have ever read at least one book in Lemony Snicket's *A Series of Unfortunate Events*. 
+Let $\theta_m$ represent the proportion of current Cal Poly students who have seen at least one Star Wars movie.
 :::
 
 
@@ -274,7 +252,7 @@ Let $\theta_b$ represent the proportion of current Cal Poly students who have ev
 \
 \
 
-1. Suppose that in a class of 35 Cal Poly students, 21 have read a Harry Potter book, and 30 have seen a Harry Potter movie.  Now that we have observed some data, sketch a probability distribution representing what you think are more/less credible values of $\theta_b$.  Repeat for $\theta_m$. How do your distributions after observing data compare to the distributions you sketched before? 
+1. Suppose that in a class of 35 Cal Poly students, 7 have read a Lemony Snicket book, and 32 have seen a Star Wars movie.  Now that we have observed some data, sketch a probability distribution representing what you think are more/less credible values of $\theta_b$.  Repeat for $\theta_m$. How do your distributions after observing data compare to the distributions you sketched before? 
 \
 \
 \

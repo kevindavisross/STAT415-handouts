@@ -212,7 +212,7 @@ Compare to the posterior probabilities given postgraduate degree from the previo
 ::: {#exm-bayes-marbles}
 Suppose that you are presented with six boxes, labeled 0, 1, 2, $\ldots$, 5, each containing five marbles.
 Box 0 contains 0 green and 5 gold marbles, box 1 contains 1 green and 4 gold, and so on with box $i$ containing $i$ green and $5-i$ gold.
-One of the boxes is chosen uniformly at random (perhaps by rolling a fair six-sided die), and then you will randomly select marbles from that box, without replacement.
+One of the boxes is chosen uniformly at random (perhaps by rolling a fair six-sided die and subtracting 1 from the result), and then you will randomly select marbles from that box, without replacement.
 Based on the colors of the marbles selected, you will update the probabilities of which box had been chosen.
 
 :::
@@ -280,10 +280,14 @@ likelihood_E_given_H3 = c(0.573, 0.272, 0.097, 0.058) # given not sure
 
 n = 100000
 
-twoway_table = data.frame(n * rbind( 
-             prior[1] * likelihood_E_given_H1,
-             prior[2] * likelihood_E_given_H2,
-             prior[3] * likelihood_E_given_H3))
+twoway_table = data.frame(
+  n *
+    rbind(
+      prior[1] * likelihood_E_given_H1,
+      prior[2] * likelihood_E_given_H2,
+      prior[3] * likelihood_E_given_H3
+    )
+)
 
 colnames(twoway_table) = evidence
 
@@ -304,17 +308,13 @@ hypothesis = c("iterative", "unchanging", "not sure")
 prior = c(0.70, 0.14, 0.16)
 
 # likelihood of evidence = postgraduate degree, given each hypothesis
-likelihood = c(0.182, 0.103, 0.058) 
+likelihood = c(0.182, 0.103, 0.058)
 
 product = prior * likelihood
 
 posterior = product / sum(product)
 
-bayes_table = data.frame(hypothesis,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(hypothesis, prior, likelihood, product, posterior)
 
 bayes_table |>
   adorn_totals("row") |>
@@ -340,11 +340,7 @@ product = prior * likelihood
 
 posterior = product / sum(product)
 
-bayes_table = data.frame(hypothesis,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(hypothesis, prior, likelihood, product, posterior)
 
 bayes_table |>
   adorn_totals("row") |>

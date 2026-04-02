@@ -1,8 +1,11 @@
 {
-  "hash": "f89d2cae73031aafc1d0dc4ae48f295e",
+  "hash": "784f4017d06a4f4d8c7e31893efd2cf5",
   "result": {
-    "markdown": "# Preface {.unnumbered}\n\nThis is a Quarto book.\n\nTo learn more about Quarto books visit <https://quarto.org/docs/books>.\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2\n```\n:::\n:::\n",
-    "supporting": [],
+    "engine": "knitr",
+    "markdown": "# Preface {.unnumbered}\n\n\nHandouts containing examples, exercises, and notes covering selected topics from Cal Poly STAT 415.\n\nSome of the examples use the R package `brms` @brms.\n\nHere are some other commonly used packages and settings.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\nlibrary(janitor)\nlibrary(kableExtra)\nlibrary(viridis)\nlibrary(scales)\nlibrary(tidybayes)\nlibrary(bayesplot)\nlibrary(bayesrules)\nlibrary(e1071)\n\nbayes_col = c(\"#56B4E9\", \"#E69F00\", \"#009E73\", \"#CC79A7\", \"#CC79A7\")\nnames(bayes_col) = c(\n  \"prior\",\n  \"likelihood\",\n  \"posterior\",\n  \"prior_predict\",\n  \"posterior_predict\"\n)\n\nbayes_lty = c(\"dashed\", \"dotted\", \"solid\")\nnames(bayes_lty) = c(\"prior\", \"likelihood\", \"posterior\")\n\nset.seed(21234)\n```\n:::\n\n\n",
+    "supporting": [
+      "index_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

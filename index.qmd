@@ -3,4 +3,36 @@
 
 Handouts containing examples, exercises, and notes covering selected topics from Cal Poly STAT 415.
 
-Some of the examples use the R package @brms.
+Some of the examples use the R package `brms` @brms.
+
+Here are some other commonly used packages and settings.
+
+```{r}
+#| eval: false
+#| warning: false
+
+library(tidyverse)
+library(janitor)
+library(kableExtra)
+library(viridis)
+library(scales)
+library(tidybayes)
+library(bayesplot)
+library(bayesrules)
+library(e1071)
+
+bayes_col = c("#56B4E9", "#E69F00", "#009E73", "#CC79A7", "#CC79A7")
+names(bayes_col) = c(
+  "prior",
+  "likelihood",
+  "posterior",
+  "prior_predict",
+  "posterior_predict"
+)
+
+bayes_lty = c("dashed", "dotted", "solid")
+names(bayes_lty) = c("prior", "likelihood", "posterior")
+
+set.seed(21234)
+```
+

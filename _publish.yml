@@ -1,0 +1,4 @@
+- source: project
+  posit-connect-cloud:
+    - id: 019d1d67-3a75-c04e-da92-ababe2c9ce4b
+      url: https://connect.posit.cloud/kevindavisross/content/019d1d67-3a75-c04e-da92-ababe2c9ce4b

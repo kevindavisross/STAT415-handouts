@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>4&nbsp; Interpretations of Probability and Statistics – STAT415 Handouts</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -38,10 +41,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -71,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -84,7 +87,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -340,7 +343,7 @@ window.Quarto = {
 <li>The probability that you roll doubles in a turn of a board game.</li>
 <li>The probability that a “randomly selected” Cal Poly student is a California resident.</li>
 <li>The probability that the high temperature in San Luis Obispo tomorrow is above 70 degrees F.</li>
-<li>The probability that President Biden wins the 2024 U.S. Presidential Election.</li>
+<li>The probability that a Democratic candidate wins the 2028 U.S. Presidential election.</li>
 <li>The probability that extraterrestrial life currently exists somewhere in the universe.</li>
 <li>The probability that you ate an apple on April 17, 2009.<br>
 <br>
@@ -363,22 +366,22 @@ window.Quarto = {
 <li>Fortunately, the mathematics of probability work the same way regardless of the interpretation.</li>
 </ul>
 <div id="exm-probability-tiktok" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.2</strong></span> What is your subjective probability that Professor Ross has a TikTok account? Consider the following two bets, and suppose you must choose only one.</p>
+<p><span class="theorem-title"><strong>Example 4.2</strong></span> What is your subjective probability that Professor Ross has ever attended a “famous” sporting event (like the Superbowl, a World Series game 7, an NCAA tournament game with a famous shot, an Olympic final, etc)? Consider the following two bets, and suppose you must choose only one.</p>
 </div>
 <ol type="A">
-<li>You win $100 if Professor Ross has a TikTok account, and you win nothing otherwise.</li>
+<li>You win $100 if Professor Ross has attended a famous sporting event, and you win nothing otherwise.</li>
 <li>A box contains 40 green and 60 gold marbles that are otherwise identical. The marbles are thoroughly mixed and one marble is selected at random. You win $100 if the selected marble is green, and you win nothing otherwise.</li>
 </ol>
 <ol type="1">
-<li><p>Which of the above bets would you prefer? Or are you completely indifferent? What does this say about your subjective probability that Professor Ross has a Tik Tok account?<br>
+<li><p>Which of the above bets would you prefer? Or are you completely indifferent? What does this say about your subjective probability that Professor Ross has attended a famous sporting event?<br>
 <br>
 <br>
 </p></li>
-<li><p>If you preferred bet B to bet A, consider bet C which has a similar setup to B but now there are 20 green and 80 gold marbles. Do you prefer bet A or bet C? What does this say about your subjective probability that Professor Ross has a Tik Tok account?<br>
+<li><p>If you preferred bet B to bet A, consider bet C which has a similar setup to B but now there are 20 green and 80 gold marbles. Do you prefer bet A or bet C? What does this say about your subjective probability that Professor Ross has attended a famous sporting event?<br>
 <br>
 <br>
 </p></li>
-<li><p>If you preferred bet A to bet B, consider bet D which has a similar setup to B but now there are 60 green and 40 gold marbles. Do you prefer bet A or bet D? What does this say about your subjective probability that Professor Ross has a Tik Tok account?<br>
+<li><p>If you preferred bet A to bet B, consider bet D which has a similar setup to B but now there are 60 green and 40 gold marbles. Do you prefer bet A or bet D? What does this say about your subjective probability that Professor Ross has attended a famous sporting event?<br>
 <br>
 <br>
 </p></li>
@@ -388,12 +391,12 @@ window.Quarto = {
 </p></li>
 </ol>
 <div id="exm-worldseries-proportional" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.3</strong></span> Suppose your subjective probabilities for the 2023 NBA champion satisfy the following conditions.</p>
+<p><span class="theorem-title"><strong>Example 4.3</strong></span> Suppose your subjective probabilities for the 2026 NBA champion satisfy the following conditions.</p>
 <ul>
-<li>The Nuggets and 76ers are equally likely to win</li>
-<li>The Grizzlies are 1.5 times more likely than the Nuggets to win</li>
-<li>The Celtics are 2 times more likely than the Grizzlies to win</li>
-<li>The winner is as likely to be among these four teams — Celtics, Grizzlies, 76ers, Nuggets — as not.</li>
+<li>The Nuggets and Spurs are equally likely to win</li>
+<li>The Celtics are 1.5 times more likely than the Nuggets to win</li>
+<li>The Thunder are 2 times more likely than the Celtics to win</li>
+<li>The winner is as likely to be among these four teams — Thunder, Celtics, Spurs, Nuggets — as not.</li>
 </ul>
 </div>
 <ol type="1">
@@ -411,35 +414,23 @@ window.Quarto = {
 </p></li>
 </ol>
 <div id="exm-instructor-age-subjective-prob" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.4</strong></span> How old do you think Professor Ross currently is? Consider age on a continuous scale, e.g., you might be 20.73 or 21.36 or 19.50.</p>
-<p>In this example, you will use probability to quantify your uncertainty about your instructor’s age. You only need to give ballpark estimates of your subjective probabilities, but you might consider what kinds of bets you would be willing to accept.</p>
+<p><span class="theorem-title"><strong>Example 4.4</strong></span> How many miles are on the odometer of Professor Ross’s car? Consider mileage on a continous scale.</p>
+<p>In this example, you will use probability to quantify your uncertainty about the mileage. You only need to give ballpark estimates of your subjective probabilities, but you might consider what kinds of bets you would be willing to accept.</p>
 </div>
 <ol type="1">
-<li><p>What is your subjective probability that your instructor is at most 30 years old? More than 30 years old? (What must be true about these two probabilities?)<br>
+<li><p>What is your subjective probability that the mileage is at most 50000? More than 50000? (What must be true about these two probabilities?) You’re welcome to try with values other than 50000.<br>
 <br>
 <br>
 </p></li>
-<li><p>What is your subjective probability that your instructor is at most 60 years old? More than 60 years old?<br>
+<li><p>Fill in the blank: your subjective probability that the mileage is at most [blank] years old is equal to 50%.<br>
 <br>
 <br>
 </p></li>
-<li><p>What is your subjective probability that your instructor is at most 40 years old? More than 40 years old?<br>
+<li><p>Fill in the blanks: your subjective probability that the mileage is between [blank] and [blank] years old is equal to 98%.<br>
 <br>
 <br>
 </p></li>
-<li><p>What is your subjective probability that your instructor is at most 50 years old? More than 50 years old?<br>
-<br>
-<br>
-</p></li>
-<li><p>Fill in the blank: your subjective probability that your instructor is at most [blank] years old is equal to 50%.<br>
-<br>
-<br>
-</p></li>
-<li><p>Fill in the blanks: your subjective probability that your instructor is between [blank] and [blank] years old is equal to 95%.<br>
-<br>
-<br>
-</p></li>
-<li><p>Let <span class="math inline">\(\theta\)</span> represent your instructor’s age at 8:00am on Jan 12, 2023. Use your answers to the previous parts to sketch a continuous probability density function to represent your <em>subjective probability distribution</em> for <span class="math inline">\(\theta\)</span>.<br>
+<li><p>Let <span class="math inline">\(\theta\)</span> represent the current mileage. Use your answers to the previous parts to sketch a continuous probability density function to represent your <em>subjective probability distribution</em> for <span class="math inline">\(\theta\)</span>.<br>
 <br>
 <br>
 <br>
@@ -459,14 +450,14 @@ window.Quarto = {
 </ul></li>
 </ul>
 <div id="exm-instructor-age-subjective-prob-examples" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.5</strong></span> Continuing the previous example, <a href="#fig-interpretations-four-densities" class="quarto-xref">Figure&nbsp;<span>4.1</span></a> displays the subjective probability distribution of the instructor’s age for four students.</p>
+<p><span class="theorem-title"><strong>Example 4.5</strong></span> Continuing the previous example, <span class="quarto-unresolved-ref">?fig-interpretations-four-densities</span> displays the subjective probability distribution of mileage for four students.</p>
 </div>
-<div id="fig-interpretations-four-densities" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-interpretations-four-densities-mileage" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-interpretations-four-densities-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div aria-describedby="fig-interpretations-four-densities-mileage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src=".\figures/intro-four-densities.png" class="img-fluid figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-interpretations-four-densities-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-interpretations-four-densities-mileage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4.1: Plausibility assessments of four students
 </figcaption>
 </figure>
@@ -484,25 +475,19 @@ Figure&nbsp;4.1: Plausibility assessments of four students
 <!-- plt.show(); -->
 <!-- ``` -->
 <ol type="1">
-<li><p>Since age is treated as a continuous random variable, each of the above plots is a probability “density”. Explain briefly what this means. How is probability represented in density plots like these?<br>
+<li><p>Since mileage is treated as a continuous random variable, each of the above plots is a probability “density”. Explain briefly what this means. How is probability represented in density plots like these?<br>
 <br>
 <br>
 <br>
 <br>
 </p></li>
-<li><p>Rank the students in terms of their subjective probability that the instructor is at most 40 years old.<br>
+<li><p>Rank the students in terms of their subjective probability that the mileage is at most 50000.<br>
 <br>
 <br>
 <br>
 <br>
 </p></li>
-<li><p>Rank the students in terms of their answers to the question: your subjective probability that your instructor is at most [blank] years old is equal to 50%.<br>
-<br>
-<br>
-<br>
-<br>
-</p></li>
-<li><p>Rank the students in terms of their uncertainty about the instructor’s age. Who is the most uncertain? The least?<br>
+<li><p>Rank the students in terms of their uncertainty about the mileage. Who is the most uncertain? The least?<br>
 <br>
 <br>
 <br>
@@ -513,7 +498,7 @@ Figure&nbsp;4.1: Plausibility assessments of four students
 <li>One key aspect of Bayesian analyses is <em>applying a subjective probability distribution to a parameter</em> in a statistical model.</li>
 </ul>
 <div id="exm-harry-potter-movie-book-subjective" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.6</strong></span> Let <span class="math inline">\(\theta_b\)</span> represent the proportion of current Cal Poly students who have ever read any of the books in the <em>Harry Potter</em> series. Let <span class="math inline">\(\theta_m\)</span> represent the proportion of current Cal Poly students who have ever seen any of the movies in the <em>Harry Potter</em> series.</p>
+<p><span class="theorem-title"><strong>Example 4.6</strong></span> Let <span class="math inline">\(\theta_b\)</span> represent the proportion of current Cal Poly students who have ever read at least one book in Lemony Snicket’s <em>A Series of Unfortunate Events</em>. Let <span class="math inline">\(\theta_m\)</span> represent the proportion of current Cal Poly students who have seen at least one Star Wars movie.</p>
 </div>
 <ol type="1">
 <li><p>Are <span class="math inline">\(\theta_b\)</span> and <span class="math inline">\(\theta_m\)</span> parameters or statistics? Why?<br>
@@ -541,7 +526,7 @@ Figure&nbsp;4.1: Plausibility assessments of four students
 <br>
 <br>
 </p></li>
-<li><p>Suppose that in a class of 35 Cal Poly students, 21 have read a Harry Potter book, and 30 have seen a Harry Potter movie. Now that we have observed some data, sketch a probability distribution representing what you think are more/less credible values of <span class="math inline">\(\theta_b\)</span>. Repeat for <span class="math inline">\(\theta_m\)</span>. How do your distributions after observing data compare to the distributions you sketched before?<br>
+<li><p>Suppose that in a class of 35 Cal Poly students, 7 have read a Lemony Snicket book, and 32 have seen a Star Wars movie. Now that we have observed some data, sketch a probability distribution representing what you think are more/less credible values of <span class="math inline">\(\theta_b\)</span>. Repeat for <span class="math inline">\(\theta_m\)</span>. How do your distributions after observing data compare to the distributions you sketched before?<br>
 <br>
 <br>
 <br>
@@ -626,13 +611,14 @@ Figure&nbsp;4.1: Plausibility assessments of four students
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

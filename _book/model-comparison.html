@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>25&nbsp; Introduction to Bayesian Model Comparison – STAT415 Handouts</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -59,7 +62,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -93,10 +95,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -130,7 +132,7 @@ div.csl-indent {
 
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -143,7 +145,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -755,7 +757,7 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <h3 data-number="25.7.1" class="anchored" data-anchor-id="odds-and-bayes-factors-1"><span class="header-section-number">25.7.1</span> Odds and Bayes factors</h3>
 <div class="cell">
 <div class="cell-output-display">
-<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<table class="table caption-top table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">hypothesis</th>
@@ -803,29 +805,29 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <h3 data-number="25.7.2" class="anchored" data-anchor-id="posterior-probability-of-models-1"><span class="header-section-number">25.7.2</span> Posterior probability of models</h3>
 <p>Prior predictive probability of observing 6 heads in 10 flips given that model 1 is correct</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="fl">7.5</span>, <span class="fl">2.5</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">10</span>, theta)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>l1 <span class="ot">=</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">6</span>) <span class="sc">/</span> Nrep</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>l1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>l1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.12379</code></pre>
 </div>
 </div>
 <p>Prior predictive probability of observing 6 heads in 10 flips given that model 2 is correct</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="fl">2.5</span>, <span class="fl">7.5</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">10</span>, theta)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>l2 <span class="ot">=</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">6</span>) <span class="sc">/</span> Nrep</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>l2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>l2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.042013</code></pre>
 </div>
 </div>
 <p>Bayes factor in favor of model 1 given 6 heads in 10 flips</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>l1 <span class="sc">/</span> l2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>l1 <span class="sc">/</span> l2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2.946469</code></pre>
 </div>
@@ -840,12 +842,12 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <li>Repeat many times and summarize the <span class="math inline">\(y\)</span> values</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="fl">7.5</span> <span class="sc">+</span> <span class="dv">6</span>, <span class="fl">2.5</span> <span class="sc">+</span> <span class="dv">4</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">10</span>, theta)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">table</span>(y) <span class="sc">/</span> Nrep,</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a> <span class="at">ylab =</span> <span class="st">"Posterior predictive probability"</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a> <span class="at">main =</span> <span class="st">"Given Model 1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a> <span class="at">main =</span> <span class="st">"Given Model 1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -861,12 +863,12 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <li>Repeat many times and summarize the <span class="math inline">\(y\)</span> values</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="fl">2.5</span> <span class="sc">+</span> <span class="dv">6</span>, <span class="fl">7.5</span> <span class="sc">+</span> <span class="dv">4</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">10</span>, theta)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">table</span>(y) <span class="sc">/</span> Nrep,</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a> <span class="at">ylab =</span> <span class="st">"Posterior predictive probability"</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a> <span class="at">main =</span> <span class="st">"Given Model 2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a> <span class="at">main =</span> <span class="st">"Given Model 2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -883,7 +885,7 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 </ul>
 <p>The simulation results are below. We can also find the posterior predictive probability of 7 heads in the next 10 flips using the law of total probability to combine the results from the two previous parts: <span class="math inline">\((0.747)(0.216)+(0.253)(0.076) = 0.18\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">7.5</span>, <span class="fl">2.5</span>) <span class="sc">+</span> <span class="dv">6</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">7.5</span>) <span class="sc">+</span> <span class="dv">4</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -895,7 +897,7 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">table</span>(y) <span class="sc">/</span> Nrep,</span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Posterior predictive probability"</span>,</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Model Average"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Model Average"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -917,7 +919,7 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <p>Approximate the likelihood of 15 heads in 20 flips for the “anything is possible” model similarly, but with a Beta(1, 1) distribution.</p>
 <p>The Bayes factor is the ratio of the likelihoods, about 0.323 in favor of the “must be fair” model. That is, the Bayes factor favors the “anything is possible” model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>theta1 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="dv">500</span>, <span class="dv">500</span>)</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">20</span>, theta1)</span>
@@ -925,14 +927,14 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>theta2 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">20</span>, theta2)</span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">15</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">15</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">15</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.3231564</code></pre>
 </div>
 </div>
 <p>Similar to the previous part but with different data; now we compute the likelihood of 11 heads in 20 flips. The Bayes factor is about 3.34. Thus, the Bayes factor favors the “must be fair” model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">11</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">11</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">11</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">11</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 3.344222</code></pre>
 </div>
@@ -942,7 +944,7 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <h3 data-number="25.7.5" class="anchored" data-anchor-id="sensitivity-of-model-comparison-to-prior-1"><span class="header-section-number">25.7.5</span> Sensitivity of model comparison to prior</h3>
 <p>The simulation is similar to the ones in the previous example, just with different data. The Bayes Factor is about 0.13 in favor of the “must be fair” model. So the Bayes Factor favors the “anything is possible” model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>theta1 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="dv">500</span>, <span class="dv">500</span>)</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">100</span>, theta1)</span>
@@ -950,14 +952,14 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>theta2 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">100</span>, theta2)</span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">65</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">65</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">65</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">65</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.1316002</code></pre>
 </div>
 </div>
 <p>The simulation is similar to the one in the previous part, just with a different prior. The Bayes Factor is about 5.7 in favor of the “must be fair” model. So the Bayes Factor favors the “must be fair” model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>theta1 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="dv">500</span>, <span class="dv">500</span>)</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">100</span>, theta1)</span>
@@ -965,7 +967,7 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>theta2 <span class="ot">=</span> <span class="fu">rbeta</span>(Nrep, <span class="fl">0.01</span>, <span class="fl">0.01</span>)</span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">=</span> <span class="fu">rbinom</span>(Nrep, <span class="dv">100</span>, theta2)</span>
 <span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">65</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">65</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(y1 <span class="sc">==</span> <span class="dv">65</span>) <span class="sc">/</span> <span class="fu">sum</span>(y2 <span class="sc">==</span> <span class="dv">65</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 6.089109</code></pre>
 </div>
@@ -973,11 +975,11 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <p>Even though they’re both non-informative priors, the Beta(1, 1) and Beta(0.01, 0.01) priors leads to very different Bayes factors and decisions. The <em>choice of model</em> does appear to be sensitive to the choice of prior distribution.</p>
 <p>However, at least in this case, the <em>estimation of <span class="math inline">\(\theta\)</span></em> within the “anything is possible” model does not appear to be sensitive to the choice of prior.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), <span class="dv">1</span> <span class="sc">+</span> <span class="dv">65</span>, <span class="dv">1</span> <span class="sc">+</span> <span class="dv">35</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), <span class="dv">1</span> <span class="sc">+</span> <span class="dv">65</span>, <span class="dv">1</span> <span class="sc">+</span> <span class="dv">35</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5339654 0.7517155</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), <span class="fl">0.01</span> <span class="sc">+</span> <span class="dv">65</span>, <span class="fl">0.01</span> <span class="sc">+</span> <span class="dv">35</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), <span class="fl">0.01</span> <span class="sc">+</span> <span class="dv">65</span>, <span class="fl">0.01</span> <span class="sc">+</span> <span class="dv">35</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5358690 0.7552979</code></pre>
 </div>
@@ -986,17 +988,17 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <section id="hypothesis-testing-just-dont-do-it-1" class="level3" data-number="25.7.6">
 <h3 data-number="25.7.6" class="anchored" data-anchor-id="hypothesis-testing-just-dont-do-it-1"><span class="header-section-number">25.7.6</span> Hypothesis testing (just don’t do it)</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rope</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rope</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>rope_lb <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">-</span> <span class="fl">0.01</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>rope_ub <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.01</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># data</span></span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">457</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="dv">248</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="dv">248</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Beta(1, 1) prior for <span class="math inline">\(\theta\)</span>: Bayes factor in favor of alternative</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">1</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">1</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">1</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>prior_prob <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="fu">pbeta</span>(rope_ub, alpha, beta) <span class="sc">-</span> <span class="fu">pbeta</span>(rope_lb, alpha, beta))</span>
@@ -1007,14 +1009,14 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>post_odds <span class="ot">=</span> post_prob <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_prob)</span>
 <span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>post_odds <span class="sc">/</span> prior_odds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>post_odds <span class="sc">/</span> prior_odds</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.2740815</code></pre>
 </div>
 </div>
 <p>Beta(10, 10) prior for <span class="math inline">\(\theta\)</span>: Bayes factor in favor of alternative</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">10</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">10</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">10</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>prior_prob <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="fu">pbeta</span>(rope_ub, alpha, beta) <span class="sc">-</span> <span class="fu">pbeta</span>(rope_lb, alpha, beta))</span>
@@ -1025,14 +1027,14 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>post_odds <span class="ot">=</span> post_prob <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_prob)</span>
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>post_odds <span class="sc">/</span> prior_odds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>post_odds <span class="sc">/</span> prior_odds</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.931962</code></pre>
 </div>
 </div>
 <p>Beta(200, 200) prior for <span class="math inline">\(\theta\)</span>: Bayes factor in favor of alternative</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">200</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">200</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">200</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>prior_prob <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="fu">pbeta</span>(rope_ub, alpha, beta) <span class="sc">-</span> <span class="fu">pbeta</span>(rope_lb, alpha, beta))</span>
@@ -1043,44 +1045,44 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>post_odds <span class="ot">=</span> post_prob <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_prob)</span>
 <span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>post_odds <span class="sc">/</span> prior_odds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>post_odds <span class="sc">/</span> prior_odds</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1.805793</code></pre>
 </div>
 </div>
 <p>Beta(1, 1) prior for <span class="math inline">\(\theta\)</span>: Credible interval</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">1</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">1</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">1</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.4882458 0.5961777</code></pre>
 </div>
 </div>
 <p>Beta(10, 10) prior for <span class="math inline">\(\theta\)</span>: Credible interval</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">10</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">10</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">10</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.4876717 0.5935857</code></pre>
 </div>
 </div>
 <p>Beta(200, 200) prior for <span class="math inline">\(\theta\)</span>: Credible interval</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">200</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">200</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="dv">200</span></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>), alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.4830347 0.5623168</code></pre>
 </div>
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-doingba2015" class="csl-entry" role="listitem">
 <em>Doing Bayesian Data Analysis</em>. 2015. Elsevier. <a href="https://doi.org/10.1016/c2012-0-00477-2">https://doi.org/10.1016/c2012-0-00477-2</a>.
 </div>
@@ -1147,13 +1149,14 @@ BF = \frac{P(E|H)}{P(E|H^c)}
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

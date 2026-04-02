@@ -104,7 +104,7 @@ How does the sample mean compare, roughly, to the prior mean and the observed sa
 \
 \
 
-1. How does the posterior standard deviation compare to the prior standard deviation?
+1. Is the posterior standard deviation greater or less than the prior standard deviation?
 Why?
 \
 \
@@ -290,15 +290,11 @@ likelihood = dbinom(y_obs, n, theta)
 product = prior * likelihood
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 
 # select a few rows and display them
 bayes_table |>
-  slice(seq(1001, 9001, 1000)) |> 
+  slice(seq(1001, 9001, 1000)) |>
   kbl(digits = 8) |>
   kable_styling()
 ```
@@ -308,23 +304,21 @@ bayes_table |>
 ```{r}
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 ```{r}
@@ -335,7 +329,7 @@ post_mean
 
 ```{r}
 # posterior SD
-post_var = sum(theta ^ 2 * posterior) - post_mean ^ 2
+post_var = sum(theta^2 * posterior) - post_mean^2
 
 post_sd = sqrt(post_var)
 post_sd
@@ -381,15 +375,11 @@ likelihood = dbinom(y_obs, n, theta)
 product = prior * likelihood
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 
 # select a few rows and display them
 bayes_table |>
-  slice(seq(1001, 9001, 1000)) |> 
+  slice(seq(1001, 9001, 1000)) |>
   kbl(digits = 8) |>
   kable_styling()
 ```
@@ -399,23 +389,21 @@ bayes_table |>
 ```{r}
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 ```{r}
@@ -426,7 +414,7 @@ post_mean
 
 ```{r}
 # posterior SD
-post_var = sum(theta ^ 2 * posterior) - post_mean ^ 2
+post_var = sum(theta^2 * posterior) - post_mean^2
 
 post_sd = sqrt(post_var)
 post_sd
@@ -486,11 +474,7 @@ likelihood = dbinom(y_obs, n, theta)
 product = prior * likelihood
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 
 ```
 
@@ -498,23 +482,21 @@ bayes_table = data.frame(theta,
 ```{r}
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 ```{r}
@@ -525,7 +507,7 @@ post_mean
 
 ```{r}
 # posterior SD
-post_var = sum(theta ^ 2 * posterior) - post_mean ^ 2
+post_var = sum(theta^2 * posterior) - post_mean^2
 
 post_sd = sqrt(post_var)
 post_sd
@@ -571,11 +553,7 @@ likelihood = dbinom(y_obs, n, theta)
 product = prior * likelihood
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 
 ```
 
@@ -583,23 +561,21 @@ bayes_table = data.frame(theta,
 ```{r}
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 ```{r}
