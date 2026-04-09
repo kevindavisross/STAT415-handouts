@@ -427,17 +427,21 @@ window.Quarto = {
 <ul>
 <li>Parameters are random variables and have distributions.</li>
 <li>Observed data are treated as fixed, not random.</li>
-<li>All inference is based on the posterior distribution of parameters which quantifies our uncertainty about the parameters.</li>
-<li>The posterior distribution quantifies our uncertainty in the parameters, after observing the sample data.</li>
+<li>All inference is based on the posterior distribution of parameters which quantifies our uncertainty in the parameters, given the observed sample data.</li>
 <li>The posterior (or prior) distribution can be used to make probability statements about parameters.</li>
 <li>For example, “95% credible” quantifies our assessment that the parameter is 19 times more likely/plausible to lie inside the credible interval than outside. (Roughly, we’d be willing to bet at 19-to-1 odds on whether <span class="math inline">\(\theta\)</span> lies inside the interval.)</li>
+<li>The posterior distribution quantifies a ranking of which values are more or less plausible as a possible value of the parameter, and how much more/less plausible.</li>
+<li>Testing a null hypothesis versus an alternative hypotheses plays a much smaller role</li>
 </ul>
 <p>In a frequentist approach</p>
 <ul>
 <li>Parameters are treated as fixed (not random), but unknown numbers</li>
+<li>So it doesn’t make sense to make probability statements about parameters</li>
 <li>Data are treated as random</li>
-<li>All inference is based on the sampling distribution of the data which quantifies how the data behaves over many hypothetical samples.</li>
+<li>All inference is based on the sampling distribution of the data which quantifies how the data would behave over many hypothetical samples.</li>
 <li>For example, “95% confidence” is confidence in the procedure: confidence intervals vary from sample-to-sample; over many samples 95% of confidence intervals contain the parameter being estimated.</li>
+<li>Any value inside the confidence interval is a plausible value for the parameter. Any value outside the confidence interval is not a plausible value of the parameter. A value is either plausible or not; the cut-off is arbitrary (and conventionally 95%). Aside from this, there is no concept of some values being more plausible than others.</li>
+<li>Traditional tests of null versus alternative hypotheses don’t really answer interesting questions (e.g., they focus on “is there a difference?” as opposed to “is the difference large or meaningful?”)</li>
 <li>p-values are confusing</li>
 </ul>
 <div id="exm-temp-freq-interval" class="theorem example">

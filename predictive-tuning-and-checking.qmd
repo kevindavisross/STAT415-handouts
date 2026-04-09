@@ -27,7 +27,7 @@ Assume that sleep hours for individual students follow a Normal distribution wit
 (Known population SD is an unrealistic assumption that we use for simplicity here.)
     Suppose we want to "let the data speak for itself" so we choose a flat, Uniform prior^[We'll discuss some problems with this approach later.].
     Our Uniform prior needs an upper and lower bound.
-    We remember that we shouldn't assign 0 prior probability to possible values, no matter how implausible, so we pick a fairly wide range of possible values for $\theta$, namely Uniform on [3, 13].
+    We remember that we shouldn't assign 0 prior probability to possible values, no matter how implausible, so we pick a fairly wide range of possible values for $\theta$, namely^[Uniform on [3, 13] is enough to illustrate the idea we're getting at. You could try Uniform on [0, 24] and the issue we'll see is even more extreme.] Uniform on [3, 13].
     Use simulation to approximate the prior predictive distribution of sleep hours according to our model.
 \
 \
@@ -111,6 +111,8 @@ Systematic differences between simulated samples and observed data indicate pote
 Remember that a Bayesian model consists of both a prior and a likelihood, so model mis-specification can occur in the prior or likelihood or both.
 The form of the likelihood is also based on subjective assumptions about the variables being measured and how the data are collected. 
 Posterior predictive checking can help assess whether these assumptions are reasonable in light of the observed data.
+- Posterior predictive checks can reveal problems in proposed models. 
+However, even if the checks uncover no issues, that does not confirm that the model is "correct"; it's just not obviously wrong.
 
 
 
@@ -163,25 +165,21 @@ sigma = 1.5
 y_sim = rnorm(n_rep, theta_sim, sigma)
 
 # plot the simulated y values
-ggplot(data.frame(y_sim),
-       aes(x = y_sim)) + 
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["prior_predict"],
-                 fill = "white") +
-  geom_density(col = bayes_col["prior_predict"],
-               linewidth = 1) +
+ggplot(data.frame(y_sim), aes(x = y_sim)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["prior_predict"],
+    fill = "white"
+  ) +
+  geom_density(col = bayes_col["prior_predict"], linewidth = 1) +
   labs(x = "Sleep hours (y)") +
   theme_bw()
 
 # plot the cdf
-ggplot(data.frame(y_sim),
-       aes(x = y_sim)) + 
-  stat_ecdf(col = bayes_col["prior_predict"],
-            linewidth = 1) +
-  labs(x = "Sleep hours (y)",
-       y = "cdf") +
+ggplot(data.frame(y_sim), aes(x = y_sim)) +
+  stat_ecdf(col = bayes_col["prior_predict"], linewidth = 1) +
+  labs(x = "Sleep hours (y)", y = "cdf") +
   theme_bw()
-
 
 
 ```
@@ -215,31 +213,25 @@ likelihood = dbinom(y_obs, n, theta)
 product = prior * likelihood
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 ```{r}
@@ -252,14 +244,14 @@ theta_sim = sample(theta, n_rep, replace = TRUE, prob = posterior)
 
 y_sim = rbinom(n_rep, n, theta_sim)
 
-ggplot(data.frame(y_sim),
-       aes(x = y_sim)) +
-  geom_bar(aes(y = after_stat(prop)),
-           col = bayes_col["posterior_predict"],
-           fill = bayes_col["posterior_predict"],
-           width = 0.1) +
-  labs(x = "Number of successes",
-       y = "Simulated relative frequency") +
+ggplot(data.frame(y_sim), aes(x = y_sim)) +
+  geom_bar(
+    aes(y = after_stat(prop)),
+    col = bayes_col["posterior_predict"],
+    fill = bayes_col["posterior_predict"],
+    width = 0.1
+  ) +
+  labs(x = "Number of successes", y = "Simulated relative frequency") +
   theme_bw()
 
 ```
@@ -302,25 +294,25 @@ n_rep = 10000
 
 switches_sim = rep(NA, n_rep)
 
-for (r in 1:n_rep){
+for (r in 1:n_rep) {
   # simulate a value of theta from its posterior
   theta_sim = sample(theta, 1, replace = TRUE, prob = posterior)
-  
+
   # simulate n independent 1/0 trials with probaility theta
   trials_sim = rbinom(n, 1, theta_sim)
-  
+
   # compute the number of switches using built in r function "rle"
   switches_sim[r] = length(rle(trials_sim)$lengths) - 1
 }
 
-ggplot(data.frame(switches_sim),
-       aes(x = switches_sim)) +
-  geom_bar(aes(y = after_stat(prop)),
-           col = bayes_col["posterior_predict"],
-           fill = bayes_col["posterior_predict"],
-           width = 0.1) +
-  labs(x = "Number of switches",
-       y = "Simulated relative frequency") +
+ggplot(data.frame(switches_sim), aes(x = switches_sim)) +
+  geom_bar(
+    aes(y = after_stat(prop)),
+    col = bayes_col["posterior_predict"],
+    fill = bayes_col["posterior_predict"],
+    width = 0.1
+  ) +
+  labs(x = "Number of switches", y = "Simulated relative frequency") +
   theme_bw()
 
 ```

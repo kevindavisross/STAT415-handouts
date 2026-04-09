@@ -29,7 +29,7 @@ Some general notation:
 - Predictive distribution can be found using a continuous analog of the law of total probability
 \begin{align*}
 \text{Prior predictive} & & f(y) & = \int_{-\infty}^{\infty}f(y|\theta)\pi(\theta) d\theta,\\
-\text{Posterior predictive} & & f(\tilde{y}|\theta) & = \int_{-\infty}^{\infty}f(\tilde{y}|y)\pi(\theta|y) d\theta.
+\text{Posterior predictive} & & f(\tilde{y}|\theta) & = \int_{-\infty}^{\infty}f(\tilde{y}|\theta)\pi(\theta|y) d\theta.
 \end{align*}
 However, we almost always use simulation to approximate predictive distributions.
 

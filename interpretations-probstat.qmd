@@ -167,7 +167,7 @@ Continuing the previous example, @fig-interpretations-four-densities displays th
 
 
 
-![Plausibility assessments of four students](/figures/intro-four-densities.png){#fig-interpretations-four-densities-mileage}
+![Plausibility assessments of four students](/figures/interpretation-four-densities-mileage.png){#fig-interpretations-four-densities}
 
 
 
