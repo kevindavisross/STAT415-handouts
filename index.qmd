@@ -18,6 +18,8 @@ library(viridis)
 library(scales)
 library(tidybayes)
 library(bayesplot)
+library(posterior)
+library(ggdist)
 library(bayesrules)
 library(e1071)
 

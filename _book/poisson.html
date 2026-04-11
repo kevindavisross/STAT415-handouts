@@ -590,7 +590,13 @@ Figure&nbsp;15.1: Gamma densities
 </p></li>
 </ol>
 <ul>
-<li><strong>Gamma-Poisson model.</strong> Consider a measured variable <span class="math inline">\(y\)</span> which, given <span class="math inline">\(\theta\)</span>, follows a Poisson<span class="math inline">\((\theta)\)</span> distribution. Let <span class="math inline">\(\bar{y}\)</span> be the sample mean for a random sample of size <span class="math inline">\(n\)</span>. Suppose <span class="math inline">\(\theta\)</span> has a Gamma<span class="math inline">\((\alpha, \lambda)\)</span> prior distribution. Then the posterior distribution of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(\bar{y}\)</span> is the Gamma<span class="math inline">\((\alpha+n\bar{y}, \lambda+n)\)</span> distribution.</li>
+<li><strong>Gamma-Poisson model.</strong>
+<ul>
+<li>Consider a measured variable <span class="math inline">\(y\)</span> which, given <span class="math inline">\(\theta\)</span>, follows a Poisson<span class="math inline">\((\theta)\)</span> distribution.</li>
+<li>Let <span class="math inline">\(\bar{y}\)</span> be the sample mean for a random sample of size <span class="math inline">\(n\)</span>.</li>
+<li>Suppose <span class="math inline">\(\theta\)</span> has a Gamma<span class="math inline">\((\alpha, \lambda)\)</span> prior distribution.</li>
+<li>Then the posterior distribution of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(\bar{y}\)</span> is the Gamma<span class="math inline">\((\alpha+n\bar{y}, \lambda+n)\)</span> distribution.</li>
+</ul></li>
 <li>In a sense, you can interpret <span class="math inline">\(\alpha\)</span> as “prior total count” and <span class="math inline">\(\lambda\)</span> as “prior sample size”, but these are only “pseudo-observations”. Also, <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\lambda\)</span> are not necessarily integers.</li>
 <li>Note that if <span class="math inline">\(\bar{y}\)</span> is the sample mean count is then <span class="math inline">\(n\bar{y} = \sum_{i=1}^n y_i\)</span> is the sample total count.</li>
 </ul>
@@ -639,7 +645,7 @@ Figure&nbsp;15.1: Gamma densities
 \frac{\alpha+n\bar{y}}{\lambda+n} = \frac{\lambda}{\lambda+n}\left(\frac{\alpha}{\lambda}\right) + \frac{n}{\lambda+n}\bar{y}
 \]</span></p>
 <div id="exm-poisson-hr-simulation" class="theorem example">
-<p><span class="theorem-title"><strong>Example 15.7</strong></span> Continuing <a href="#exm-poisson-hr-grid" class="quarto-xref">Example&nbsp;<span>15.5</span></a>. Continuing the previous example, assume home runs per game at Citizens Bank Park follow a Poisson distribution with parameter <span class="math inline">\(\theta\)</span>. Assume for <span class="math inline">\(\theta\)</span> a Gamma prior distribution with shape parameter <span class="math inline">\(\alpha = 4\)</span> and rate parameter <span class="math inline">\(\lambda = 2\)</span>. Consider the 2020 data in which there were 97 home runs in 32 games.</p>
+<p><span class="theorem-title"><strong>Example 15.7</strong></span> Continuing <a href="#exm-poisson-hr-grid" class="quarto-xref">Example&nbsp;<span>15.5</span></a>. Assume home runs per game at Citizens Bank Park follow a Poisson distribution with parameter <span class="math inline">\(\theta\)</span>. Assume for <span class="math inline">\(\theta\)</span> a Gamma prior distribution with shape parameter <span class="math inline">\(\alpha = 4\)</span> and rate parameter <span class="math inline">\(\lambda = 2\)</span>. Consider the 2020 data in which there were 97 home runs in 32 games.</p>
 </div>
 <ol type="1">
 <li><p>Describe in full detail how you could use naive simulation to approximate the posterior distribution of <span class="math inline">\(\theta\)</span>.<br>
@@ -1171,12 +1177,12 @@ data's linetype values.</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">=</span> fit <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>posterior_df <span class="ot">=</span> fit <span class="sc">|&gt;</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_Intercept) <span class="sc">|&gt;</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">theta =</span> b_Intercept)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>posterior <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>posterior_df <span class="sc">|&gt;</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta)) <span class="sc">+</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)),</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">col =</span> bayes_col[<span class="st">"posterior"</span>], <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
@@ -1192,17 +1198,17 @@ data's linetype values.</code></pre>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior mean</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(posterior<span class="sc">$</span>theta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(posterior_df<span class="sc">$</span>theta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2.976134</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior sd</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(posterior<span class="sc">$</span>theta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(posterior_df<span class="sc">$</span>theta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.295366</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior quantiles are endpoints of credible intervals</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(posterior<span class="sc">$</span>theta, <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>, <span class="fl">0.90</span>, <span class="fl">0.99</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(posterior_df<span class="sc">$</span>theta, <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>, <span class="fl">0.90</span>, <span class="fl">0.99</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      1%      10%      25%      50%      75%      90%      99% 
 2.324613 2.608651 2.771067 2.967198 3.173287 3.364563 3.696229 </code></pre>
@@ -1217,9 +1223,9 @@ data's linetype values.</code></pre>
 <li>Repeat many times and summarize the simulated <span class="math inline">\(y\)</span> values.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>n_rep <span class="ot">=</span> <span class="fu">length</span>(posterior<span class="sc">$</span>theta)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>n_rep <span class="ot">=</span> <span class="fu">length</span>(posterior_df<span class="sc">$</span>theta)</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rpois</span>(n_rep, posterior<span class="sc">$</span>theta)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">=</span> <span class="fu">rpois</span>(n_rep, posterior_df<span class="sc">$</span>theta)</span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(y_sim),</span>
 <span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> y_sim)) <span class="sc">+</span></span>

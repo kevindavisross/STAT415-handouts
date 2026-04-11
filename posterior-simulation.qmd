@@ -48,7 +48,7 @@ You'll collect data on a random sample of students, record their college and sle
 \
 
 1. Suppose you try a grid approximation.
-You create a grid of 100 values over the possible range of values of each parameter (say [3, 13]).
+You create a grid of 100 values over the possible range of values of each parameter.
 How many rows would there be in the Bayes table?
 \
 \
@@ -111,7 +111,7 @@ We will see later some of the ideas behind MCMC algorithms.
 - Here are a few references for using `brms`
     - [`brms`](https://paul-buerkner.github.io/brms/) site
     - [*Bayesian Modeling using Stan*](https://bayesball.github.io/BRMS/) by Jim Albert (companion to Albert and Hu textbook)
-    - [*Doing Bayesian Data Analysis in brms and the tidyverse*](https://bookdown.org/content/3686/) by A Solomon Kurz (companion to Kruschke's *Doing Bayesian Data Analysis*)
+    - [*Doing Bayesian Data Analysis in brms and the tidyverse*](https://solomon.quarto.pub/dbda2/01.html) by A Solomon Kurz (companion to Kruschke's *Doing Bayesian Data Analysis*)
     - [Parameterization of Response Distributions in `brms`](https://cran.r-project.org/web/packages/brms/vignettes/brms_families.html)
     - [`brms` reference manual](https://cran.r-project.org/web/packages/brms/brms.pdf)
 
@@ -122,7 +122,9 @@ We will see later some of the ideas behind MCMC algorithms.
 library(brms)
 ```
 
-we will introduce some basic functionality of `brms` in a few examples we have encountered previously.
+We will introduce some basic functionality of `brms` in a few examples we have encountered previously.
+
+### Example: inference for a population proportion
 
 Recall @exm-read-book-interval-posterior where we were interested in 
 $\theta$, the population proportion of American adults who have read a book in the last year.
@@ -137,7 +139,7 @@ We'll create a vector with 113 1s ("successes") and 37 0s ("failures").
 
 ```{r}
 data = data.frame(y = c(rep(1, 113), rep(0, 37)))
-                  
+
 ggplot(data, aes(x = factor(y))) + geom_bar() + labs(x = "y")
 ```
 
@@ -160,20 +162,24 @@ The three inputs are:
 - Other arguments specify the details of the numerical algorithm; our specifications below will result in 10000 $\theta$ values simulated from the posterior distribution.
 
 
-
+Note: as its name suggests `brms` is made for regression models (broadly). 
+Therefore, we will usually specify the `formula` with regression model syntax.
+This will be more natural when we actually get to regression models, but it's a little clunky for some of the very basic models we have seen so far.
 
 ```{r}
 #| cache: true
 
 fit <-
-  brm(data = data, 
-      family = bernoulli(link = identity),
-      formula = y ~ 1,
-      prior(normal(0.4, 0.1), class = Intercept),
-      iter = 11000,
-      warmup = 1000,
-      chains = 1,
-      refresh = 0)
+  brm(
+    data = data,
+    family = bernoulli(link = identity),
+    formula = y ~ 1,
+    prior(normal(0.4, 0.1), class = Intercept),
+    iter = 11000,
+    warmup = 1000,
+    chains = 1,
+    refresh = 0
+  )
 ```
 
 Here is a brief summary of results.
@@ -196,8 +202,7 @@ Compare to the grid approximation in @exm-read-book-interval-posterior; the resu
 
 
 ```{r}
-posterior_summary(fit,
-                  probs = c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99))
+posterior_summary(fit, probs = c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99))
 ```
 
 There are commands within `brms` for working with simulation output.
@@ -210,12 +215,13 @@ Below we save simulated values of `theta` in the `posterior` data frame.
 ```{r}
 library(tidybayes)
 
-posterior = fit |>
+posterior_df = fit |>
   spread_draws(b_Intercept) |>
   rename(theta = b_Intercept)
 
-posterior |> head(10) |> kbl() |> kable_styling()
+posterior_df |> head(10) |> kbl() |> kable_styling()
 ```
+
 Now we can plot values of `theta` as usual, e.g., using `ggplot2`.
 
 Here is a histogram of the simulated $\theta$ values, with the approximate posterior density overlaid.
@@ -223,10 +229,13 @@ Here is a histogram of the simulated $\theta$ values, with the approximate poste
 ```{r}
 #| warning: false
 
-posterior |>
+posterior_df |>
   ggplot(aes(x = theta)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior"], fill = "white") +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior"],
+    fill = "white"
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior"]) +
   theme_bw()
 ```
@@ -235,11 +244,10 @@ posterior |>
 Here is a plot of the approximate posterior cumulative distribution function.
 
 ```{r}
-posterior %>%
+posterior_df |>
   ggplot(aes(x = theta)) +
   stat_ecdf(col = bayes_col["posterior"], linewidth = 1) +
-  labs(title = "Posterior cdf of theta",
-       y = "Cumulative probability") +
+  labs(title = "Posterior cdf of theta", y = "Cumulative probability") +
   theme_bw()
 
 ```
@@ -247,25 +255,84 @@ posterior %>%
 We can use the simulated values to approximate posterior mean and SD as usual.
 
 ```{r}
-mean(posterior$theta)
+mean(posterior_df$theta)
 ```
 
 ```{r}
-sd(posterior$theta)
+sd(posterior_df$theta)
 ```
 
 
 Quantiles of the posterior distribution of $\theta$ are endpoints of credible intervals.
 
 ```{r}
-quantile(posterior$theta, c(0.01, 0.10, 0.25, 0.75, 0.90, 0.99))
+quantile(posterior_df$theta, c(0.01, 0.10, 0.25, 0.75, 0.90, 0.99))
 ```
 
 We can approximate the posterior probability that $\theta$ is greater than 0.7 as usual.
 
 ```{r}
-sum(posterior$theta > 0.7) / length(posterior$theta)
+sum(posterior_df$theta > 0.7) / length(posterior_df$theta)
 ```
+
+
+```{r}
+library(posterior)
+```
+
+The function `as_draws_df` from the `posterior` packages also puts the `brms` output into a data frame (similar to `tidybayes::spread_draws`).
+
+```{r}
+post_draws <- as_draws_df(fit)
+
+head(post_draws)
+```
+
+The `bayesplot` package has lots of nice built in plots.
+
+```{r}
+library(bayesplot)
+```
+
+
+```{r}
+mcmc_intervals(
+  post_draws,
+  pars = "b_Intercept",
+  prob = 0.50,
+  prob_outer = 0.98
+)
+```
+
+It is often helpful to create a data frame for the simulated values of the parameter, but it's not necessary for all functions.
+For example, we can just pass the `brms` output `fit` into `mcmc_areas`.
+
+```{r}
+mcmc_areas(
+  fit,
+  pars = "b_Intercept",
+  prob = 0.98
+)
+```
+
+
+The `ggdist` package includes some add-ons for `ggplot2` that are useful for visualizing posterior distributions.
+
+
+```{r}
+posterior_df |>
+  ggplot(aes(x = theta)) +
+  stat_halfeye(.width = c(0.80, 0.98)) +
+  theme_bw()
+```
+
+
+
+
+
+
+
+### Example: inference for a population mean
 
 
 Now we'll look at an example with continuous data.
@@ -293,8 +360,7 @@ head(data)
 
 data |>
   ggplot(aes(x = bodytemp)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = "black", fill = "white") +
+  geom_histogram(aes(y = after_stat(density)), col = "black", fill = "white") +
   geom_density(linewidth = 1) +
   theme_bw()
 
@@ -304,35 +370,39 @@ Next we fit the model to the data using the function `brm`.
 The three inputs are
 
 
-- Input 1: the data  
-`data = data`
+-   Input 1: the data  
+    `data = data`
 
-- Input 2: model for the data (likelihood)  
-`family = gaussian`  
-`bodytemp ~ 1 # linear model with intercept (mean) only`
+-   Input 2: model for the data (likelihood)  
+    `family = gaussian`  
+    `bodytemp ~ 1 # linear model with intercept (mean) only`
 
-- Input 3: prior distribution for parameters  
-`prior = c(prior(uniform(96, 100), lb = 96, ub = 100, class = Intercept),`
-`          prior(constant(1), class = sigma))`
+-   Input 3: prior distribution for parameters  
+    `prior = c(prior(uniform(96, 100), lb = 96, ub = 100, class = Intercept),`
+    `          prior(constant(1), class = sigma))`
 
-Note that the Normal (`gaussian`) model for the likelihood assumes two parameters - mean ("intercept") and SD ("sigma") - so we need to specify a prior distribution for both parameters.
-Since we're assuming that SD $\sigma$ is known, we fix its value to be constant.
+    Note that the Normal (`gaussian`) model for the likelihood assumes two parameters - mean ("intercept") and SD ("sigma") - so we need to specify a prior distribution for both parameters.
+    Since we're assuming that SD $\sigma$ is known, we fix its value to be constant.
 
-- Other arguments specify the details of the numerical algorithm; our specifications below will result in 10000 $(\mu, \sigma)$ pairs simulated from the posterior distribution; a few simulated values are displayed below.
+-   Other arguments specify the details of the numerical algorithm; our specifications below will result in 10000 $(\mu, \sigma)$ pairs simulated from the posterior distribution; a few simulated values are displayed below.
 
 
 ```{r}
 #| cache: true
 
-fit <- brm(data = data,
-           family = gaussian,
-           bodytemp ~ 1,
-           prior = c(prior(uniform(96, 100), lb = 96, ub = 100, class = Intercept),
-                     prior(constant(1), class = sigma)),
-           iter = 11000,
-           warmup = 1000,
-           chains = 1,
-           refresh = 0)
+fit <- brm(
+  data = data,
+  family = gaussian,
+  bodytemp ~ 1,
+  prior = c(
+    prior(uniform(96, 100), lb = 96, ub = 100, class = Intercept),
+    prior(constant(1), class = sigma)
+  ),
+  iter = 11000,
+  warmup = 1000,
+  chains = 1,
+  refresh = 0
+)
 
 ```
 
@@ -354,21 +424,25 @@ Below we save simulated values of `theta` in the `posterior` data frame.
 
 ```{r}
 
-posterior = fit |>
+posterior_df = fit |>
   spread_draws(b_Intercept) |>
   rename(theta = b_Intercept)
 
-posterior |> head(10) |> kbl() |> kable_styling()
+posterior_df |> head(10) |> kbl() |> kable_styling()
 ```
+
 Here is a histogram of the simulated $\theta$ values, with the approximate posterior density overlaid.
 
 ```{r}
 #| warning: false
 
-posterior |>
+posterior_df |>
   ggplot(aes(x = theta)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior"], fill = "white") +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior"],
+    fill = "white"
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior"]) +
   theme_bw()
 ```
@@ -377,11 +451,10 @@ posterior |>
 Here is a plot of the approximate posterior cumulative distribution function.
 
 ```{r}
-posterior %>%
+posterior_df |>
   ggplot(aes(x = theta)) +
   stat_ecdf(col = bayes_col["posterior"], linewidth = 1) +
-  labs(title = "Posterior cdf of theta",
-       y = "Cumulative probability") +
+  labs(title = "Posterior cdf of theta", y = "Cumulative probability") +
   theme_bw()
 
 ```
@@ -389,38 +462,75 @@ posterior %>%
 We can use the simulated values to approximate posterior mean and SD as usual.
 
 ```{r}
-mean(posterior$theta)
+mean(posterior_df$theta)
 ```
 
 ```{r}
-sd(posterior$theta)
+sd(posterior_df$theta)
 ```
 
 
 Quantiles of the posterior distribution of $\theta$ are endpoints of credible intervals.
 
 ```{r}
-quantile(posterior$theta, c(0.01, 0.10, 0.25, 0.75, 0.90, 0.99))
+quantile(posterior_df$theta, c(0.01, 0.10, 0.25, 0.75, 0.90, 0.99))
 ```
 
 We can approximate the posterior probability that $\theta$ is less than 97.8.
 
 ```{r}
-sum(posterior$theta < 97.8) / length(posterior$theta)
+sum(posterior_df$theta < 97.8) / length(posterior_df$theta)
 ```
 
-We can use the simulated values of $\theta$ to approximate the posterior predictive distribution.
+
+A few more summaries.
+
+```{r}
+mcmc_intervals(
+  posterior_df,
+  pars = "theta",
+  prob = 0.50,
+  prob_outer = 0.98
+)
+```
+
+```{r}
+mcmc_areas(
+  fit,
+  pars = "b_Intercept",
+  prob = 0.98
+)
+```
+
+
+
+```{r}
+posterior_df |>
+  ggplot(aes(x = theta)) +
+  stat_halfeye(.width = c(0.80, 0.98)) +
+  theme_bw()
+```
+
+
+
+
+### Example: Posterior predictive distribution and checking
+
+Continuing the body temperature example, we can use the simulated values of $\theta$ to approximate the posterior predictive distribution.
 For each simulated value of $\theta$, simulate a $y$ value from a Normal($\theta$, 1) distribution, and summarize the simulate $y$ values.
 
 ```{r}
-n_rep = length(posterior$theta)
+n_rep = length(posterior_df$theta)
 
-y_sim = rnorm(n_rep, posterior$theta, sd = 1)
+y_sim = rnorm(n_rep, posterior_df$theta, sd = 1)
 
-ggplot(data.frame(y_sim),
-       aes(x = y_sim)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+ggplot(data.frame(y_sim), aes(x = y_sim)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior_predict"],
+    fill = "white",
+    bins = 100
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
   labs(x = "Predicted body temp") +
   theme_bw()
@@ -430,7 +540,7 @@ ggplot(data.frame(y_sim),
 Quantiles of the posterior predictive distribution of $y$ are endpoints of posterior prediction intervals.
 
 ```{r}
-quantile(posterior$theta, c(0.025, 0.975))
+quantile(posterior_df$theta, c(0.025, 0.975))
 ```
 
 

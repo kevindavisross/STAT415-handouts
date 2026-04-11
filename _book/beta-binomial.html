@@ -440,7 +440,7 @@ window.Quarto = {
 </ol>
 <ul>
 <li>A continuous random variable <span class="math inline">\(U\)</span> has a <strong>Beta distribution</strong> with <em>shape parameters</em> <span class="math inline">\(\alpha&gt;0\)</span> and <span class="math inline">\(\beta&gt;0\)</span> if its density (pdf) satisfies<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> <span class="math display">\[
-p(u) \propto u^{\alpha-1}(1-u)^{\beta-1}, \quad 0&lt;u&lt;1.
+f(u) \propto u^{\alpha-1}(1-u)^{\beta-1}, \quad 0&lt;u&lt;1.
 \]</span></li>
 <li>If <span class="math inline">\(\alpha = \beta\)</span> the distribution is symmetric about 0.5</li>
 <li>If <span class="math inline">\(\alpha &gt; \beta\)</span> the distribution is skewed to the left (with greater density above 0.5 than below)</li>
@@ -593,13 +593,18 @@ p(u) \propto u^{\alpha-1}(1-u)^{\beta-1}, \quad 0&lt;u&lt;1.
 </li>
 </ol>
 <ul>
-<li><strong>Beta-Binomial model.</strong> If <span class="math inline">\(\theta\)</span> has a Beta<span class="math inline">\((\alpha, \beta)\)</span> prior distribution and the conditional distribution of <span class="math inline">\(y\)</span> given <span class="math inline">\(\theta\)</span> is the Binomial<span class="math inline">\((n, \theta)\)</span> distribution, then the posterior distribution of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(y\)</span> is the Beta<span class="math inline">\((\alpha + y, \beta + n - y)\)</span> distribution<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. <span class="math display">\[\begin{align*}
+<li><strong>Beta-Binomial model.</strong>
+<ul>
+<li>Suppose the conditional distribution of <span class="math inline">\(y\)</span> given <span class="math inline">\(\theta\)</span> is the Binomial<span class="math inline">\((n, \theta)\)</span> distribution</li>
+<li>Assume that <span class="math inline">\(\theta\)</span> has a Beta<span class="math inline">\((\alpha, \beta)\)</span> prior distribution</li>
+<li>Then the posterior distribution of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(y\)</span> is the Beta<span class="math inline">\((\alpha + y, \beta + n - y)\)</span> distribution<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. <span class="math display">\[\begin{align*}
 \text{prior:} &amp; &amp; \pi(\theta) &amp; \propto \theta^{\alpha-1}(1-\theta)^{\beta-1}, \quad 0&lt;\theta&lt;1,\\
 \\
 \text{likelihood:} &amp; &amp; f(y|\theta) &amp; \propto \theta^y (1-\theta)^{n-y}, \quad 0 &lt; \theta &lt; 1,\\
 \\
 \text{posterior:} &amp; &amp; \pi(\theta|y) &amp; \propto \theta^{\alpha+y-1}(1-\theta)^{\beta+n-y-1}, \quad 0&lt;\theta&lt;1.
 \end{align*}\]</span></li>
+</ul></li>
 <li>In a sense, you can interpret <span class="math inline">\(\alpha\)</span> as “prior successes” and <span class="math inline">\(\beta\)</span> as “prior failures”, but these are only “pseudo-observations”. Also, <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are not necessarily integers.</li>
 </ul>
 <table class="caption-top table">
@@ -1255,7 +1260,7 @@ data's linetype values.</code></pre>
 <li id="fn1"><p><span class="math inline">\(\theta\)</span> is used to denote both: (1) the actual parameter (i.e., the random variable) <span class="math inline">\(\theta\)</span> itself, and (2) possible values of <span class="math inline">\(\theta\)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>When considering the prior predictive distribution <span class="math inline">\(y\)</span> also denotes potential values of the data. For the posterior predictive distribution <span class="math inline">\(\tilde{y}\)</span> denotes potential new values of the data.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>The expression defines the shape of the Beta density. All that’s missing is the scaling constant which ensures that the total area under the density is 1. The actual Beta density formula, including the normalizing constant, is <span class="math display">\[
-  p(u) =\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\; u^{\alpha-1}(1-u)^{\beta-1}, \quad 0&lt;u&lt;1,
+  f(u) =\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\; u^{\alpha-1}(1-u)^{\beta-1}, \quad 0&lt;u&lt;1,
   \]</span> where <span class="math inline">\(\Gamma(\alpha) = \int_0^\infty e^{-v}v^{\alpha-1} dv\)</span> is the <em>Gamma function</em>. For a positive integer <span class="math inline">\(k\)</span>, <span class="math inline">\(\Gamma(k) = (k-1)!\)</span>. Also, <span class="math inline">\(\Gamma(1/2)=\sqrt{\pi}\)</span>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>When the prior and posterior distribution belong to the same family, that family is called a <strong>conjugate</strong> prior distribution for the likelihood. So, the Beta distributions form a conjugate prior family for Binomial distributions.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>

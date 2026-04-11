@@ -1,8 +1,8 @@
 {
-  "hash": "784f4017d06a4f4d8c7e31893efd2cf5",
+  "hash": "6b7caaa2c159d09a696fcfbe57bc5209",
   "result": {
     "engine": "knitr",
-    "markdown": "# Preface {.unnumbered}\n\n\nHandouts containing examples, exercises, and notes covering selected topics from Cal Poly STAT 415.\n\nSome of the examples use the R package `brms` @brms.\n\nHere are some other commonly used packages and settings.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\nlibrary(janitor)\nlibrary(kableExtra)\nlibrary(viridis)\nlibrary(scales)\nlibrary(tidybayes)\nlibrary(bayesplot)\nlibrary(bayesrules)\nlibrary(e1071)\n\nbayes_col = c(\"#56B4E9\", \"#E69F00\", \"#009E73\", \"#CC79A7\", \"#CC79A7\")\nnames(bayes_col) = c(\n  \"prior\",\n  \"likelihood\",\n  \"posterior\",\n  \"prior_predict\",\n  \"posterior_predict\"\n)\n\nbayes_lty = c(\"dashed\", \"dotted\", \"solid\")\nnames(bayes_lty) = c(\"prior\", \"likelihood\", \"posterior\")\n\nset.seed(21234)\n```\n:::\n\n\n",
+    "markdown": "# Preface {.unnumbered}\n\n\nHandouts containing examples, exercises, and notes covering selected topics from Cal Poly STAT 415.\n\nSome of the examples use the R package `brms` @brms.\n\nHere are some other commonly used packages and settings.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\nlibrary(janitor)\nlibrary(kableExtra)\nlibrary(viridis)\nlibrary(scales)\nlibrary(tidybayes)\nlibrary(bayesplot)\nlibrary(posterior)\nlibrary(ggdist)\nlibrary(bayesrules)\nlibrary(e1071)\n\nbayes_col = c(\"#56B4E9\", \"#E69F00\", \"#009E73\", \"#CC79A7\", \"#CC79A7\")\nnames(bayes_col) = c(\n  \"prior\",\n  \"likelihood\",\n  \"posterior\",\n  \"prior_predict\",\n  \"posterior_predict\"\n)\n\nbayes_lty = c(\"dashed\", \"dotted\", \"solid\")\nnames(bayes_lty) = c(\"prior\", \"likelihood\", \"posterior\")\n\nset.seed(21234)\n```\n:::\n\n\n",
     "supporting": [
       "index_files"
     ],

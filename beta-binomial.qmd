@@ -71,14 +71,14 @@ How do they compare?
 
 - A continuous random variable $U$ has a **Beta distribution** with *shape parameters* $\alpha>0$ and $\beta>0$ if its density (pdf) satisfies^[The expression defines the shape of the Beta density.  All that's  missing is the scaling constant which ensures that the total area under the density is 1.  The actual Beta density formula, including the normalizing constant, is
 	$$
-	p(u) =\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\; u^{\alpha-1}(1-u)^{\beta-1}, \quad 0<u<1,
+	f(u) =\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\; u^{\alpha-1}(1-u)^{\beta-1}, \quad 0<u<1,
 	$$
 	where 
 	$\Gamma(\alpha) = \int_0^\infty e^{-v}v^{\alpha-1} dv$ is the *Gamma function*. For a positive integer $k$,
 	$\Gamma(k) = (k-1)!$.  Also, $\Gamma(1/2)=\sqrt{\pi}$.
 ]
 $$
-p(u) \propto u^{\alpha-1}(1-u)^{\beta-1}, \quad 0<u<1.
+f(u) \propto u^{\alpha-1}(1-u)^{\beta-1}, \quad 0<u<1.
 $$
 - If $\alpha = \beta$ the distribution is symmetric about 0.5
 - If $\alpha > \beta$ the distribution is skewed to the left (with greater density above 0.5 than below)
@@ -149,15 +149,18 @@ How does each posterior distribution compare to its respective prior distributio
 \
 
 
-- **Beta-Binomial model.**  If $\theta$ has a Beta$(\alpha, \beta)$ prior distribution and the conditional distribution of $y$ given $\theta$ is the Binomial$(n, \theta)$ distribution, then the posterior distribution of $\theta$ given $y$ is the Beta$(\alpha + y, \beta + n - y)$ distribution^[When the prior and posterior distribution belong to the same family, that family is called a **conjugate** prior distribution for the likelihood. So, the Beta distributions form a conjugate prior family for Binomial distributions.].
-\begin{align*}
-\text{prior:} & & \pi(\theta) & \propto \theta^{\alpha-1}(1-\theta)^{\beta-1}, \quad 0<\theta<1,\\
-\\
-\text{likelihood:} & & f(y|\theta) & \propto \theta^y (1-\theta)^{n-y}, \quad 0 < \theta < 1,\\
-\\
-\text{posterior:} & & \pi(\theta|y) & \propto \theta^{\alpha+y-1}(1-\theta)^{\beta+n-y-1}, \quad 0<\theta<1.
-\end{align*}
-- In a sense, you can interpret $\alpha$ as "prior successes" and $\beta$ as "prior failures", but these are only "pseudo-observations".
+-   **Beta-Binomial model.**
+    -   Suppose the conditional distribution of $y$ given $\theta$ is the Binomial$(n, \theta)$ distribution
+    -   Assume that $\theta$ has a Beta$(\alpha, \beta)$ prior distribution
+    -   Then the posterior distribution of $\theta$ given $y$ is the Beta$(\alpha + y, \beta + n - y)$ distribution^[When the prior and posterior distribution belong to the same family, that family is called a **conjugate** prior distribution for the likelihood. So, the Beta distributions form a conjugate prior family for Binomial distributions.].
+     \begin{align*}
+     \text{prior:} & & \pi(\theta) & \propto \theta^{\alpha-1}(1-\theta)^{\beta-1}, \quad 0<\theta<1,\\
+     \\
+     \text{likelihood:} & & f(y|\theta) & \propto \theta^y (1-\theta)^{n-y}, \quad 0 < \theta < 1,\\
+     \\
+     \text{posterior:} & & \pi(\theta|y) & \propto \theta^{\alpha+y-1}(1-\theta)^{\beta+n-y-1}, \quad 0<\theta<1.
+     \end{align*}
+-   In a sense, you can interpret $\alpha$ as "prior successes" and $\beta$ as "prior failures", but these are only "pseudo-observations".
 Also, $\alpha$ and $\beta$ are not necessarily integers.
 
 

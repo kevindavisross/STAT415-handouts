@@ -378,12 +378,13 @@ window.Quarto = {
 
 
 <!-- {{< include _python_setup.qmd >}} -->
-<p>One of the most commonly asked questions when one first encounters Bayesian statistics is “how do we choose a prior?” While there is never one “perfect” prior in any situation, we’ll noew discuss some issues to consider when choosing a prior. But first, here are a few big picture ideas to keep in mind:</p>
+<p>One of the most commonly asked questions when one first encounters Bayesian statistics is “how do we choose a prior?” While there is never one “perfect” prior in any situation, we’ll now discuss some issues to consider when choosing a prior. But first, here are a few big picture ideas to keep in mind:</p>
 <ul>
 <li>Bayesian inference is based on the posterior distribution, not the prior. Therefore, the posterior requires much more attention than the prior.</li>
-<li>The prior is only one part of the Bayesian model.</li>
+<li>The prior is only one part of the Bayesian model. There are many other assumptions, most of which are also present in analogous frequentist models.</li>
 <li>In many situations, the posterior distribution is not too sensitive to reasonable changes in prior.</li>
 <li>Any statistical analysis is inherently subjective. Priors and Bayesian data analysis are no more inherently subjective than any of the myriad other assumptions made in statistical analysis.</li>
+<li>Any statistical analysis is only as good as the data it is based on.</li>
 <li>Both Bayesian and frequentist are valid approaches to statistical analyses, each with advantages and disadvantages.</li>
 <li>There are some issues with frequentist approaches that incorporating a prior distribution and adopting a Bayesian approach alleviates.</li>
 </ul>
@@ -426,8 +427,8 @@ window.Quarto = {
 <ul>
 <li>Some issues to consider when choosing a prior include, in no particular order:</li>
 <li><em>The researcher’s prior beliefs!</em> A prior distribution is part of a statistical model, and should be consistent with knowledge about the underlying scientific problem. Researchers are often experts with a wealth of past experience that can be explicitly incorporated into the analysis via the prior distribution. Such a prior is called an informative (or weakly informative) prior.</li>
-<li><em>A regularizing prior.</em> A prior which, when tuned properly, reduces overfitting or “overreacting” to the data.</li>
-<li><em>Noninformative prior a.k.a., (reference, vague, flat prior).</em> A prior is sought that plays a minimal role in inference so that “the data can speak for itself”.</li>
+<li><em>A regularizing prior.</em> A prior which, when tuned properly, reduces overfitting or “overreacting” to the data<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</li>
+<li><em>Noninformative prior (reference, vague, flat, Jeffreys).</em> A prior is sought that plays a minimal role in inference so that “the data can speak for itself”. <em>Noninformative priors are usually NOT recommended.</em></li>
 <li><em>Mathematical convenience.</em> The prior is chosen so that computation of the posterior is simplified, as in the case of conjugate priors.</li>
 <li><em>Interpretation.</em> The posterior is a compromise between the data and prior. Some priors allow for easy interpretation of the relative contributions of data and prior to the posterior. For example, think of the “prior successes and prior failures” interpretation in the Beta-Binomial model.</li>
 <li><em>Prior based on</em> past <em>data.</em> Bayesian updating can be viewed as an iterative process. The posterior distribution obtained from one round of data collection can inform the prior distribution for another round.</li>
@@ -489,10 +490,12 @@ window.Quarto = {
 </p></li>
 </ol>
 <ul>
+<li>Flat priors are are rarely ever the best choices from a modeling perspective.</li>
+<li>Furthermore, flat priors are generally not preserved under transformations of parameters.<br>
+</li>
+<li>There is no truly “uninformative” prior. A prior that looks uninformative in one parameterization becomes informative in another.</li>
 <li>An <em>improper</em> prior distribution is a prior distribution that does not integrate to 1, so is not a proper probability density.</li>
 <li>However, an improper proper often results in a proper posterior distribution.</li>
-<li>Flat priors are common choices in some situations, but are rarely ever the best choices from a modeling perspective.</li>
-<li>Furthermore, flat priors are generally not preserved under transformations of parameters.</li>
 </ul>
 <div id="exm-rare-disease-prior" class="theorem example">
 <p><span class="theorem-title"><strong>Example 13.3</strong></span> Suppose that <span class="math inline">\(\theta\)</span> represents the population proportion of adults who have a particular rare disease.</p>
@@ -521,6 +524,7 @@ window.Quarto = {
 <li><strong>What NOT to do when considering priors.</strong></li>
 <li>Do NOT choose a prior that assigns 0 probability/density to <em>possible</em> values of the parameter regardless of how initially implausible the values are.</li>
 <li>Do NOT base the <em>prior</em> on the observed data you will use to compute the posterior.</li>
+<li>Do NOT forget to consider prior predictive distributions</li>
 <li>Do NOT feel like you have to find that one, perfect prior.</li>
 <li>Do NOT worry too much about the prior!</li>
 </ul>
@@ -598,6 +602,12 @@ window.Quarto = {
 
 
 </section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>For example, if you are familiar with LASSO or ridge regression, there are Bayesian interpretations of these methods.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
 </section>
 
 </main> <!-- /main -->

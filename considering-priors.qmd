@@ -7,15 +7,17 @@
 
 
 One of the most commonly asked questions when one first encounters Bayesian statistics is "how do we choose a prior?"
-While there is never one "perfect" prior in any situation, we’ll noew discuss some issues to consider when choosing a prior.
+While there is never one "perfect" prior in any situation, we’ll now discuss some issues to consider when choosing a prior.
 But first, here are a few big picture ideas to keep in mind:
 
 - Bayesian inference is based on the posterior distribution, not the prior.
 Therefore, the posterior requires much more attention than the prior.
 - The prior is only one part of the Bayesian model.
+There are many other assumptions, most of which are also present in analogous frequentist models.
 - In many situations, the posterior distribution is not too sensitive to reasonable changes in prior.
 - Any statistical analysis is inherently subjective.
 Priors and Bayesian data analysis are no more inherently subjective than any of the myriad other assumptions made in statistical analysis.
+- Any statistical analysis is only as good as the data it is based on.
 - Both Bayesian and frequentist are valid approaches to statistical analyses, each with advantages and disadvantages.
 - There are some issues with frequentist approaches that incorporating a prior distribution and adopting a Bayesian approach alleviates.
 
@@ -84,9 +86,10 @@ A prior distribution is part of a statistical model, and should be consistent wi
 Researchers are often experts with a wealth of past experience that can be explicitly incorporated into the analysis via the prior distribution.
 Such a prior is called an informative (or weakly informative) prior.
 - *A regularizing prior.*
-A prior which, when tuned properly, reduces overfitting or "overreacting" to the data.
-- *Noninformative prior a.k.a., (reference, vague, flat prior).*
-A prior is sought that plays a minimal role in inference so that "the data can speak for itself".
+A prior which, when tuned properly, reduces overfitting or "overreacting" to the data^[For example, if you are familiar with LASSO or ridge regression, there are Bayesian interpretations of these methods.].
+- *Noninformative prior (reference, vague, flat, Jeffreys).*
+A prior is sought that plays a minimal role in inference so that "the data can speak for itself". 
+*Noninformative priors are usually NOT recommended.*
 - *Mathematical convenience.* 
 The prior is chosen so that computation of the posterior is simplified, as in the case of conjugate priors.
 - *Interpretation.*
@@ -182,10 +185,13 @@ Would you say this is a noninformative prior for $\phi$?
 \
 \
 
+- Flat priors are are rarely ever the best choices from a modeling perspective.
+- Furthermore, flat priors are generally not preserved under transformations of parameters.  
+- There is no truly "uninformative" prior. 
+A prior that looks uninformative in one parameterization becomes informative in another.
 - An *improper* prior distribution is a prior distribution that does not integrate to 1, so is not a proper probability density.
 - However, an improper proper often results in a proper posterior distribution.
-- Flat priors are common choices in some situations, but are rarely ever the best choices from a modeling perspective.
-- Furthermore, flat priors are generally not preserved under transformations of parameters.  
+
 
 ::: {#exm-rare-disease-prior}
 Suppose that $\theta$ represents the population proportion of adults who have a particular rare disease.
@@ -227,6 +233,7 @@ Find and interpret the posterior median. Does this seem reasonable?
 - **What NOT to do when considering priors.**
 - Do NOT choose a prior that assigns 0 probability/density to *possible* values of the parameter regardless of how initially implausible the values are. 
 - Do NOT base the *prior* on the observed data you will use to compute the posterior.
+- Do NOT forget to consider prior predictive distributions
 - Do NOT feel like you have to find that one, perfect prior.
 - Do NOT worry too much about the prior!
 

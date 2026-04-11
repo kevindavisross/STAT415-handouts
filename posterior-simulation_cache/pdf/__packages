@@ -17,3 +17,5 @@ Rcpp
 brms
 tidybayes
 lubridate
+posterior
+bayesplot

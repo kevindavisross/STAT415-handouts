@@ -236,14 +236,14 @@ How might you interpret the $\alpha$ and $\beta$ parameters in the Gamma prior d
 
 
 
-- **Gamma-Poisson model.**
-Consider a measured variable $y$ which, given $\theta$, follows a Poisson$(\theta)$ distribution.
-Let $\bar{y}$ be the sample mean for a random sample of size $n$.
-Suppose $\theta$ has a Gamma$(\alpha, \lambda)$ prior distribution.
-Then the posterior distribution of $\theta$ given $\bar{y}$ is the Gamma$(\alpha+n\bar{y}, \lambda+n)$ distribution.
-- In a sense, you can interpret $\alpha$ as "prior total count" and $\lambda$ as "prior sample size", but these are only "pseudo-observations".
+-   **Gamma-Poisson model.**
+    -   Consider a measured variable $y$ which, given $\theta$, follows a Poisson$(\theta)$ distribution.
+    -   Let $\bar{y}$ be the sample mean for a random sample of size $n$.
+    -   Suppose $\theta$ has a Gamma$(\alpha, \lambda)$ prior distribution.
+    -   Then the posterior distribution of $\theta$ given $\bar{y}$ is the Gamma$(\alpha+n\bar{y}, \lambda+n)$ distribution.
+-   In a sense, you can interpret $\alpha$ as "prior total count" and $\lambda$ as "prior sample size", but these are only "pseudo-observations".
 Also, $\alpha$ and $\lambda$ are not necessarily integers.
-- Note that if $\bar{y}$ is the sample mean count is then $n\bar{y} = \sum_{i=1}^n y_i$ is the sample total count.
+-   Note that if $\bar{y}$ is the sample mean count is then $n\bar{y} = \sum_{i=1}^n y_i$ is the sample total count.
 
 
 |             |                    Prior |       Data |                           Posterior |
@@ -264,7 +264,7 @@ $$
 
 ::: {#exm-poisson-hr-simulation}
 Continuing @exm-poisson-hr-grid.
-Continuing the previous example, assume home runs per game at Citizens Bank Park follow a Poisson distribution with parameter $\theta$.
+Assume home runs per game at Citizens Bank Park follow a Poisson distribution with parameter $\theta$.
 Assume for $\theta$  a Gamma prior distribution with shape parameter $\alpha = 4$ and rate parameter $\lambda = 2$.
 Consider the 2020 data in which there were 97 home runs in 32 games.
 :::
@@ -700,7 +700,7 @@ plot(fit)
 
 
 ```{r}
-posterior = fit |>
+posterior_df = fit |>
   spread_draws(b_Intercept) |>
   rename(theta = b_Intercept)
 ```
@@ -708,7 +708,7 @@ posterior = fit |>
 ```{r}
 #| warning: false
 
-posterior |>
+posterior_df |>
   ggplot(aes(x = theta)) +
   geom_histogram(aes(y = after_stat(density)),
                  col = bayes_col["posterior"], fill = "white") +
@@ -718,13 +718,13 @@ posterior |>
 
 ```{r}
 # posterior mean
-mean(posterior$theta)
+mean(posterior_df$theta)
 
 # posterior sd
-sd(posterior$theta)
+sd(posterior_df$theta)
 
 # posterior quantiles are endpoints of credible intervals
-quantile(posterior$theta, c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99))
+quantile(posterior_df$theta, c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99))
 ```
 
 
@@ -736,9 +736,9 @@ quantile(posterior$theta, c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99))
 1. Repeat many times and summarize the simulated $y$ values.
 
 ```{r}
-n_rep = length(posterior$theta)
+n_rep = length(posterior_df$theta)
 
-y_sim = rpois(n_rep, posterior$theta)
+y_sim = rpois(n_rep, posterior_df$theta)
 
 ggplot(data.frame(y_sim),
        aes(x = y_sim)) +
