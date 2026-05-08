@@ -156,6 +156,7 @@ It is typical to assume *independence in the data*, e.g., independence of values
 Whether independence in the data is a reasonable assumption depends on how the data is collected.
 
 But whether it is reasonable to assume prior *independence of parameters* is a completely separate question and is dependent upon our subjective beliefs about any relationships between parameters.
+In hierarchical models, independence between parameters is often implied by the hierarchical structure.
 
 **Transformations of parameters**
 
@@ -199,8 +200,6 @@ For example, assume the two population distributions are Normal and the two popu
 
 ```{r}
 #| echo: false
-
-
 knitr::include_graphics("effect_size_plots.png")
 ```
 
@@ -215,10 +214,11 @@ knitr::include_graphics("effect_size_plots.png")
 The prior distribution of $\mu_1-\mu_2$ is Normal with mean 7.5-7.5 = 0 and standard deviation $\sqrt{0.5^2 + 0.5^2} = 0.707$
 
 ```{r}
-
-qnorm(c(0.01, 0.10, 0.25, 0.75, 0.90, 0.99),
-      mean = 7.5 - 7.5,
-      sd = sqrt(0.5 ^ 2 + 0.5 ^ 2))
+qnorm(
+  c(0.01, 0.10, 0.25, 0.75, 0.90, 0.99),
+  mean = 7.5 - 7.5,
+  sd = sqrt(0.5^2 + 0.5^2)
+)
 ```
 
 
@@ -246,27 +246,20 @@ data |>
   summarize(n(), mean(weight), sd(weight)) |>
   kbl(digits = 2) |>
   kable_styling()
-
 ```
 
 
 ```{r}
 #| layout-ncol: 2
+ggplot(data, aes(x = weight, fill = habit)) +
+  geom_histogram(
+    alpha = 0.3,
+    aes(y = after_stat(density)),
+    position = 'identity'
+  )
 
-ggplot(data,
-       aes(x = weight,
-           fill = habit)) + 
-   geom_histogram(alpha = 0.3,
-              aes(y = after_stat(density)),
-              position = 'identity')
-
-ggplot(data,
-       aes(x = weight,
-           y = habit,
-           col = habit)) + 
-   geom_boxplot()
-
-
+ggplot(data, aes(x = weight, y = habit, col = habit)) +
+  geom_boxplot()
 ```
 
 ### Posterior distribution
@@ -282,24 +275,26 @@ We want a posterior for $\mu_1$ and $\mu_2$, so we set the intercept to 0 in the
 We can use `get_prior` with out model specifications to see what the parameters will be.
 
 ```{r}
-get_prior(data = data,
-           family = gaussian(),
-           weight ~ 0 + habit)
+get_prior(data = data, family = gaussian(), weight ~ 0 + habit)
 ```
 
 Now we fit the model.
 The `normal(7.5, 0.5)` prior for $\mu_1$ and $\mu_2$ will be vectorized.
 
 ```{r}
-fit <- brm(data = data,
-           family = gaussian(),
-           weight ~ 0 + habit,
-           prior = c(prior(normal(7.5, 0.5), class = b),
-                     prior(normal(0, 1), class = sigma)),
-           iter = 3500,
-           warmup = 1000,
-           chains = 4,
-           refresh = 0)
+fit <- brm(
+  data = data,
+  family = gaussian(),
+  weight ~ 0 + habit,
+  prior = c(
+    prior(normal(7.5, 0.5), class = b),
+    prior(normal(0, 1), class = sigma)
+  ),
+  iter = 3500,
+  warmup = 1000,
+  chains = 4,
+  refresh = 0
+)
 ```
 
 
@@ -322,8 +317,7 @@ plot(fit)
 
 
 ```{r}
-pairs(fit,
-      off_diag_args = list(alpha = 0.1))
+pairs(fit, off_diag_args = list(alpha = 0.1))
 ```
 
 
@@ -347,10 +341,13 @@ posterior |> head() |> kbl(digits = 2) |> kable_styling()
 
 
 ```{r}
-ggplot(posterior,
-       aes(x = mu_diff)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior"], fill = "white", bins = 100) +
+ggplot(posterior, aes(x = mu_diff)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior"],
+    fill = "white",
+    bins = 100
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior"]) +
   labs(x = "Difference in means (pounds)") +
   theme_bw()
@@ -359,13 +356,11 @@ ggplot(posterior,
 
 
 ```{r}
-
 mean(posterior$mu_diff)
 
 sd(posterior$mu_diff)
 
-quantile(posterior$mu_diff,
-         c(0.01, 0.10, 0.25, 0.5, 0.75, 0.90, 0.99))
+quantile(posterior$mu_diff, c(0.01, 0.10, 0.25, 0.5, 0.75, 0.90, 0.99))
 
 sum(posterior$mu_diff > 0) / length(posterior$mu_diff)
 ```
@@ -383,10 +378,13 @@ posterior |> head() |> kbl(digits = 2) |> kable_styling()
 
 
 ```{r}
-ggplot(posterior,
-       aes(x = mu_ratio)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior"], fill = "white", bins = 100) +
+ggplot(posterior, aes(x = mu_ratio)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior"],
+    fill = "white",
+    bins = 100
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior"]) +
   labs(x = "Ratio of means") +
   theme_bw()
@@ -395,13 +393,11 @@ ggplot(posterior,
 
 
 ```{r}
-
 mean(posterior$mu_ratio)
 
 sd(posterior$mu_ratio)
 
-quantile(posterior$mu_ratio,
-         c(0.01, 0.10, 0.25, 0.5, 0.75, 0.90, 0.99))
+quantile(posterior$mu_ratio, c(0.01, 0.10, 0.25, 0.5, 0.75, 0.90, 0.99))
 ```
 
 
@@ -419,10 +415,13 @@ posterior |> head() |> kbl(digits = 2) |> kable_styling()
 
 
 ```{r}
-ggplot(posterior,
-       aes(x = effect_size)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior"], fill = "white", bins = 100) +
+ggplot(posterior, aes(x = effect_size)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior"],
+    fill = "white",
+    bins = 100
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior"]) +
   labs(x = "Effect size") +
   theme_bw()
@@ -431,13 +430,11 @@ ggplot(posterior,
 
 
 ```{r}
-
 mean(posterior$effect_size)
 
 sd(posterior$effect_size)
 
-quantile(posterior$effect_size,
-         c(0.01, 0.10, 0.25, 0.5, 0.75, 0.90, 0.99))
+quantile(posterior$effect_size, c(0.01, 0.10, 0.25, 0.5, 0.75, 0.90, 0.99))
 ```
 
 

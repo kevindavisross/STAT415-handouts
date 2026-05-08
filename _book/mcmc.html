@@ -485,7 +485,7 @@ window.Quarto = {
 </ul></li>
 </ul>
 <div id="exm-mcmc-island2" class="theorem example">
-<p><span class="theorem-title"><strong>Example 21.2</strong></span> Continuing <a href="#exm-mcmc-island" class="quarto-xref">Example&nbsp;<span>21.1</span></a>. Suppose again that the number of islands and their populations is unknown, but that the population for island <span class="math inline">\(\theta\)</span> is proportional to <span class="math inline">\(\theta^2 e^{-0.5\theta}\)</span>, where the islands are labeled from west to east 1, 2, <span class="math inline">\(\ldots\)</span>. That is, when she or the scout visits island <span class="math inline">\(\theta\)</span> they only determine that the population is <span class="math inline">\(c\theta^2 e^{-0.5\theta}\)</span> for some value of <span class="math inline">\(c\)</span>, but they do not learn what <span class="math inline">\(c\)</span> is For example, when they visit island <span class="math inline">\(\theta = 1\)</span> they learn its population is <span class="math inline">\(c(1^2)e^{-0.5(1)} \approx 0.606c\)</span>, when they visit island <span class="math inline">\(\theta = 2\)</span> they learn its population is <span class="math inline">\(c(2^2)e^{-0.5(2)} \approx 1.472c\)</span>, etc, but they never learn what <span class="math inline">\(c\)</span> is.</p>
+<p><span class="theorem-title"><strong>Example 21.2</strong></span> Continuing <a href="#exm-mcmc-island" class="quarto-xref">Example&nbsp;<span>21.1</span></a>. Suppose again that the number of islands and their populations is unknown, but that the population for island <span class="math inline">\(\theta\)</span> is proportional to <span class="math inline">\(\theta^2 e^{-0.5\theta}\)</span>, where the islands are labeled from west to east 1, 2, <span class="math inline">\(\ldots\)</span>. That is, when she or the scout visits island <span class="math inline">\(\theta\)</span> they only determine that the population is <span class="math inline">\(c\theta^2 e^{-0.5\theta}\)</span> for some value of <span class="math inline">\(c\)</span>, but they do not learn what <span class="math inline">\(c\)</span> is. For example, when they visit island <span class="math inline">\(\theta = 1\)</span> they learn its population is <span class="math inline">\(c(1^2)e^{-0.5(1)} \approx 0.606c\)</span>, when they visit island <span class="math inline">\(\theta = 2\)</span> they learn its population is <span class="math inline">\(c(2^2)e^{-0.5(2)} \approx 1.472c\)</span>, etc, but they never learn what <span class="math inline">\(c\)</span> is. In essence, what they really learn is that the population for island <span class="math inline">\(\theta=2\)</span> is <span class="math inline">\((2^2 e^{-0.5(2)})/(1^2 e^{-0.5(1)}) = 1.472/0.606 = 2.426\)</span> times greater than the population for island <span class="math inline">\(\theta = 1\)</span>.</p>
 <p>They’ll attempt the same algorithm as in <a href="#exm-mcmc-island" class="quarto-xref">Example&nbsp;<span>21.1</span></a>. Suppose she starts on island <span class="math inline">\(\theta=3\)</span> on day 1.</p>
 </div>
 <ol type="1">
@@ -557,12 +557,13 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 </ul></li>
 </ol>
 <ul>
+<li>The Metropolis algorithm requires symmetric proposals: <span class="math inline">\(j(\theta_1\to \theta_2) = j(\theta_2\to \theta_1)\)</span>. The Metropolis-Hastings algorithm generalizes the algorithm to allow asymmetric proposal distributions, but the acceptance probabilities need to be adjusted to account for any asymmetry.</li>
 <li>The Metropolis-Hastings algorithm works for any proposal distribution which allows for eventual access to all possible values of <span class="math inline">\(\theta\)</span>. That is, if we run the algorithm long enough then the distribution of the simulated values of <span class="math inline">\(\theta\)</span> will approximate the target distribution <span class="math inline">\(\pi(\theta)\)</span>. Thus we can choose a proposal distribution that is easy to simulate from.</li>
 <li>However, in practice the choice of proposal distribution is extremely important — especially when simulating from high dimensional distributions — because it determines <em>how fast</em> the MC converges to its long run distribution.</li>
 <li>There are a wide variety of MCMC methods and their extensions that strive for computational efficiency by making “smarter” proposals. These algorithms include Gibbs sampling, Hamiltonian Monte Carlo (HMC), and No U-Turn Sampling (NUTS). We won’t go into the details of the many different methods available. Regardless of the details, all MCMC methods are based on the two core principles of proposal and acceptance.</li>
 </ul>
 <div id="exm-mcmc-beta" class="theorem example">
-<p><span class="theorem-title"><strong>Example 21.3</strong></span> Suppose we wish to estimate <span class="math inline">\(\theta\)</span>, the proportion of Cal Poly students who have read a non-school related book in 2023. Assume a Beta(1, 3) prior distribution for <span class="math inline">\(\theta\)</span>. In a sample of 25 Cal Poly students, 4 have read a book in 2023. We’ll use MCMC to approximate the posterior distribution of <span class="math inline">\(\theta\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 21.3</strong></span> Suppose we wish to estimate <span class="math inline">\(\theta\)</span>, the proportion of Cal Poly students who have read a non-school related book in 2026. Assume a Beta(1, 3) prior distribution for <span class="math inline">\(\theta\)</span>. In a sample of 25 Cal Poly students, 4 have read a book in 2026. We’ll use MCMC to approximate the posterior distribution of <span class="math inline">\(\theta\)</span>.</p>
 <p>(Note: this is a situation where we can work out the posterior analytically, so we don’t need MCMC. But this example allows us to see how MCMC is implemented in a relatively simple situation where we can check if the algorithm works.)</p>
 </div>
 <ol type="1">
@@ -617,7 +618,7 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 </p></li>
 </ol>
 <ul>
-<li>We will most often use MCMC methods to simulate values from a posterior distribution <span class="math inline">\(\pi(\theta|y)\)</span> of parameters <span class="math inline">\(\theta\)</span> given data <span class="math inline">\(y\)</span>.</li>
+<li>We will most often use MCMC methods to simulate values from a posterior distribution <span class="math inline">\(\pi(\theta|y)\)</span> of parameters <span class="math inline">\(\theta\)</span> given data <span class="math inline">\(y\)</span>. (Remember: <span class="math inline">\(\theta\)</span> is usually a vector of parameters, and <span class="math inline">\(y\)</span> represents all the data—all the observations and variables.)</li>
 <li>The Metropolis (or Metropolis-Hastings algorithm) allows us to simulate from a posterior distribution <em>without computing the posterior distribution.</em></li>
 <li>Recall that the inputs of a Bayesian model are: (1) the data <span class="math inline">\(y\)</span>; (2) the model for the data, <span class="math inline">\(f(y|\theta)\)</span>, which determines the likelihood; and (3) the prior distribution <span class="math inline">\(\pi(\theta)\)</span> of parameters <span class="math inline">\(\theta\)</span>.</li>
 <li>The target posterior distribution satisfies <span class="math display">\[
@@ -631,7 +632,7 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 <li>As the chain progresses, the algorithm fills in more and more of the relative posterior plausibilities; e.g., the current state is blank times more/less plausible than each of the states that preceded it.</li>
 </ul>
 <div id="exm-mcmc-curry" class="theorem example">
-<p><span class="theorem-title"><strong>Example 21.4</strong></span> We have seen how to estimate a process probability <span class="math inline">\(p\)</span> in a Binomial situation, but what if the number of trials is also random? For example, suppose we want to estimate both the average number of three point shots Steph Curry attempts per game (<span class="math inline">\(\mu\)</span>) and the probability of success on a single attempt (<span class="math inline">\(p\)</span>). Assume that</p>
+<p><span class="theorem-title"><strong>Example 21.4</strong></span> We have seen how to estimate a process probability <span class="math inline">\(p\)</span> in a Binomial situation, but what if the number of trials is also random? For example, suppose we want to estimate both the average number of three point shots Steph Curry attempts per game (<span class="math inline">\(\mu\)</span>) and the probability of success on any single attempt (<span class="math inline">\(p\)</span>). Assume that</p>
 <ul>
 <li>Conditional on <span class="math inline">\(\mu\)</span>, the number of attempts in a game <span class="math inline">\(N\)</span> has a Poisson(<span class="math inline">\(\mu\)</span>) distribution</li>
 <li>Conditional on <span class="math inline">\(n\)</span> and <span class="math inline">\(p\)</span>, the number of successful attempts in a game <span class="math inline">\(Y\)</span> has a Binomial(<span class="math inline">\(n\)</span>, <span class="math inline">\(p\)</span>) distribution.</li>
@@ -699,24 +700,25 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_steps)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>theta_sim[<span class="dv">1</span>] <span class="ot">=</span> <span class="dv">3</span> <span class="co"># initialize</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_steps){</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_steps) {</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  current <span class="ot">=</span> theta_sim[i <span class="sc">-</span> <span class="dv">1</span>]</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># propose next state</span></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  proposed <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(current <span class="sc">+</span> <span class="dv">1</span>, current <span class="sc">-</span> <span class="dv">1</span>), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute acceptance probability</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>(proposed <span class="sc">%in%</span> theta)){ <span class="co"># to correct for proposing moves outside of boundaries</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>proposed <span class="ot">=</span> current</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> <span class="fu">min</span>(<span class="dv">1</span>, pi_theta[proposed] <span class="sc">/</span> pi_theta[current])</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate the next state</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  theta_sim[i] <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(proposed, current), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(a, <span class="dv">1</span><span class="sc">-</span>a))</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># display the first few steps</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>n_steps, theta_sim) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>(proposed <span class="sc">%in%</span> theta)) {</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to correct for proposing moves outside of boundaries</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    proposed <span class="ot">=</span> current</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> <span class="fu">min</span>(<span class="dv">1</span>, pi_theta[proposed] <span class="sc">/</span> pi_theta[current])</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate the next state</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  theta_sim[i] <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(proposed, current), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(a, <span class="dv">1</span> <span class="sc">-</span> a))</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># display the first few steps</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>n_steps, theta_sim) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="table caption-top table-sm table-striped small">
 <thead>
@@ -772,7 +774,14 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plot</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>n_steps, theta_sim, <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">ylim =</span> <span class="fu">range</span>(theta), <span class="at">xlab =</span> <span class="st">"Day"</span>, <span class="at">ylab =</span> <span class="st">"Island"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">:</span>n_steps,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  theta_sim,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"o"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">range</span>(theta),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Day"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Island"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -807,24 +816,25 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_steps)</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>theta_sim[<span class="dv">1</span>] <span class="ot">=</span> <span class="dv">3</span> <span class="co"># initialize</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_steps){</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_steps) {</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  current <span class="ot">=</span> theta_sim[i <span class="sc">-</span> <span class="dv">1</span>]</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># propose next state</span></span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  proposed <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(current <span class="sc">+</span> <span class="dv">1</span>, current <span class="sc">-</span> <span class="dv">1</span>), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute acceptance probability</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>(proposed <span class="sc">%in%</span> theta)){ <span class="co"># to correct for proposing moves outside of boundaries</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>proposed <span class="ot">=</span> current</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> <span class="fu">min</span>(<span class="dv">1</span>, pi_theta[proposed] <span class="sc">/</span> pi_theta[current])</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate the next state</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  theta_sim[i] <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(proposed, current), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(a, <span class="dv">1</span><span class="sc">-</span>a))</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co"># display the first few steps</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>n_steps, theta_sim) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>(proposed <span class="sc">%in%</span> theta)) {</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to correct for proposing moves outside of boundaries</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    proposed <span class="ot">=</span> current</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> <span class="fu">min</span>(<span class="dv">1</span>, pi_theta[proposed] <span class="sc">/</span> pi_theta[current])</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate the next state</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  theta_sim[i] <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(proposed, current), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(a, <span class="dv">1</span> <span class="sc">-</span> a))</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># display the first few steps</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>n_steps, theta_sim) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="table caption-top table-sm table-striped small">
 <thead>
@@ -880,7 +890,14 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plot</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>n_steps, theta_sim, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylim =</span> <span class="fu">range</span>(theta), <span class="at">xlab =</span> <span class="st">"Day"</span>, <span class="at">ylab =</span> <span class="st">"Island"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">:</span>n_steps,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  theta_sim,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">range</span>(theta),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Day"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Island"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -912,30 +929,31 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span>n_states</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># target distribution - proportional to</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>pi_theta <span class="ot">=</span> theta <span class="sc">^</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">*</span> theta) <span class="co"># notice: not probabilities</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>pi_theta <span class="ot">=</span> theta<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">*</span> theta) <span class="co"># notice: not probabilities</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>n_steps <span class="ot">=</span> <span class="dv">10000</span></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>theta_sim <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_steps)</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>theta_sim[<span class="dv">1</span>] <span class="ot">=</span> <span class="dv">3</span> <span class="co"># initialize</span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_steps){</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_steps) {</span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  current <span class="ot">=</span> theta_sim[i <span class="sc">-</span> <span class="dv">1</span>]</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># propose next state</span></span>
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  proposed <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(current <span class="sc">+</span> <span class="dv">1</span>, current <span class="sc">-</span> <span class="dv">1</span>), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute acceptance probability</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>(proposed <span class="sc">%in%</span> theta)){ <span class="co"># to correct for proposing moves outside of boundaries</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>proposed <span class="ot">=</span> current</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> <span class="fu">min</span>(<span class="dv">1</span>, pi_theta[proposed] <span class="sc">/</span> pi_theta[current])</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate the next state</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  theta_sim[i] <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(proposed, current), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(a, <span class="dv">1</span><span class="sc">-</span>a))</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co"># display the first few steps</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>n_steps, theta_sim) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>(proposed <span class="sc">%in%</span> theta)) {</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to correct for proposing moves outside of boundaries</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    proposed <span class="ot">=</span> current</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> <span class="fu">min</span>(<span class="dv">1</span>, pi_theta[proposed] <span class="sc">/</span> pi_theta[current])</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate the next state</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  theta_sim[i] <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(proposed, current), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(a, <span class="dv">1</span> <span class="sc">-</span> a))</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co"># display the first few steps</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>n_steps, theta_sim) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="table caption-top table-sm table-striped small">
 <thead>
@@ -991,7 +1009,14 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plot</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>n_steps, theta_sim, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylim =</span> <span class="fu">range</span>(theta), <span class="at">xlab =</span> <span class="st">"Day"</span>, <span class="at">ylab =</span> <span class="st">"Island"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">:</span>n_steps,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  theta_sim,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">range</span>(theta),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Day"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Island"</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1005,7 +1030,12 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">table</span>(theta_sim) <span class="sc">/</span> n_steps, <span class="at">xlab =</span> <span class="st">"Island"</span>, <span class="at">ylab =</span> <span class="st">"Proportion of days"</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># target distribution</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(theta, pi_theta <span class="sc">/</span> <span class="fu">sum</span>(pi_theta), <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">col =</span> bayes_col[<span class="st">"posterior"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  theta,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  pi_theta <span class="sc">/</span> <span class="fu">sum</span>(pi_theta),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"o"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> bayes_col[<span class="st">"posterior"</span>]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1018,32 +1048,43 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 <section id="beta-binomial" class="level3" data-number="21.1.4">
 <h3 data-number="21.1.4" class="anchored" data-anchor-id="beta-binomial"><span class="header-section-number">21.1.4</span> Beta-Binomial</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>n_steps <span class="ot">=</span> <span class="dv">10000</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">=</span> <span class="fl">0.05</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_steps)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>theta[<span class="dv">1</span>] <span class="ot">=</span> <span class="fl">0.5</span> <span class="co"># initialize</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior is proportional to prior * likelihood</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>pi_theta <span class="ot">&lt;-</span> <span class="cf">function</span>(theta) {</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (theta <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> theta <span class="sc">&lt;</span> <span class="dv">1</span>) <span class="fu">dbeta</span>(theta, <span class="dv">1</span>, <span class="dv">3</span>) <span class="sc">*</span> <span class="fu">dbinom</span>(<span class="dv">4</span>, <span class="dv">25</span>, theta) <span class="cf">else</span> <span class="dv">0</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (n <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_steps){</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  current <span class="ot">=</span> theta[n <span class="sc">-</span> <span class="dv">1</span>]</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># propose next state from "jumping" distribution</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  proposed <span class="ot">=</span> current <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> delta)</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute acceptance probability</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  accept <span class="ot">=</span> <span class="fu">min</span>(<span class="dv">1</span>, <span class="fu">pi_theta</span>(proposed) <span class="sc">/</span> <span class="fu">pi_theta</span>(current))</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate next state</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  theta[n] <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(current, proposed), <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">-</span> accept, accept)) </span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co"># display the first few steps</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>n_steps, theta) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior is proportional to prior * likelihood</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pi_theta <span class="ot">&lt;-</span> <span class="cf">function</span>(theta) {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (theta <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> theta <span class="sc">&lt;</span> <span class="dv">1</span>) <span class="fu">dbeta</span>(theta, <span class="dv">1</span>, <span class="dv">3</span>) <span class="sc">*</span> <span class="fu">dbinom</span>(<span class="dv">4</span>, <span class="dv">25</span>, theta) <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pi_theta</span>(<span class="fl">0.15</span>) <span class="sc">/</span> <span class="fu">pi_theta</span>(<span class="fl">0.20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.275882</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pi_theta</span>(<span class="fl">0.25</span>) <span class="sc">/</span> <span class="fu">pi_theta</span>(<span class="fl">0.20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5533239</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>n_steps <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">=</span> <span class="fl">0.05</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_steps)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>theta[<span class="dv">1</span>] <span class="ot">=</span> <span class="fl">0.5</span> <span class="co"># initialize</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (n <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_steps) {</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  current <span class="ot">=</span> theta[n <span class="sc">-</span> <span class="dv">1</span>]</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># propose next state from "jumping" distribution</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  proposed <span class="ot">=</span> current <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> delta)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute acceptance probability</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  accept <span class="ot">=</span> <span class="fu">min</span>(<span class="dv">1</span>, <span class="fu">pi_theta</span>(proposed) <span class="sc">/</span> <span class="fu">pi_theta</span>(current))</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate next state</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  theta[n] <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(current, proposed), <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">-</span> accept, accept))</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="co"># display the first few steps</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>n_steps, theta) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="table caption-top table-sm table-striped small">
 <thead>
@@ -1098,36 +1139,15 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plot of first 100 steps</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, theta[<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>], <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">xlab =</span> <span class="st">"step"</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"theta"</span>, <span class="at">main =</span> <span class="st">"First 100 steps"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="mcmc_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plot</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>n_steps, theta, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylim =</span> <span class="fu">range</span>(theta), <span class="at">xlab =</span> <span class="st">"Step"</span>, <span class="at">ylab =</span> <span class="st">"theta"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="mcmc_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated values of theta</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(theta, <span class="at">breaks =</span> <span class="dv">50</span>, <span class="at">freq =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a> <span class="at">xlab =</span> <span class="st">"theta"</span>, <span class="at">ylab =</span> <span class="st">"pi(theta|y = 4)"</span>, <span class="at">main =</span> <span class="st">"Posterior Distribution"</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plot of theoretical posterior density of theta</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>x_plot<span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.0001</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_plot, <span class="fu">dbeta</span>(x_plot, <span class="dv">1</span> <span class="sc">+</span> <span class="dv">4</span>, <span class="dv">3</span> <span class="sc">+</span> <span class="dv">25</span> <span class="sc">-</span> <span class="dv">4</span>), <span class="at">col =</span> bayes_col[<span class="st">"posterior"</span>], <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plot of first 100 steps</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  theta[<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>],</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"o"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"step"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"theta"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"First 100 steps"</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1136,48 +1156,95 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 </div>
 </div>
 </div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plot</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">:</span>n_steps,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  theta,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">range</span>(theta),</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Step"</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"theta"</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated values of theta</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  theta,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> <span class="dv">50</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">freq =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"theta"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"pi(theta|y = 4)"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Posterior Distribution"</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># plot of theoretical posterior density of theta</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>x_plot <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.0001</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  x_plot,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbeta</span>(x_plot, <span class="dv">1</span> <span class="sc">+</span> <span class="dv">4</span>, <span class="dv">3</span> <span class="sc">+</span> <span class="dv">25</span> <span class="sc">-</span> <span class="dv">4</span>),</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> bayes_col[<span class="st">"posterior"</span>],</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="dv">2</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="multi-parameter" class="level3" data-number="21.1.5">
 <h3 data-number="21.1.5" class="anchored" data-anchor-id="multi-parameter"><span class="header-section-number">21.1.5</span> Multi-parameter</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior is proportion to product of prior and likelihood</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>pi_theta <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, p) {</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (mu <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> p <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> p <span class="sc">&lt;</span> <span class="dv">1</span>) {</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dgamma</span>(mu, <span class="dv">10</span>, <span class="dv">2</span>) <span class="sc">*</span> <span class="fu">dbeta</span>(p, <span class="dv">4</span>, <span class="dv">6</span>) <span class="sc">*</span> <span class="fu">dpois</span>(<span class="dv">21</span>, <span class="dv">2</span> <span class="sc">*</span> mu) <span class="sc">*</span> <span class="fu">dbinom</span>(<span class="dv">10</span>, <span class="dv">21</span>, p)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">pi_theta</span>(<span class="fl">7.5</span>, <span class="fl">0.55</span>) <span class="sc">/</span> <span class="fu">pi_theta</span>(<span class="dv">8</span>, <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior is proportion to product of prior and likelihood</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>pi_theta <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, p) {</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (mu <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> p <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> p <span class="sc">&lt;</span> <span class="dv">1</span>) {</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dgamma</span>(mu, <span class="dv">10</span>, <span class="dv">2</span>) <span class="sc">*</span> <span class="fu">dbeta</span>(p, <span class="dv">4</span>, <span class="dv">6</span>) <span class="sc">*</span> <span class="fu">dpois</span>(<span class="dv">21</span>, <span class="dv">2</span> <span class="sc">*</span> mu) <span class="sc">*</span> <span class="fu">dbinom</span>(<span class="dv">10</span>, <span class="dv">21</span>, p)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="fu">pi_theta</span>(<span class="fl">7.5</span>, <span class="fl">0.55</span>) <span class="sc">/</span> <span class="fu">pi_theta</span>(<span class="dv">8</span>, <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.6818868</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>n_steps <span class="ot">=</span> <span class="dv">11000</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.05</span>) <span class="co"># mu, p</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">mu =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_steps),</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">p =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_steps))</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>theta[<span class="dv">1</span>, ] <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">10.5</span>, <span class="dv">10</span> <span class="sc">/</span> <span class="dv">21</span>) <span class="co"># initialize</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (n <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_steps){</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  current <span class="ot">=</span> theta[n <span class="sc">-</span> <span class="dv">1</span>, ]</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># proposed next state</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  proposed <span class="ot">=</span> current <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">2</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> delta)</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute acceptance probability</span></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  accept <span class="ot">=</span> <span class="fu">min</span>(<span class="dv">1</span>, <span class="fu">pi_theta</span>(proposed<span class="sc">$</span>mu, proposed<span class="sc">$</span>p) <span class="sc">/</span> <span class="fu">pi_theta</span>(current<span class="sc">$</span>mu, current<span class="sc">$</span>p))</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate next state</span></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  accept_ind <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">-</span> accept, accept))</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  theta[n, ] <span class="ot">=</span> proposed <span class="sc">*</span> accept_ind <span class="sc">+</span> current <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> accept_ind)</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co"># display the first few steps</span></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>n_steps, theta) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>n_steps <span class="ot">=</span> <span class="dv">11000</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.05</span>) <span class="co"># mu, p</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">mu =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_steps), <span class="at">p =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_steps))</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>theta[<span class="dv">1</span>, ] <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">10.5</span>, <span class="dv">10</span> <span class="sc">/</span> <span class="dv">21</span>) <span class="co"># initialize</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (n <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_steps) {</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  current <span class="ot">=</span> theta[n <span class="sc">-</span> <span class="dv">1</span>, ]</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># proposed next state</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  proposed <span class="ot">=</span> current <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">2</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> delta)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute acceptance probability</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  accept <span class="ot">=</span> <span class="fu">min</span>(</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>,</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pi_theta</span>(proposed<span class="sc">$</span>mu, proposed<span class="sc">$</span>p) <span class="sc">/</span> <span class="fu">pi_theta</span>(current<span class="sc">$</span>mu, current<span class="sc">$</span>p)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate next state</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  accept_ind <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">-</span> accept, accept))</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>  theta[n, ] <span class="ot">=</span> proposed <span class="sc">*</span> accept_ind <span class="sc">+</span> current <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> accept_ind)</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co"># display the first few steps</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">step =</span> <span class="dv">1</span><span class="sc">:</span>n_steps, theta) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">kbl</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="table caption-top table-sm table-striped small">
 <thead>
@@ -1243,29 +1310,35 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Trace plot of first 100 steps</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta[<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, ] <span class="sc">%&gt;%</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>         <span class="fu">mutate</span>(<span class="at">label =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>),</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(mu, p)) <span class="sc">+</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>() <span class="sc">+</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> label, <span class="at">x =</span> mu <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> p <span class="sc">+</span> <span class="fl">0.01</span>)) <span class="sc">+</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trace plot of first 100 steps"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Trace plot of first 100 steps</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  theta[<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, ] <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">label =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(mu, p)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>() <span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> label, <span class="at">x =</span> mu <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> p <span class="sc">+</span> <span class="fl">0.01</span>)) <span class="sc">+</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trace plot of first 100 steps"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="mcmc_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="mcmc_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Delete the first 1000 steps - we'll see why in the next chapter</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> theta[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>), ]</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta, <span class="fu">aes</span>(<span class="at">x =</span> mu)) <span class="sc">+</span> </span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">after_stat</span>(density)), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_density</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> bayes_col[<span class="st">"posterior"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Delete the first 1000 steps - we'll see why in the next chapter</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> theta[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>), ]</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta, <span class="fu">aes</span>(<span class="at">x =</span> mu)) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)),</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"white"</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> bayes_col[<span class="st">"posterior"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
 ℹ Please use `linewidth` instead.</code></pre>
@@ -1276,46 +1349,49 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="mcmc_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta, <span class="fu">aes</span>(<span class="at">x =</span> p)) <span class="sc">+</span> </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">after_stat</span>(density)), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_density</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> bayes_col[<span class="st">"posterior"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`stat_bin()` using `bins = 30`. Pick better value `binwidth`.</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="mcmc_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta, <span class="fu">aes</span>(mu, p)) <span class="sc">+</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> bayes_col[<span class="st">"posterior"</span>], <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ellipse</span>(<span class="at">level =</span> <span class="fl">0.98</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_density_2d</span>(<span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
 <p><img src="mcmc_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta, <span class="fu">aes</span>(mu, p)) <span class="sc">+</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_density_2d</span>(<span class="fu">aes</span>(<span class="at">fill =</span> ..level..),</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">geom =</span> <span class="st">"polygon"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta, <span class="fu">aes</span>(<span class="at">x =</span> p)) <span class="sc">+</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"white"</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> bayes_col[<span class="st">"posterior"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta, <span class="fu">aes</span>(mu, p)) <span class="sc">+</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> bayes_col[<span class="st">"posterior"</span>], <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ellipse</span>(<span class="at">level =</span> <span class="fl">0.98</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_density_2d</span>(<span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta, <span class="fu">aes</span>(mu, p)) <span class="sc">+</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_density_2d</span>(<span class="fu">aes</span>(<span class="at">fill =</span> ..level..), <span class="at">geom =</span> <span class="st">"polygon"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: The dot-dot notation (`..level..`) was deprecated in ggplot2 3.4.0.
 ℹ Please use `after_stat(level)` instead.</code></pre>
@@ -1323,7 +1399,7 @@ a(\theta_\text{current}\to \theta_{\text{proposed}}) = \min\left(1,\, \frac{\pi(
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="mcmc_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="mcmc_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

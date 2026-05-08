@@ -168,7 +168,6 @@ This will be more natural when we actually get to regression models, but it's a 
 
 ```{r}
 #| cache: true
-
 fit <-
   brm(
     data = data,
@@ -228,7 +227,6 @@ Here is a histogram of the simulated $\theta$ values, with the approximate poste
 
 ```{r}
 #| warning: false
-
 posterior_df |>
   ggplot(aes(x = theta)) +
   geom_histogram(
@@ -249,7 +247,6 @@ posterior_df |>
   stat_ecdf(col = bayes_col["posterior"], linewidth = 1) +
   labs(title = "Posterior cdf of theta", y = "Cumulative probability") +
   theme_bw()
-
 ```
 
 We can use the simulated values to approximate posterior mean and SD as usual.
@@ -337,7 +334,7 @@ posterior_df |>
 
 Now we'll look at an example with continuous data.
 Recall @exm-temp-data.
-Assume body temperatures (degrees Fahrenheit) of healthy adults follow a Normal distribution with unknown mean $\theta$ and known standard deviation $\sigma=1$.
+Assume body temperatures (degrees Fahrenheit) of healthy adults follow a Normal distribution with unknown mean $\theta$ and known standard deviation $\sigma=1.1$.
 (It's unrealistic to assume the population standard deviation is known.
 We'll consider the case of unknown standard deviation later.)
 Suppose we wish to estimate $\theta$, the population mean healthy human body temperature.
@@ -348,7 +345,6 @@ First we load the data from the file `bodytemps.csv`; the temperature variable i
 
 ```{r}
 #| warning: false
-
 data = read_csv("bodytemps.csv")
 
 head(data)
@@ -357,13 +353,11 @@ head(data)
 
 ```{r}
 #| warning: false
-
 data |>
   ggplot(aes(x = bodytemp)) +
   geom_histogram(aes(y = after_stat(density)), col = "black", fill = "white") +
   geom_density(linewidth = 1) +
   theme_bw()
-
 ```
 
 Next we fit the model to the data using the function `brm`.
@@ -379,7 +373,7 @@ The three inputs are
 
 -   Input 3: prior distribution for parameters  
     `prior = c(prior(uniform(96, 100), lb = 96, ub = 100, class = Intercept),`
-    `          prior(constant(1), class = sigma))`
+    `          prior(constant(1.1), class = sigma))`
 
     Note that the Normal (`gaussian`) model for the likelihood assumes two parameters - mean ("intercept") and SD ("sigma") - so we need to specify a prior distribution for both parameters.
     Since we're assuming that SD $\sigma$ is known, we fix its value to be constant.
@@ -389,21 +383,19 @@ The three inputs are
 
 ```{r}
 #| cache: true
-
 fit <- brm(
   data = data,
   family = gaussian,
   bodytemp ~ 1,
   prior = c(
     prior(uniform(96, 100), lb = 96, ub = 100, class = Intercept),
-    prior(constant(1), class = sigma)
+    prior(constant(1.1), class = sigma)
   ),
   iter = 11000,
   warmup = 1000,
   chains = 1,
   refresh = 0
 )
-
 ```
 
 ```{r}
@@ -423,7 +415,6 @@ Below we save simulated values of `theta` in the `posterior` data frame.
 
 
 ```{r}
-
 posterior_df = fit |>
   spread_draws(b_Intercept) |>
   rename(theta = b_Intercept)
@@ -435,7 +426,6 @@ Here is a histogram of the simulated $\theta$ values, with the approximate poste
 
 ```{r}
 #| warning: false
-
 posterior_df |>
   ggplot(aes(x = theta)) +
   geom_histogram(
@@ -456,7 +446,6 @@ posterior_df |>
   stat_ecdf(col = bayes_col["posterior"], linewidth = 1) +
   labs(title = "Posterior cdf of theta", y = "Cumulative probability") +
   theme_bw()
-
 ```
 
 We can use the simulated values to approximate posterior mean and SD as usual.
@@ -534,7 +523,6 @@ ggplot(data.frame(y_sim), aes(x = y_sim)) +
   geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
   labs(x = "Predicted body temp") +
   theme_bw()
-
 ```
 
 Quantiles of the posterior predictive distribution of $y$ are endpoints of posterior prediction intervals.

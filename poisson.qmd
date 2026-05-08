@@ -162,7 +162,7 @@ In particular, how do you determine the likelihood column?
 \
 
 
-1. Suppose that we observe 4 games with a total of 6 home runs.
+1. Suppose that we observe 4 games with a total of 12 home runs.
 Find the posterior distribution of $\theta$.
 In particular, how do you determine the likelihood column?
 \
@@ -346,34 +346,25 @@ product = likelihood * prior
 posterior = product / sum(product)
 
 # bayes table
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 
 # display table
 bayes_table |>
   adorn_totals("row") |>
-  kbl(digits = 4) |> kable_styling()
-
+  kbl(digits = 4) |>
+  kable_styling()
 ```
 
 
 ```{r}
 #| echo: false
-
 bayes_table |>
   # scale likelihood for plotting only
   mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "prob") |>
+  pivot_longer(!theta, names_to = "source", values_to = "prob") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = prob,
-             col = source)) +
+  ggplot(aes(x = theta, y = prob, col = source)) +
   geom_point(size = 3) +
   geom_line(aes(linetype = source)) +
   scale_x_continuous(breaks = theta) +
@@ -397,8 +388,8 @@ prior = c(0.13, 0.45, 0.28, 0.11, 0.03)
 prior = prior / sum(prior)
 
 # data
-n = 4 # sample size 
-y = 7 # total sample count
+n = 4 # sample size
+y = 12 # total sample count
 
 # likelihood, using Poisson(n * theta) for sample size n
 likelihood = dpois(y, n * theta) # function of theta
@@ -408,34 +399,25 @@ product = likelihood * prior
 posterior = product / sum(product)
 
 # bayes table
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 
 # display table
 bayes_table |>
   adorn_totals("row") |>
-  kbl(digits = 4) |> kable_styling()
-
+  kbl(digits = 4) |>
+  kable_styling()
 ```
 
 
 ```{r}
 #| echo: false
-
 bayes_table |>
   # scale likelihood for plotting only
   mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "prob") |>
+  pivot_longer(!theta, names_to = "source", values_to = "prob") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = prob,
-             col = source)) +
+  ggplot(aes(x = theta, y = prob, col = source)) +
   geom_point(size = 3) +
   geom_line(aes(linetype = source)) +
   scale_x_continuous(breaks = theta) +
@@ -454,7 +436,6 @@ bayes_table |>
 
 ```{r}
 #| warning: false
-
 data = read_csv("citizens-bank-hr-2020.csv")
 
 head(data)
@@ -464,8 +445,7 @@ head(data)
 data |>
   count(hr) |>
   adorn_totals("row") |>
-  kbl(col.names = c("Number of HRs",
-                    "Number of games")) |>
+  kbl(col.names = c("Number of HRs", "Number of games")) |>
   kable_styling()
 ```
 ```{r}
@@ -474,16 +454,18 @@ sum(data$hr)
 
 
 ```{r}
-ggplot(data,
-       aes(x = hr)) +
-  geom_bar(aes(y = after_stat(prop)),
-           col = "black",
-           fill = "black",
-           width = 0.1) +
-  scale_x_continuous(breaks = 0:(max(data$hr) + 1),
-                     limits = c(0, max(data$hr) + 1)) +
-  labs(x = "Number of HRs",
-       y = "Proportion of games") +
+ggplot(data, aes(x = hr)) +
+  geom_bar(
+    aes(y = after_stat(prop)),
+    col = "black",
+    fill = "black",
+    width = 0.1
+  ) +
+  scale_x_continuous(
+    breaks = 0:(max(data$hr) + 1),
+    limits = c(0, max(data$hr) + 1)
+  ) +
+  labs(x = "Number of HRs", y = "Proportion of games") +
   theme_bw()
 ```
 
@@ -515,40 +497,31 @@ product = likelihood * prior
 posterior = product / sum(product)
 
 # bayes table
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
-
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 ```
 
 
 ```{r}
 #| echo: false
 #| warning: false
-
-
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   scale_x_continuous(limits = c(0, 6)) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 ### Mathematical derivation of posterior
 
@@ -578,7 +551,6 @@ We recognize the above as the Gamma density with shape parameter $\alpha=4+97$ a
 
 ```{r}
 #| echo: true
-
 # prior
 alpha_prior = 4
 lambda_prior = 2
@@ -602,50 +574,58 @@ likelihood_scaled <- function(theta) {
 }
 
 # Plot
-ggplot(data.frame(x = c(0, 6)),
-       aes(x = x)) +
+ggplot(data.frame(x = c(0, 6)), aes(x = x)) +
   # prior
-  stat_function(fun = dgamma,
-                args = list(shape = alpha_prior,
-                            rate = lambda_prior),
-                lty = bayes_lty["prior"],
-                linewidth = 1,
-                aes(color = "prior", linetype = "prior")) +
+  stat_function(
+    fun = dgamma,
+    args = list(shape = alpha_prior, rate = lambda_prior),
+    lty = bayes_lty["prior"],
+    linewidth = 1,
+    aes(color = "prior", linetype = "prior")
+  ) +
   # (scaled) likelihood
-  stat_function(fun = likelihood_scaled,
-                lty = bayes_lty["likelihood"],
-                linewidth = 1,
-                aes(color = "likelihood", linetype = "likeihood")) +
+  stat_function(
+    fun = likelihood_scaled,
+    lty = bayes_lty["likelihood"],
+    linewidth = 1,
+    aes(color = "likelihood", linetype = "likeihood")
+  ) +
   # posterior
-  stat_function(fun = dgamma,
-                args = list(shape = alpha_posterior,
-                            rate = lambda_posterior),
-                lty = bayes_lty["posterior"],
-                linewidth = 1,
-                aes(color = "posterior", linetype = "posterior")) +
+  stat_function(
+    fun = dgamma,
+    args = list(shape = alpha_posterior, rate = lambda_posterior),
+    lty = bayes_lty["posterior"],
+    linewidth = 1,
+    aes(color = "posterior", linetype = "posterior")
+  ) +
   # Define color and add a legend
-  scale_color_manual(name = "",
-                     breaks = c("prior", "likelihood", "posterior"),
-                     values = bayes_col[c("prior", "likelihood", "posterior")]) +
-  scale_linetype_manual(name = "",
-                        breaks = c("prior", "likelihood", "posterior"),
-                        values = bayes_lty[c("prior", "likelihood", "posterior")]) +
-  labs(x = "theta",
-       y = "") +
+  scale_color_manual(
+    name = "",
+    breaks = c("prior", "likelihood", "posterior"),
+    values = bayes_col[c("prior", "likelihood", "posterior")]
+  ) +
+  scale_linetype_manual(
+    name = "",
+    breaks = c("prior", "likelihood", "posterior"),
+    values = bayes_lty[c("prior", "likelihood", "posterior")]
+  ) +
+  labs(x = "theta", y = "") +
   theme_bw()
 ```
 
 ```{r}
-
 # posterior mean
 alpha_posterior / lambda_posterior
 
 # posterior sd
-sqrt(alpha_posterior / lambda_posterior ^ 2)
+sqrt(alpha_posterior / lambda_posterior^2)
 
 # posterior quantiles are endpoints of credible intervals
-qgamma(c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99),
-       shape = alpha_posterior, rate = lambda_posterior)
+qgamma(
+  c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99),
+  shape = alpha_posterior,
+  rate = lambda_posterior
+)
 ```
 
 
@@ -656,7 +636,6 @@ qgamma(c(0.01, 0.10, 0.25, 0.50, 0.75, 0.90, 0.99),
 
 ```{r}
 #| warning: false
-
 library(brms)
 library(bayesplot)
 library(tidybayes)
@@ -681,16 +660,17 @@ The three inputs are:
 
 ```{r}
 #| cache: true
-
 fit <-
-  brm(data = data, 
-      family = poisson(link = identity),
-      formula = hr ~ 1,
-      prior(gamma(4, 2), lb = 0, class = Intercept), # gamma(shape, rate)
-      iter = 3500,
-      warmup = 1000,
-      chains = 4,
-      refresh = 0)
+  brm(
+    data = data,
+    family = poisson(link = identity),
+    formula = hr ~ 1,
+    prior(gamma(4, 2), lb = 0, class = Intercept), # gamma(shape, rate)
+    iter = 3500,
+    warmup = 1000,
+    chains = 4,
+    refresh = 0
+  )
 ```
 
 ```{r}
@@ -707,11 +687,13 @@ posterior_df = fit |>
 
 ```{r}
 #| warning: false
-
 posterior_df |>
   ggplot(aes(x = theta)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior"], fill = "white") +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior"],
+    fill = "white"
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior"]) +
   theme_bw()
 ```
@@ -740,12 +722,13 @@ n_rep = length(posterior_df$theta)
 
 y_sim = rpois(n_rep, posterior_df$theta)
 
-ggplot(data.frame(y_sim),
-       aes(x = y_sim)) +
-  geom_bar(aes(y = after_stat(prop)),
-           col = bayes_col["posterior_predict"],
-           fill = bayes_col["posterior_predict"],
-           width = 0.1) + 
+ggplot(data.frame(y_sim), aes(x = y_sim)) +
+  geom_bar(
+    aes(y = after_stat(prop)),
+    col = bayes_col["posterior_predict"],
+    fill = bayes_col["posterior_predict"],
+    width = 0.1
+  ) +
   labs(x = "Predicted HRs") +
   theme_bw()
 ```
@@ -791,15 +774,13 @@ Below we simulate 312 samples of size 32.
 
 ```{r}
 # Group the 10000 simulated values of y into 312 samples of size 32
-y_sim_samples = matrix(y_sim,
-                       ncol = n,
-                       nrow = trunc(length(y_sim) / n))
+y_sim_samples = matrix(y_sim, ncol = n, nrow = trunc(length(y_sim) / n))
 
 # define function that counts the 0s in a sample
 count0 <- function(u) sum(u == 0)
 
 # posterior predictive check
-ppc_stat(data$hr, y_sim_samples, stat = "count0") 
+ppc_stat(data$hr, y_sim_samples, stat = "count0")
 ```
 
 

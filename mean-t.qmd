@@ -15,8 +15,8 @@
 
 - When the distribution of the measured variable is symmetric and unimodal, the population mean $\mu$ is often the main parameter of interest.
 However, the population SD $\sigma$ also plays an important role.
-- We have previously assumed that the measured numerical variable follows a conditional Normal($\mu$, $\sigma$) distribution.
-That is, we assumed a Normal likelihood function.
+- We have previously assumed that the measured numerical variable follows a conditional Normal$(\mu, \sigma)$ distribution.
+That is, we assumed a Normal-based likelihood function.
 - However, the assumption of Normality is not always justified, even when the distribution of the measured variable is symmetric and unimodal.
 
 
@@ -99,7 +99,7 @@ Does it indicate any problems?
 
 
 
-- If the observed data is relatively unimodal and symmetric but has more extreme values than can be accommodated by a Normal likelihood, a $t$-distribution or other distribution with heavy tails can be used to model the likelihood.
+- If the observed data is relatively unimodal and symmetric but has more extreme values than can be accommodated by a Normal-based likelihood, a $t$-distribution or other distribution with heavy tails can be used to model the likelihood.
 - For "Student" t-distributions, the *degrees of freedom* parameter $\nu \ge 1$ controls how heavy the tails are.
     - When $\nu$ is small, the tails are much heavier than for a Normal distribution, leading to a higher frequency of extreme values.
     - As $\nu$ increases, the tails get lighter and a $t$-distribution gets closer to a Normal distribution.
@@ -109,15 +109,42 @@ Does it indicate any problems?
 
 ```{r}
 #| echo: false
-
-
 u = seq(-5, 5, 0.0001)
 
-plot(u, dnorm(u), type = "l", ylim = c(0, dnorm(0)), xlim = range(u), col = "skyblue", lty = 3, ylab = "Density", xlab = "Variable")
-lines(u, dt(u, 1), type = "l", ylim = c(0, dnorm(0)), xlim = range(u), col = "orange")
-lines(u, dt(u, 3), lty = 2, type = "l", ylim = c(0, dnorm(0)), xlim = range(u), col = "seagreen")
-legend("topleft", c("Normal(0, 1)", "t(1)", "t(3)"), lty = c(3, 1, 2), col = c("skyblue", "orange", "seagreen"))
-
+plot(
+  u,
+  dnorm(u),
+  type = "l",
+  ylim = c(0, dnorm(0)),
+  xlim = range(u),
+  col = "skyblue",
+  lty = 3,
+  ylab = "Density",
+  xlab = "Variable"
+)
+lines(
+  u,
+  dt(u, 1),
+  type = "l",
+  ylim = c(0, dnorm(0)),
+  xlim = range(u),
+  col = "orange"
+)
+lines(
+  u,
+  dt(u, 3),
+  lty = 2,
+  type = "l",
+  ylim = c(0, dnorm(0)),
+  xlim = range(u),
+  col = "seagreen"
+)
+legend(
+  "topleft",
+  c("Normal(0, 1)", "t(1)", "t(3)"),
+  lty = c(3, 1, 2),
+  col = c("skyblue", "orange", "seagreen")
+)
 ```
 
 
@@ -234,7 +261,6 @@ Which model seems to fit the data better: the one based on the Normal likelihood
 
 ```{r}
 #| warning: false
-
 n_rep = 10000
 
 mu_sim = rnorm(n_rep, 3400, sd = 100)
@@ -243,13 +269,13 @@ sigma_sim = pmax(0.001, rnorm(n_rep, 600, 200))
 
 y_sim = rnorm(n_rep, mu_sim, sigma_sim)
 
-ggplot(data.frame(y_sim),
-       aes(x = y_sim)) + 
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["prior_predict"],
-                 fill = "white") +
-  geom_density(col = bayes_col["prior_predict"],
-               linewidth = 1) +
+ggplot(data.frame(y_sim), aes(x = y_sim)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["prior_predict"],
+    fill = "white"
+  ) +
+  geom_density(col = bayes_col["prior_predict"], linewidth = 1) +
   labs(x = "Birthweight (y, grams)") +
   theme_bw()
 ```
@@ -273,11 +299,13 @@ sd(data$birthweight)
 
 
 ```{r}
-ggplot(data,
-       aes(x = birthweight)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 bins = 50,
-                 col = "black", fill = "white") +
+ggplot(data, aes(x = birthweight)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    bins = 50,
+    col = "black",
+    fill = "white"
+  ) +
   geom_density(linewidth = 1) +
   theme_bw()
 ```
@@ -295,17 +323,19 @@ library(bayesplot)
 
 ```{r}
 #| cache: true
-
-
-fit <- brm(data = data,
-           family = gaussian,
-           birthweight ~ 1,
-           prior = c(prior(normal(3400, 100), class = Intercept),
-                     prior(normal(600, 200), class = sigma)),
-           iter = 3500,
-           warmup = 1000,
-           chains = 4,
-           refresh = 0)
+fit <- brm(
+  data = data,
+  family = gaussian,
+  birthweight ~ 1,
+  prior = c(
+    prior(normal(3400, 100), class = Intercept),
+    prior(normal(600, 200), class = sigma)
+  ),
+  iter = 3500,
+  warmup = 1000,
+  chains = 4,
+  refresh = 0
+)
 ```
 
 
@@ -318,8 +348,7 @@ plot(fit)
 ```
 
 ```{r}
-pairs(fit,
-      off_diag_args = list(alpha = 0.1))
+pairs(fit, off_diag_args = list(alpha = 0.1))
 ```
 
 
@@ -340,20 +369,20 @@ posterior |> head(10) |> kbl() |> kable_styling()
 n_rep = nrow(posterior)
 
 posterior <- posterior |>
-  mutate(y_sim = rnorm(n_rep,
-                       mean = posterior$mu,
-                       sd = posterior$sigma))
+  mutate(y_sim = rnorm(n_rep, mean = posterior$mu, sd = posterior$sigma))
 
 posterior |> head(10) |> kbl() |> kable_styling()
-
 ```
 
 
 ```{r}
-ggplot(posterior,
-       aes(x = y_sim)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+ggplot(posterior, aes(x = y_sim)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior_predict"],
+    fill = "white",
+    bins = 100
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
   labs(x = "Predicted birthweight (grams)") +
   theme_bw()
@@ -362,12 +391,9 @@ ggplot(posterior,
 
 ```{r}
 # plot the cdf
-ggplot(posterior,
-       aes(x = y_sim)) + 
-  stat_ecdf(col = bayes_col["prior_predict"],
-            linewidth = 1) +
-  labs(x = "Birthweight (grams)",
-       y = "cdf") +
+ggplot(posterior, aes(x = y_sim)) +
+  stat_ecdf(col = bayes_col["prior_predict"], linewidth = 1) +
+  labs(x = "Birthweight (grams)", y = "cdf") +
   theme_bw()
 ```
 
@@ -378,9 +404,11 @@ quantile(posterior$y_sim, c(0.005, 0.995))
 
 
 ```{r}
-sum(data$birthweight < quantile(posterior$y_sim, 0.005)) / length(data$birthweight)
+sum(data$birthweight < quantile(posterior$y_sim, 0.005)) /
+  length(data$birthweight)
 
-sum(data$birthweight > quantile(posterior$y_sim, 0.995)) / length(data$birthweight)
+sum(data$birthweight > quantile(posterior$y_sim, 0.995)) /
+  length(data$birthweight)
 ```
 
 ### Posterior predictive checking (Normal likelihood)
@@ -400,16 +428,19 @@ pp_check(fit, ndraw = 100, type = "ecdf_overlay")
 
 ```{r}
 #| cache: true
-
-fit <- brm(data = data,
-           family = student,
-           birthweight ~ 1,
-           prior = c(prior(normal(3400, 100), class = Intercept),
-                     prior(normal(600, 200), class = sigma)),
-           iter = 3500,
-           warmup = 1000,
-           chains = 4,
-           refresh = 0)
+fit <- brm(
+  data = data,
+  family = student,
+  birthweight ~ 1,
+  prior = c(
+    prior(normal(3400, 100), class = Intercept),
+    prior(normal(600, 200), class = sigma)
+  ),
+  iter = 3500,
+  warmup = 1000,
+  chains = 4,
+  refresh = 0
+)
 ```
 
 
@@ -427,8 +458,7 @@ plot(fit)
 ```
 
 ```{r}
-pairs(fit,
-      off_diag_args = list(alpha = 0.1))
+pairs(fit, off_diag_args = list(alpha = 0.1))
 ```
 
 ```{r}
@@ -445,8 +475,11 @@ posterior |> head(10) |> kbl() |> kable_styling()
 ```{r}
 posterior |>
   ggplot(aes(x = sd)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior"], fill = "white") +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior"],
+    fill = "white"
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior"]) +
   theme_bw()
 ```
@@ -463,15 +496,17 @@ posterior <- posterior |>
   mutate(y_sim = mu + sigma * rt(n_rep, nu))
 
 posterior |> head(10) |> kbl() |> kable_styling()
-
 ```
 
 
 ```{r}
-ggplot(posterior,
-       aes(x = y_sim)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+ggplot(posterior, aes(x = y_sim)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior_predict"],
+    fill = "white",
+    bins = 100
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
   labs(x = "Predicted birthweight (grams)") +
   theme_bw()
@@ -480,12 +515,9 @@ ggplot(posterior,
 
 ```{r}
 # plot the cdf
-ggplot(posterior,
-       aes(x = y_sim)) + 
-  stat_ecdf(col = bayes_col["prior_predict"],
-            linewidth = 1) +
-  labs(x = "Birthweight (grams)",
-       y = "cdf") +
+ggplot(posterior, aes(x = y_sim)) +
+  stat_ecdf(col = bayes_col["prior_predict"], linewidth = 1) +
+  labs(x = "Birthweight (grams)", y = "cdf") +
   theme_bw()
 ```
 
@@ -495,9 +527,11 @@ quantile(posterior$y_sim, c(0.005, 0.995))
 ```
 
 ```{r}
-sum(data$birthweight < quantile(posterior$y_sim, 0.005)) / length(data$birthweight)
+sum(data$birthweight < quantile(posterior$y_sim, 0.005)) /
+  length(data$birthweight)
 
-sum(data$birthweight > quantile(posterior$y_sim, 0.995)) / length(data$birthweight)
+sum(data$birthweight > quantile(posterior$y_sim, 0.995)) /
+  length(data$birthweight)
 ```
 
 
@@ -510,7 +544,7 @@ pp_check(fit, ndraw = 100) +
 
 
 ```{r}
-pp_check(fit, ndraw = 100, type = "ecdf_overlay")  +
+pp_check(fit, ndraw = 100, type = "ecdf_overlay") +
   scale_x_continuous(limits = c(0, 8000))
 ```
 
@@ -520,14 +554,15 @@ pp_check(fit, ndraw = 100, type = "ecdf_overlay")  +
 
 ```{r}
 #| cache: true
-
-fit <- brm(data = data,
-           family = student,
-           birthweight ~ 1,
-           iter = 3500,
-           warmup = 1000,
-           chains = 4,
-           refresh = 0)
+fit <- brm(
+  data = data,
+  family = student,
+  birthweight ~ 1,
+  iter = 3500,
+  warmup = 1000,
+  chains = 4,
+  refresh = 0
+)
 ```
 
 
@@ -547,13 +582,12 @@ plot(fit)
 
 
 ```{r}
-pairs(fit,
-      off_diag_args = list(alpha = 0.1))
+pairs(fit, off_diag_args = list(alpha = 0.1))
 ```
 
 
 ```{r}
-pp_check(fit, ndraw = 100)  +
+pp_check(fit, ndraw = 100) +
   scale_x_continuous(limits = c(0, 8000))
 ```
 

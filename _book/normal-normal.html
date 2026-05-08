@@ -378,7 +378,7 @@ window.Quarto = {
 
 <!-- {{< include _python_setup.qmd >}} -->
 <p>We have estimated the population mean of a Normal distribution, assuming known population standard deviation <span class="math inline">\(\sigma\)</span>, using grid approximation in <a href="normal-mean.html" class="quarto-xref"><span>Chapter 8</span></a> and posterior simulation in <a href="posterior-simulation.html#sec-brms" class="quarto-xref"><span>Section 14.1</span></a>. We will relax the unreasonable assumption of known standard deviation soon. But before doing that, we will briefly investigate one more case where the posterior distribution can be derived analytically, in a form that makes explicit the relative influence of prior and likelihood.</p>
-<p><strong>Normal-Normal model<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></strong></p>
+<p><strong>Normal-Normal model</strong></p>
 <ul>
 <li>Consider a measured variable <span class="math inline">\(y\)</span> which, given <span class="math inline">\(\theta\)</span>, follows a Normal<span class="math inline">\((\theta, \sigma)\)</span> distribution, with <span class="math inline">\(\sigma\)</span> known.</li>
 <li>Suppose <span class="math inline">\(\theta\)</span> has a Normal<span class="math inline">\((\mu_0, \tau_0)\)</span> prior distribution.</li>
@@ -436,8 +436,8 @@ window.Quarto = {
 </tbody>
 </table>
 <div id="exm-temp-normal-normal" class="theorem example">
-<p><span class="theorem-title"><strong>Example 16.1</strong></span> Assume body temperatures (degrees Fahrenheit) of healthy adults follow a Normal distribution with unknown mean <span class="math inline">\(\theta\)</span> and known standard deviation <span class="math inline">\(\sigma=1\)</span>. (It’s unrealistic to assume the population standard deviation is known. We’ll consider the case of unknown standard deviation later.) Suppose we wish to estimate <span class="math inline">\(\theta\)</span>, the population mean healthy human body temperature.<br>
-Assume the prior distribution of <span class="math inline">\(\theta\)</span> is Normal with mean 98.6 and standard deviation 0.7.</p>
+<p><span class="theorem-title"><strong>Example 16.1</strong></span> Assume body temperatures (degrees Fahrenheit) of healthy adults follow a Normal distribution with unknown mean <span class="math inline">\(\theta\)</span> and known standard deviation <span class="math inline">\(\sigma=1.1\)</span>. (It’s unrealistic to assume the population standard deviation is known. We’ll consider the case of unknown standard deviation later.) Suppose we wish to estimate <span class="math inline">\(\theta\)</span>, the population mean healthy human body temperature.<br>
+Assume the prior distribution of <span class="math inline">\(\theta\)</span> is Normal with mean 98.6 and standard deviation 0.3.</p>
 <p>The sample mean body temperature in a sample of 208 healthy adults is 97.7 degrees F.</p>
 </div>
 <ol type="1">
@@ -502,23 +502,27 @@ Assume the prior distribution of <span class="math inline">\(\theta\)</span> is 
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>tau0 <span class="ot">=</span> <span class="fl">0.3</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># data</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="fl">1.1</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">208</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>ybar <span class="ot">=</span> <span class="fl">97.7</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>tau_n <span class="ot">=</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(n <span class="sc">/</span> sigma <span class="sc">^</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> tau0 <span class="sc">^</span> <span class="dv">2</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>mu_n <span class="ot">=</span> mu0 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> tau0 <span class="sc">^</span> <span class="dv">2</span>) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">/</span> tau_n <span class="sc">^</span> <span class="dv">2</span>) <span class="sc">+</span> ybar <span class="sc">*</span> (n <span class="sc">/</span> sigma <span class="sc">^</span> <span class="dv">2</span>) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">/</span> tau_n <span class="sc">^</span> <span class="dv">2</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>tau_n <span class="ot">=</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(n <span class="sc">/</span> sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> tau0<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>mu_n <span class="ot">=</span> mu0 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> tau0<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">/</span> tau_n<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> ybar <span class="sc">*</span> (n <span class="sc">/</span> sigma<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">/</span> tau_n<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">c</span>(<span class="st">"Precision"</span>, <span class="st">"SD"</span>, <span class="st">"Mean"</span>),</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">/</span> tau0 <span class="sc">^</span> <span class="dv">2</span>, tau0, mu0),</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                <span class="fu">c</span>(n <span class="sc">/</span> sigma <span class="sc">^</span> <span class="dv">2</span>, sigma <span class="sc">/</span> <span class="fu">sqrt</span>(n), ybar),</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">/</span> tau_n <span class="sc">^</span> <span class="dv">2</span>, tau_n, mu_n))</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">digits =</span> <span class="dv">3</span>,</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"Prior"</span>, <span class="st">"Data (Sample Mean)"</span>, <span class="st">"Posterior"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"Precision"</span>, <span class="st">"SD"</span>, <span class="st">"Mean"</span>),</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">/</span> tau0<span class="sc">^</span><span class="dv">2</span>, tau0, mu0),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(n <span class="sc">/</span> sigma<span class="sc">^</span><span class="dv">2</span>, sigma <span class="sc">/</span> <span class="fu">sqrt</span>(n), ybar),</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">/</span> tau_n<span class="sc">^</span><span class="dv">2</span>, tau_n, mu_n)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"Prior"</span>, <span class="st">"Data (Sample Mean)"</span>, <span class="st">"Posterior"</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="table caption-top table-sm table-striped small">
 <thead>
@@ -533,20 +537,20 @@ Assume the prior distribution of <span class="math inline">\(\theta\)</span> is 
 <tr class="odd">
 <td style="text-align: left;">Precision</td>
 <td style="text-align: right;">11.111</td>
-<td style="text-align: right;">208.000</td>
-<td style="text-align: right;">219.111</td>
+<td style="text-align: right;">171.901</td>
+<td style="text-align: right;">183.012</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">SD</td>
 <td style="text-align: right;">0.300</td>
-<td style="text-align: right;">0.069</td>
-<td style="text-align: right;">0.068</td>
+<td style="text-align: right;">0.076</td>
+<td style="text-align: right;">0.074</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Mean</td>
 <td style="text-align: right;">98.600</td>
 <td style="text-align: right;">97.700</td>
-<td style="text-align: right;">97.746</td>
+<td style="text-align: right;">97.755</td>
 </tr>
 </tbody>
 </table>
@@ -563,37 +567,43 @@ Assume the prior distribution of <span class="math inline">\(\theta\)</span> is 
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="fl">97.0</span>, <span class="fl">99.5</span>)),</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> x)) <span class="sc">+</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># prior</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> mu0,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                            <span class="at">sd =</span> tau0),</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                <span class="at">lty =</span> bayes_lty[<span class="st">"prior"</span>],</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                <span class="at">linewidth =</span> <span class="dv">1</span>,</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"prior"</span>, <span class="at">linetype =</span> <span class="st">"prior"</span>)) <span class="sc">+</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="fl">97.0</span>, <span class="fl">99.5</span>)), <span class="fu">aes</span>(<span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># prior</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> dnorm,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> mu0, <span class="at">sd =</span> tau0),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">lty =</span> bayes_lty[<span class="st">"prior"</span>],</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="dv">1</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"prior"</span>, <span class="at">linetype =</span> <span class="st">"prior"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (scaled) likelihood</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> likelihood_scaled,</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                <span class="at">lty =</span> bayes_lty[<span class="st">"likelihood"</span>],</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                <span class="at">linewidth =</span> <span class="dv">1</span>,</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>                <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"likelihood"</span>, <span class="at">linetype =</span> <span class="st">"likeihood"</span>)) <span class="sc">+</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># posterior</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm,</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>                <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> mu_n,</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>                            <span class="at">sd =</span> tau_n),</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>                <span class="at">lty =</span> bayes_lty[<span class="st">"posterior"</span>],</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>                <span class="at">linewidth =</span> <span class="dv">1</span>,</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>                <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"posterior"</span>, <span class="at">linetype =</span> <span class="st">"posterior"</span>)) <span class="sc">+</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define color and add a legend</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">""</span>,</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"prior"</span>, <span class="st">"likelihood"</span>, <span class="st">"posterior"</span>),</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>                     <span class="at">values =</span> bayes_col[<span class="fu">c</span>(<span class="st">"prior"</span>, <span class="st">"likelihood"</span>, <span class="st">"posterior"</span>)]) <span class="sc">+</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_linetype_manual</span>(<span class="at">name =</span> <span class="st">""</span>,</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>                        <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"prior"</span>, <span class="st">"likelihood"</span>, <span class="st">"posterior"</span>),</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>                        <span class="at">values =</span> bayes_lty[<span class="fu">c</span>(<span class="st">"prior"</span>, <span class="st">"likelihood"</span>, <span class="st">"posterior"</span>)]) <span class="sc">+</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"theta"</span>,</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> likelihood_scaled,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">lty =</span> bayes_lty[<span class="st">"likelihood"</span>],</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="dv">1</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"likelihood"</span>, <span class="at">linetype =</span> <span class="st">"likeihood"</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># posterior</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> dnorm,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> mu_n, <span class="at">sd =</span> tau_n),</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">lty =</span> bayes_lty[<span class="st">"posterior"</span>],</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="dv">1</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"posterior"</span>, <span class="at">linetype =</span> <span class="st">"posterior"</span>)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define color and add a legend</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span>,</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"prior"</span>, <span class="st">"likelihood"</span>, <span class="st">"posterior"</span>),</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> bayes_col[<span class="fu">c</span>(<span class="st">"prior"</span>, <span class="st">"likelihood"</span>, <span class="st">"posterior"</span>)]</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_linetype_manual</span>(</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span>,</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"prior"</span>, <span class="st">"likelihood"</span>, <span class="st">"posterior"</span>),</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> bayes_lty[<span class="fu">c</span>(<span class="st">"prior"</span>, <span class="st">"likelihood"</span>, <span class="st">"posterior"</span>)]</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"theta"</span>, <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: No shared levels found between `names(values)` of the manual scale and the
 data's linetype values.</code></pre>
@@ -609,17 +619,11 @@ data's linetype values.</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.90</span>, <span class="fl">0.99</span>), mu_n, tau_n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 97.58848 97.65906 97.70007 97.79121 97.83222 97.90280</code></pre>
+<pre><code>[1] 97.58268 97.65991 97.70478 97.80450 97.84937 97.92660</code></pre>
 </div>
 </div>
 
 
-</section>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p>Try this <a href="https://shiny.stat.ncsu.edu/bjreich/NormalNormal/">applet which illustrates the Normal-Normal model</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
 </section>
 
 </main> <!-- /main -->

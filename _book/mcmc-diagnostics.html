@@ -592,7 +592,7 @@ Figure&nbsp;22.2: Density plots for five chains with different starting states
 <ul>
 <li>The goal of an MCMC simulation is to simulate a <em>representative</em> sample of values from the target distribution.</li>
 <li>While an MCMC algorithm should converge eventually to the target distribution, it might take some time to get there.</li>
-<li><strong>Warm up</strong> (or “warm up”) refers to the process of discarding the first several hundred or thousand steps of the chain to allow for a “settling in” period. Only values simulated after the warm up period are used to approximate the target distribution.</li>
+<li><strong>Warm up</strong> (or “burn in”) refers to the process of discarding the first several hundred or thousand steps of the chain to allow for a “settling in” period. Only values simulated after the warm up period are used to approximate the target distribution.</li>
 <li>In practice, it is common to use a warm up period of several hundred or thousands of steps.</li>
 <li>To get a better idea of how long the warm up period should be, run the chain starting from several disperse initial conditions to see how long it takes for the paths to “overlap”.</li>
 <li>After warm up period, examine trace plots or density plots for multiple chains; if the plots do not “overlap” then there is evidence that the chains have not converged, so they might not be producing representative samples from the target distribution, and therefore a longer warm up period is needed.</li>
@@ -772,14 +772,16 @@ Attaching package: 'bayesplot'</code></pre>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">brm</span>(<span class="at">data =</span> data, </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="fu">bernoulli</span>(<span class="at">link =</span> identity),</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">formula =</span> y <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">prior</span>(<span class="fu">beta</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">class =</span> Intercept, <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">ub =</span> <span class="dv">1</span>),</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter =</span> <span class="dv">3500</span>,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">warmup =</span> <span class="dv">1000</span>,</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">chains =</span> <span class="dv">4</span>,</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">refresh =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">brm</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">bernoulli</span>(<span class="at">link =</span> identity),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> y <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">prior</span>(<span class="fu">beta</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">class =</span> Intercept, <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">ub =</span> <span class="dv">1</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> <span class="dv">3500</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">warmup =</span> <span class="dv">1000</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Compiling Stan program...</code></pre>
 </div>
@@ -911,8 +913,8 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>posterior <span class="sc">|&gt;</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">chain =</span> .chain) <span class="sc">|&gt;</span> </span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mcmc_acf</span>(<span class="at">pars =</span> <span class="fu">vars</span>(theta), <span class="at">lags =</span> <span class="dv">20</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">chain =</span> .chain) <span class="sc">|&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mcmc_acf</span>(<span class="at">pars =</span> <span class="fu">vars</span>(theta), <span class="at">lags =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -932,9 +934,9 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">neff_ratio</span>(fit)[<span class="st">"b_Intercept"</span>] <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">neff_ratio</span>(fit)[<span class="st">"b_Intercept"</span>] <span class="sc">|&gt;</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mcmc_neff</span>() <span class="sc">+</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

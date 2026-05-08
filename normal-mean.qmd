@@ -12,7 +12,7 @@
 
 
 ::: {#exm-temp-setup}
-Assume body temperatures (degrees Fahrenheit) of healthy adults follow a Normal distribution with unknown mean $\theta$ and known standard deviation $\sigma=1$.
+Assume body temperatures (degrees Fahrenheit) of healthy adults follow a Normal distribution with unknown mean $\theta$ and known standard deviation $\sigma=1.1$.
 (It's unrealistic to assume the population standard deviation is known.
 We'll consider the case of unknown standard deviation later.)
 Suppose we wish to estimate $\theta$, the population mean healthy human body temperature.  
@@ -21,7 +21,7 @@ Suppose we wish to estimate $\theta$, the population mean healthy human body tem
 
 1. If $\theta$ was known (say $\theta = 98.6$), what would the distribution of $y$ look like?
 What are some of its features?
-What does the standard deviation $\sigma=1$ represent?
+What does the standard deviation $\sigma=1.1$ represent?
 \
 \
 \
@@ -128,7 +128,7 @@ What does it say about $\theta$?
 \
 \
 
-1. Now assume a prior distribution which is proportional to a Normal distribution with mean 98.6 and standard deviation 0.7 over $\theta$ values in the grid.
+1. Now assume a prior distribution which is proportional to a Normal distribution with mean 98.6 and standard deviation 0.3 over $\theta$ values in the grid.
 (Careful: be sure not to confuse a Normal prior distribution with the likelihood.)
 Use software to plot the prior distribution, the (scaled) likelihood function, and then find the posterior and plot it.
 Describe the posterior distribution.
@@ -179,7 +179,7 @@ What does it say about $\theta$?
 \
 \
 
-1. Now assume a prior distribution which is proportional to a Normal distribution with mean 98.6 and standard deviation 0.7 over $\theta$ values in the grid.
+1. Now assume a prior distribution which is proportional to a Normal distribution with mean 98.6 and standard deviation 0.3 over $\theta$ values in the grid.
 (Careful: be sure not to confuse a Normal prior distribution with the likelihood.)
 Use software to plot the prior distribution, the (scaled) likelihood function, and then find the posterior and plot it.
 Describe the posterior distribution.
@@ -200,7 +200,7 @@ Comment on the influence that the prior distribution has; how does this compare 
 \
 
 
-1. The posterior distribution is approximately Normal with posterior mean 97.71 and posterior SD 0.07.
+1. The posterior distribution is approximately Normal with posterior mean 97.75 and posterior SD 0.074.
 Explain what the posterior SD represents.
 \
 \
@@ -233,70 +233,71 @@ Compare to the prior intervals.
 
 ```{r}
 #| echo: false
-
 # observed data
 n = 1
 y_obs = 97.9
-sigma = 1
+sigma = 1.1
 
 theta = seq(97.6, 99.6, 0.5)
 
 # distribution of y for each value of theta
-sampling_distribution_table = expand_grid(theta,
-                                          y = seq(95, 102, 0.01)) |>
+sampling_distribution_table = expand_grid(theta, y = seq(95, 102, 0.01)) |>
   mutate(prob = dnorm(y, theta, sigma / sqrt(n)))
 
 sampling_distribution_table |>
   mutate(theta = factor(theta)) |>
-  ggplot(aes(x = y,
-             y = prob,
-             col = theta)) +
+  ggplot(aes(x = y, y = prob, col = theta)) +
   geom_point() +
   geom_line(linetype = "dotted") +
   scale_color_viridis_d(option = "magma") +
-  
+
   # highlight observed y
-  annotate("rect", xmin = y_obs - 0.05, xmax = y_obs + 0.05,
-           ymin = 0, ymax = max(sampling_distribution_table["prob"]), alpha = 0.5,
-           color = bayes_col["likelihood"],
-           fill = bayes_col["likelihood"]) +
+  annotate(
+    "rect",
+    xmin = y_obs - 0.05,
+    xmax = y_obs + 0.05,
+    ymin = 0,
+    ymax = max(sampling_distribution_table["prob"]),
+    alpha = 0.5,
+    color = bayes_col["likelihood"],
+    fill = bayes_col["likelihood"]
+  ) +
   labs(y = "Density of y given theta") +
   theme_bw()
 
 # evaluate likelihood of y for each theta
-likelihood_table = data.frame(theta,
-                              likelihood = dnorm(y_obs, theta, sigma / sqrt(n)))
+likelihood_table = data.frame(
+  theta,
+  likelihood = dnorm(y_obs, theta, sigma / sqrt(n))
+)
 
 # plot the likelihood
 likelihood_table |>
   mutate(theta_f = factor(theta)) |>
-  ggplot(aes(x = theta,
-             y = likelihood,
-             col = theta_f)) +
+  ggplot(aes(x = theta, y = likelihood, col = theta_f)) +
   geom_point(size = 3) +
   scale_color_viridis_d(option = "magma") +
-  scale_x_continuous(breaks = theta) + 
-  labs(y = paste("Likelihood of y = ", y_obs, " given theta"),
-       col = "theta") +
+  scale_x_continuous(breaks = theta) +
+  labs(y = paste("Likelihood of y = ", y_obs, " given theta"), col = "theta") +
   theme_bw()
 ```
 
 
 ### Posterior based on first observation and discrete prior
 
-The likelihood is determined by evaluating the Normal($\theta$, 1) density at $y=97.9$ for different values of $\theta$: `dnorm(97.9, theta, 1)` or
+The likelihood is determined by evaluating the Normal($\theta$, 1.1) density at $y=97.9$ for different values of $\theta$: `dnorm(97.9, theta, 1.1)` or
 
 $$
-f(97.9|\theta)  = \frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.9-\theta}{1}\right)^2\right)
+f(97.9|\theta)  = \frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.9-\theta}{1.1}\right)^2\right)
 $$
 
 For example, the likelihood for $\theta = 98.6$ is
 
 $$
-\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.9-98.6}{1}\right)^2\right),
+\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.9-98.6}{1.1}\right)^2\right),
 $$
 
-or `dnorm(97.9, 98.6, 1)` = 0.312.
+or `dnorm(97.9, 98.6, 1.1)` = 0.296.
 
 ```{r}
 # possible values of theta
@@ -308,7 +309,7 @@ prior = prior / sum(prior)
 
 # observed data
 y = 97.9 # single observed value
-sigma = 1 # assumed known population SD
+sigma = 1.1 # assumed known population SD
 
 # likelihood of observed data for each theta
 likelihood = dnorm(y, theta, sigma)
@@ -317,11 +318,7 @@ likelihood = dnorm(y, theta, sigma)
 product = prior * likelihood
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 
 bayes_table |>
   adorn_totals("row") |>
@@ -332,22 +329,21 @@ bayes_table |>
 
 ### Posterior based on second observation and discrete prior
 
-The likelihood is determined by evaluating the Normal($\theta$, 1) density at $y=97.5$ for different values of $\theta$: `dnorm(97.5, theta, 1)` or
+The likelihood is determined by evaluating the Normal($\theta$, 1.1) density at $y=97.5$ for different values of $\theta$: `dnorm(97.5, theta, 1.1)` or
 
 $$
-f(97.5|\theta)  = \frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.5-\theta}{1}\right)^2\right)
+f(97.5|\theta)  = \frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.5-\theta}{1.1}\right)^2\right)
 $$
 
 For example, the likelihood for $\theta = 98.6$ is
 
 $$
-\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.5-98.6}{1}\right)^2\right),
+\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.5-98.6}{1.1}\right)^2\right),
 $$
 
-or `dnorm(97.5, 98.6, 1)` = 0.218.
+or `dnorm(97.5, 98.6, 1.1)` = 0.220.
 
 ```{r}
-
 # prior is posterior from previous part
 prior = posterior
 
@@ -362,12 +358,8 @@ product = likelihood * prior
 posterior = product / sum(product)
 
 # bayes table
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
-                         
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
+
 bayes_table |>
   adorn_totals("row") |>
   kbl(digits = 4) |>
@@ -377,19 +369,19 @@ bayes_table |>
 
 ### Posterior based on two observations and discrete prior
 
-Since the two measurements are independent, the likelihood is the product of the likelihoods for $y=97.9$ and $y=97.5$: `dnorm(97.9, theta, 1) * dnorm(97.5, theta, 1)` or
+Since the two measurements are independent, the likelihood is the product of the likelihoods for $y=97.9$ and $y=97.5$: `dnorm(97.9, theta, 1.1) * dnorm(97.5, theta, 1.1)` or
 
 $$
-f((97.9, 97.5)|\theta)  = \left(\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.9-\theta}{1}\right)^2\right)\right)\left(\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.5-\theta}{1}\right)^2\right)\right)
+f((97.9, 97.5)|\theta)  = \left(\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.9-\theta}{1.1}\right)^2\right)\right)\left(\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.5-\theta}{1.1}\right)^2\right)\right)
 $$
 
 For example, the likelihood for $\theta = 98.6$ is
 
 $$
-f((97.9, 97.5)|\theta=98.6)  = \left(\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.9-98.6}{1}\right)^2\right)\right)\left(\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.5-98.6}{1}\right)^2\right)\right)
+f((97.9, 97.5)|\theta=98.6)  = \left(\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.9-98.6}{1.1}\right)^2\right)\right)\left(\frac{1}{\sqrt{2\pi}}\,\exp\left(-\frac{1}{2}\left(\frac{97.5-98.6}{1.1}\right)^2\right)\right)
 $$
 
-or `dnorm(97.9, 98.6, 1) * dnorm(97.5, 98.6, 1)` = (0.312)(0.218) = 0.068.
+or `dnorm(97.9, 98.6, 1.1) * dnorm(97.5, 98.6, 1.1)` = (0.296)(0.218) = 0.065.
 
 ```{r}
 # prior
@@ -398,7 +390,7 @@ prior = prior / sum(prior)
 
 # data
 y = c(97.9, 97.5) # two observed values
-sigma = 1
+sigma = 1.1
 
 
 # likelihood - function of theta
@@ -409,11 +401,7 @@ product = likelihood * prior
 posterior = product / sum(product)
 
 # bayes table
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 
 bayes_table |>
   adorn_totals("row") |>
@@ -427,25 +415,25 @@ bayes_table |>
 For a sample of size $n$ from a $N(\theta,\sigma)$ distribution, the sample mean $\bar{y}$ follows a $N\left(\theta, \frac{\sigma}{\sqrt{n}}\right)$ distribution.
 Remember: $\sigma/\sqrt{n}$ represents the sample-to-sample variability of sample means.
 
-The likelihood is determined by evaluating the Normal($\theta$, $\frac{1}{\sqrt{2}}$) density at $\bar{y}=97.7$ for different values of $\theta$: `dnorm(97.7, theta, 1 / sqrt(2))` or
+The likelihood is determined by evaluating the Normal($\theta$, $\frac{1.1}{\sqrt{2}}$) density at $\bar{y}=97.7$ for different values of $\theta$: `dnorm(97.7, theta, 1.1 / sqrt(2))` or
 
 $$
-f_{\bar{Y}}(97.7|\theta)  \propto \exp\left(-\frac{1}{2}\left(\frac{97.7-\theta}{1/\sqrt{2}}\right)^2\right)
+f_{\bar{Y}}(97.7|\theta)  \propto \exp\left(-\frac{1}{2}\left(\frac{97.7-\theta}{1.1/\sqrt{2}}\right)^2\right)
 $$
 
 For example, the likelihood for $\theta = 98.6$ is
 
 $$
-f_{\bar{Y}}((97.7)|\theta=98.6)  \propto \exp\left(-\frac{1}{2}\left(\frac{97.7-98.6}{1/\sqrt{2}}\right)^2\right)
+f_{\bar{Y}}((97.7)|\theta=98.6)  \propto \exp\left(-\frac{1}{2}\left(\frac{97.7-98.6}{1.1/\sqrt{2}}\right)^2\right)
 $$
 
-or `dnorm(97.7, 98.6, 1 / sqrt(2))` = 0.251.
+or `dnorm(97.7, 98.6, 1.1 / sqrt(2))` = 0.263.
 
 The likelihood is *not* the same as in the previous part.
 There are many samples with a sample mean of 97.7, of which the sample (97.9, 97.5) is only one possibility, so the likelihood of observing a sample mean of 97.7 is greater than the likelihood of (97.9, 97.5).
 However, while the likelihood is not the same as in the previous part, it is *proportionally* the same.
 That is, the likelihood in this part has the same *shape* as the likelihood in the previous part.
-For example, the ratio of the likelihoods for $\theta=98.6$ and $\theta=98.1$ is the same in both parts: $0.4808/0.2510 = 1.91$ and $0.1303/0.068=1.91$.
+For example, the ratio of the likelihoods for $\theta=98.6$ and $\theta=98.1$ is the same in both parts: $0.4494/0.2626 = 1.71$ and $0.1115/0.0652=1.71$.
 Since the prior distribution is the same in both parts, and the likelihoods are proportionally the same, then the posterior distributions are the same.
 
 
@@ -457,7 +445,7 @@ prior = prior / sum(prior)
 # data
 n = 2
 y = 97.7 # sample mean
-sigma = 1
+sigma = 1.1
 
 
 # likelihood
@@ -468,11 +456,7 @@ product = likelihood * prior
 posterior = product / sum(product)
 
 # bayes table
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 
 bayes_table |>
   adorn_totals("row") |>
@@ -495,7 +479,7 @@ prior = prior / sum(prior) # scales so that prior sums to 1
 # data
 n = 2 # sample size
 y = 97.7 # sample mean
-sigma = 1 # assumed known
+sigma = 1.1 # assumed known
 
 # likelihood
 likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
@@ -504,35 +488,28 @@ likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
 product = likelihood * prior
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
-
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 ```
 
 
 ```{r}
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 
@@ -552,7 +529,7 @@ prior = prior / sum(prior) # scales so that prior sums to 1
 # data
 n = 2 # sample size
 y = 97.7 # sample mean
-sigma = 1 # assumed known
+sigma = 1.1 # assumed known
 
 # likelihood
 likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
@@ -561,35 +538,28 @@ likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
 product = likelihood * prior
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
-
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 ```
 
 
 ```{r}
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 
@@ -603,13 +573,13 @@ The only change is the prior
 theta = seq(96, 100, 0.0001)
 
 # prior
-prior = dnorm(theta, 98.6, 0.7) # shape of prior
+prior = dnorm(theta, 98.6, 0.3) # shape of prior
 prior = prior / sum(prior) # scales so that prior sums to 1
 
 # data
 n = 2 # sample size
 y = 97.7 # sample mean
-sigma = 1 # assumed known
+sigma = 1.1 # assumed known
 
 # likelihood
 likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
@@ -618,35 +588,28 @@ likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
 product = likelihood * prior
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
-
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 ```
 
 
 ```{r}
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 ### Posterior based on sample of size $n=208$ and uniform prior
@@ -663,7 +626,7 @@ prior = prior / sum(prior) # scales so that prior sums to 1
 # data
 n = 208 # sample size
 y = 97.7 # sample mean
-sigma = 1 # assumed known
+sigma = 1.1 # assumed known
 
 # likelihood
 likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
@@ -672,35 +635,28 @@ likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
 product = likelihood * prior
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
-
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 ```
 
 
 ```{r}
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 
@@ -718,7 +674,7 @@ prior = prior / sum(prior) # scales so that prior sums to 1
 # data
 n = 208 # sample size
 y = 97.7 # sample mean
-sigma = 1 # assumed known
+sigma = 1.1 # assumed known
 
 # likelihood
 likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
@@ -727,35 +683,28 @@ likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
 product = likelihood * prior
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
-
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 ```
 
 
 ```{r}
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 
@@ -769,13 +718,13 @@ The only change is the prior
 theta = seq(96, 100, 0.0001)
 
 # prior
-prior = dnorm(theta, 98.6, 0.7) # shape of prior
+prior = dnorm(theta, 98.6, 0.3) # shape of prior
 prior = prior / sum(prior) # scales so that prior sums to 1
 
 # data
 n = 208 # sample size
 y = 97.7 # sample mean
-sigma = 1 # assumed known
+sigma = 1.1 # assumed known
 
 # likelihood
 likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
@@ -784,35 +733,28 @@ likelihood = dnorm(y, theta, sigma / sqrt(n)) # function of theta
 product = likelihood * prior
 posterior = product / sum(product)
 
-bayes_table = data.frame(theta,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
-
+bayes_table = data.frame(theta, prior, likelihood, product, posterior)
 ```
 
 
 ```{r}
 bayes_table |>
   # scale likelihood for plotting only
-  mutate(likelihood = likelihood / sum(likelihood)) |> 
+  mutate(likelihood = likelihood / sum(likelihood)) |>
   select(theta, prior, likelihood, posterior) |>
-  pivot_longer(!theta,
-               names_to = "source",
-               values_to = "probability") |>
+  pivot_longer(!theta, names_to = "source", values_to = "probability") |>
   mutate(source = fct_relevel(source, "prior", "likelihood", "posterior")) |>
-  ggplot(aes(x = theta,
-             y = probability,
-             col = source)) +
+  ggplot(aes(x = theta, y = probability, col = source)) +
   geom_line(aes(linetype = source), linewidth = 1) +
   scale_color_manual(values = bayes_col) +
   scale_linetype_manual(values = bayes_lty) +
   theme_bw() +
   # remove y-axis labels
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
 ```
 
 ### Conclusions
@@ -827,14 +769,14 @@ post_mean
 
 ```{r}
 # posterior SD
-post_var = sum(theta ^ 2 * posterior) - post_mean ^ 2
+post_var = sum(theta^2 * posterior) - post_mean^2
 
 post_sd = sqrt(post_var)
 post_sd
 ```
 
 ```{r}
-# posterior probability theta is less than 0.7
+# posterior probability theta is less than 98.6
 pnorm(98.6, post_mean, post_sd)
 
 # endpoints of posterior 50% credible interval
@@ -845,7 +787,6 @@ qnorm(c(0.10, 0.90), post_mean, post_sd)
 
 # endpoints of posterior 98% credible interval
 qnorm(c(0.01, 0.99), post_mean, post_sd)
-
 ```
 
 - There is posterior probability pretty close to 100% that population mean healthy human body temperature is less than 98.6 degrees F.
