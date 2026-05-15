@@ -40,6 +40,13 @@ Start to set up a Bayes table.
 \
 \
 
+1. Given any randomly selected penguin, in the absence of any information about the penguin, what specify would you predict it to be? Why?
+What is the probability that your classification is correct?
+\
+\
+\
+\
+\
 
 
 ::: {#exm-classification-categorical-predictor}
@@ -71,8 +78,8 @@ Why?
 \
 \
 
-1. If the penguin is below average weight, what species would you classify it as?
-Why?
+1. Given any randomly selected penguin that is below average weight, what specify would you predict it to be? Why?
+What is the probability that your classification is correct?
 \
 \
 \
@@ -81,15 +88,21 @@ Why?
 
 1. Now suppose the the penguin is not below average weight.
 Compute the posterior probability of each species given that the penguin is not below average weight.
-What species would you classify it as?
-Why?
 \
 \
 \
 \
 \
 
-1. Suppose that you classify any randomly selected penguin based on whether or not it is below average weight.
+1. Given any randomly selected penguin that is not below average weight, what specify would you predict it to be? Why?
+What is the probability that your classification is correct?
+\
+\
+\
+\
+\
+
+1. Now suppose that given any randomly selected penguin you observed whether or not the penguin is below average weight and then classify it according to the rule you determined above.
 What is the posterior probability that you classify the penguin correctly?
 \
 \
@@ -237,7 +250,7 @@ class = c("A", "C", "G")
 prior = c(0.442, 0.198, 0.360)
 
 # likelihood of below average weight (evidence) given each species (class)
-likelihood = c(0.834, 0.897, 0.049) 
+likelihood = c(0.834, 0.897, 0.049)
 
 product = prior * likelihood
 
@@ -245,11 +258,7 @@ posterior = product / sum(product)
 
 posterior_given_below_average_weight = posterior
 
-bayes_table = data.frame(class,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(class, prior, likelihood, product, posterior)
 
 bayes_table |>
   adorn_totals("row") |>
@@ -265,17 +274,13 @@ class = c("A", "C", "G")
 prior = c(0.442, 0.198, 0.360)
 
 # likelihood of not below average weight (evidence) given each species (class)
-likelihood = c(1 - 0.834, 1 - 0.897, 1 - 0.049) 
+likelihood = c(1 - 0.834, 1 - 0.897, 1 - 0.049)
 
 product = prior * likelihood
 
 posterior = product / sum(product)
 
-bayes_table = data.frame(class,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(class, prior, likelihood, product, posterior)
 
 bayes_table |>
   adorn_totals("row") |>
@@ -293,19 +298,17 @@ class = c("A", "C", "G")
 prior = c(0.442, 0.198, 0.360)
 
 # likelihood of 50mm bill (evidence) given each species (class)
-likelihood = c(dnorm(50, 38.8, 2.66),
-               dnorm(50, 48.8, 3.34),
-               dnorm(50, 47.5, 3.08))
+likelihood = c(
+  dnorm(50, 38.8, 2.66),
+  dnorm(50, 48.8, 3.34),
+  dnorm(50, 47.5, 3.08)
+)
 
 product = prior * likelihood
 
 posterior = product / sum(product)
 
-bayes_table = data.frame(class,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(class, prior, likelihood, product, posterior)
 
 bayes_table |>
   adorn_totals("row") |>
@@ -323,19 +326,17 @@ class = c("A", "C", "G")
 prior = posterior_given_below_average_weight
 
 # likelihood of 50mm (evidence) given each species (class)
-likelihood = c(dnorm(50, 38.8, 2.66),
-               dnorm(50, 48.8, 3.34),
-               dnorm(50, 47.5, 3.08))
+likelihood = c(
+  dnorm(50, 38.8, 2.66),
+  dnorm(50, 48.8, 3.34),
+  dnorm(50, 47.5, 3.08)
+)
 
 product = prior * likelihood
 
 posterior = product / sum(product)
 
-bayes_table = data.frame(class,
-                         prior,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(class, prior, likelihood, product, posterior)
 
 bayes_table |>
   adorn_totals("row") |>
@@ -354,14 +355,18 @@ class = c("A", "C", "G")
 prior = c(0.442, 0.198, 0.360)
 
 # likelihood of 50mm bill (evidence) given each species (class)
-likelihood_bill = c(dnorm(50, 38.8, 2.66),
-                    dnorm(50, 48.8, 3.34),
-                    dnorm(50, 47.5, 3.08))
+likelihood_bill = c(
+  dnorm(50, 38.8, 2.66),
+  dnorm(50, 48.8, 3.34),
+  dnorm(50, 47.5, 3.08)
+)
 
 # likelihood of 195mm flipper (evidence) given each species (class)
-likelihood_flipper = c(dnorm(195, 190, 6.54),
-                       dnorm(195, 196, 7.13),
-                       dnorm(195, 217, 6.48))
+likelihood_flipper = c(
+  dnorm(195, 190, 6.54),
+  dnorm(195, 196, 7.13),
+  dnorm(195, 217, 6.48)
+)
 
 # assume conditional independence of bill and flipper given species (class)
 likelihood = likelihood_bill * likelihood_flipper
@@ -370,13 +375,15 @@ product = prior * likelihood
 
 posterior = product / sum(product)
 
-bayes_table = data.frame(class,
-                         prior,
-                         likelihood_bill,
-                         likelihood_flipper,
-                         likelihood,
-                         product,
-                         posterior)
+bayes_table = data.frame(
+  class,
+  prior,
+  likelihood_bill,
+  likelihood_flipper,
+  likelihood,
+  product,
+  posterior
+)
 
 bayes_table |>
   adorn_totals("row") |>
@@ -419,10 +426,11 @@ penguins |>
 
 
 ```{r}
-ggplot(penguins |>
-         drop_na(above_average_weight), 
-       aes(fill = above_average_weight,
-           x = species)) + 
+ggplot(
+  penguins |>
+    drop_na(above_average_weight),
+  aes(fill = above_average_weight, x = species)
+) +
   geom_bar(position = "fill")
 ```
 
@@ -431,10 +439,8 @@ Estimated likelihood of 50mm bill
 
 
 ```{r}
-ggplot(penguins,
-       aes(x = bill_length_mm,
-           col = species)) + 
-  geom_density(linewidth = 1) + 
+ggplot(penguins, aes(x = bill_length_mm, col = species)) +
+  geom_density(linewidth = 1) +
   geom_vline(xintercept = 50, linetype = "dashed")
 ```
 
@@ -442,20 +448,31 @@ ggplot(penguins,
 ```{r}
 penguins |>
   group_by(species) |>
-  summarize(mean = mean(bill_length_mm, na.rm = TRUE), 
-            sd = sd(bill_length_mm, na.rm = TRUE))
+  summarize(
+    mean = mean(bill_length_mm, na.rm = TRUE),
+    sd = sd(bill_length_mm, na.rm = TRUE)
+  )
 ```
 
 
 
 ```{r}
-ggplot(penguins, aes(x = bill_length_mm, color = species)) + 
-  stat_function(fun = dnorm, args = list(mean = 38.8, sd = 2.66), 
-                aes(color = "Adelie")) +
-  stat_function(fun = dnorm, args = list(mean = 48.8, sd = 3.34),
-                aes(color = "Chinstrap")) +
-  stat_function(fun = dnorm, args = list(mean = 47.5, sd = 3.08),
-                aes(color = "Gentoo")) + 
+ggplot(penguins, aes(x = bill_length_mm, color = species)) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = 38.8, sd = 2.66),
+    aes(color = "Adelie")
+  ) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = 48.8, sd = 3.34),
+    aes(color = "Chinstrap")
+  ) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = 47.5, sd = 3.08),
+    aes(color = "Gentoo")
+  ) +
   geom_vline(xintercept = 50, linetype = "dashed")
 ```
 
@@ -465,10 +482,8 @@ Estimated likelihood of 195mm bill
 
 
 ```{r}
-ggplot(penguins,
-       aes(x = flipper_length_mm,
-           col = species)) + 
-  geom_density(linewidth = 1) + 
+ggplot(penguins, aes(x = flipper_length_mm, col = species)) +
+  geom_density(linewidth = 1) +
   geom_vline(xintercept = 195, linetype = "dashed")
 ```
 
@@ -476,32 +491,41 @@ ggplot(penguins,
 ```{r}
 penguins |>
   group_by(species) |>
-  summarize(mean = mean(flipper_length_mm, na.rm = TRUE), 
-            sd = sd(flipper_length_mm, na.rm = TRUE))
+  summarize(
+    mean = mean(flipper_length_mm, na.rm = TRUE),
+    sd = sd(flipper_length_mm, na.rm = TRUE)
+  )
 ```
 
 
 
 ```{r}
-ggplot(penguins,
-       aes(x = flipper_length_mm,
-           color = species)) + 
-  stat_function(fun = dnorm, args = list(mean = 190, sd = 6.54), 
-                aes(color = "Adelie")) +
-  stat_function(fun = dnorm, args = list(mean = 196, sd = 7.13),
-                aes(color = "Chinstrap")) +
-  stat_function(fun = dnorm, args = list(mean = 217, sd = 6.48),
-                aes(color = "Gentoo")) + 
+ggplot(penguins, aes(x = flipper_length_mm, color = species)) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = 190, sd = 6.54),
+    aes(color = "Adelie")
+  ) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = 196, sd = 7.13),
+    aes(color = "Chinstrap")
+  ) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = 217, sd = 6.48),
+    aes(color = "Gentoo")
+  ) +
   geom_vline(xintercept = 195, linetype = "dashed")
 ```
 
 Flipper length and bill length
 
 ```{r}
-ggplot(penguins,
-       aes(x = flipper_length_mm,
-           y = bill_length_mm,
-           color = species)) + 
+ggplot(
+  penguins,
+  aes(x = flipper_length_mm, y = bill_length_mm, color = species)
+) +
   geom_point()
 ```
 
@@ -513,26 +537,25 @@ library(e1071)
 
 
 ```{r}
-our_penguin <- data.frame(above_average_weight = "0",
-                          bill_length_mm = 50,
-                          flipper_length_mm = 195)
+our_penguin <- data.frame(
+  above_average_weight = "0",
+  bill_length_mm = 50,
+  flipper_length_mm = 195
+)
 ```
 
 
 #### Given below average weight
 
 ```{r}
-naive_model_weight = naiveBayes(species ~ above_average_weight,
-                                data = penguins)
+naive_model_weight = naiveBayes(species ~ above_average_weight, data = penguins)
 
 naive_model_weight
 ```
 
 
 ```{r}
-predict(naive_model_weight,
-        newdata = our_penguin,
-        type = "raw")
+predict(naive_model_weight, newdata = our_penguin, type = "raw")
 ```
 
 
@@ -540,51 +563,48 @@ predict(naive_model_weight,
 #### Given 50mm bill
 
 ```{r}
-naive_model_bill = naiveBayes(species ~ bill_length_mm,
-                                data = penguins)
+naive_model_bill = naiveBayes(species ~ bill_length_mm, data = penguins)
 
 naive_model_bill
 ```
 
 
 ```{r}
-predict(naive_model_bill,
-        newdata = our_penguin,
-        type = "raw")
+predict(naive_model_bill, newdata = our_penguin, type = "raw")
 ```
 
 
 #### Given 50mm bill and below average weight
 
 ```{r}
-naive_model_weight_and_bill = naiveBayes(species ~ above_average_weight + bill_length_mm,
-                                         data = penguins)
+naive_model_weight_and_bill = naiveBayes(
+  species ~ above_average_weight + bill_length_mm,
+  data = penguins
+)
 
 naive_model_weight_and_bill
 ```
 
 
 ```{r}
-predict(naive_model_weight_and_bill,
-        newdata = our_penguin,
-        type = "raw")
+predict(naive_model_weight_and_bill, newdata = our_penguin, type = "raw")
 ```
 
 
 #### Given 50mm bill and 195mm flipper
 
 ```{r}
-naive_model_flipper_and_bill = naiveBayes(species ~ flipper_length_mm + bill_length_mm,
-                                          data = penguins)
+naive_model_flipper_and_bill = naiveBayes(
+  species ~ flipper_length_mm + bill_length_mm,
+  data = penguins
+)
 
 naive_model_flipper_and_bill
 ```
 
 
 ```{r}
-predict(naive_model_flipper_and_bill,
-        newdata = our_penguin,
-        type = "raw")
+predict(naive_model_flipper_and_bill, newdata = our_penguin, type = "raw")
 ```
 
 
@@ -601,10 +621,11 @@ penguins <- penguins %>%
 
 
 ```{r}
-penguins |> 
+penguins |>
   select(bill_length_mm, flipper_length_mm, species, predicted_species) |>
   head(10) |>
-  kbl() |> kable_styling()
+  kbl() |>
+  kable_styling()
 ```
 
 Then check classification against actual species to see how well the classification algorithm works within the sample.
@@ -622,10 +643,12 @@ We can use cross-validation to estimate how well our algorithm would classify ne
 
 ```{r}
 naive_cv <-
-  naive_classification_summary_cv(model = naive_model_flipper_and_bill,
-                                  data = penguins,
-                                  y = "species",
-                                  k = 10)
+  naive_classification_summary_cv(
+    model = naive_model_flipper_and_bill,
+    data = penguins,
+    y = "species",
+    k = 10
+  )
 
 naive_cv$cv
 ```

@@ -11,10 +11,11 @@
 
 
 Regression is one of the most widely used statistical techniques for modeling relationships between variables.
+Regression is also widely used in prediction.
 We will now consider a Bayesian treatment of *simple linear regression*.
 We'll use the following example throughout.
 
-[Percent body fat](https://en.wikipedia.org/wiki/Body_fat_percentage) (PBF, total mass of fat divided by total body mass) is an indicator of physical fitness level, but it is difficult to measure accurately.
+[Percent body fat](https://en.wikipedia.org/wiki/Body_fat_percentage) (PBF, total mass of fat divided by total body mass) is an indicator of physical fitness level, but it is difficult to [measure accurately](https://obesitymedicine.org/blog/what-is-the-gold-standard-for-determining-body-fat/).
 Body mass index (BMI), which is easily computed based on height and weight ($\text{BMI} = \frac{\text{weight in kg}}{\text{(height in m)}^2}$), is another commonly used measure^[But BMI has its own problems; see <http://fivethirtyeight.com/features/bmi-is-a-terrible-measure-of-health/>.].
 What is the relationship between BMI and percent body fat?
 How can we use a person's BMI to estimate their percent body fat?
@@ -80,7 +81,7 @@ If not, experiment with different priors until you find one that produces a reas
 
 
 - Consider data on a numerical response variable $y$ and a numerical explanatory (or predictor) variable $x$.
-A **simple linear regression model** of $y$ on $x$ assumes:
+A **simple linear regression model** of $y$ on $x$ assumes^[In a Bayesian context, all of these assumptions are also *conditional* on the parameters $\beta_0$, $\beta_1$, $\sigma$]:
     -  *Linearity*: the conditional mean of $y$ is *linear* in $x$; for some slope $\beta_1$ and intercept $\beta_0$:
     $$
     \text{E}(y|x) = \beta_0 + \beta_1 x
@@ -91,13 +92,13 @@ A **simple linear regression model** of $y$ on $x$ assumes:
     $$
     \text{Var}(y|x) = \sigma^2
     $$
-- The regression model is *conditional*.
+- The regression model is *conditional* on $x$.
 That is, we make assumptions about and perform inference for the conditional distribution of the response variable $y$ given values of the explanatory variable $x$.
 Therefore, even when we technically have a sample of pairs $(x_i,y_i)$ from a bivariate distribution, we will always condition on the values of $x$ and treat them as non-random.
 - Linearity is an assumption: we assume there is some "true" population *regression line* $\beta_0 + \beta_1 x$ which specifies the conditional *mean* of the response variable for each value of the explanatory variable.
 - The above set of assumptions can be stated more compactly as
 $$
-y_i \sim N\left( \beta_0 + \beta_1 x_i, \sigma^2\right), \text{ and } y_1, \ldots, y_n \text{ are independent}
+y_i \sim N\left( \beta_0 + \beta_1 x_i, \sigma\right), \text{ and } y_1, \ldots, y_n \text{ are independent}
 $$
 Equivalently,
 $$
@@ -221,7 +222,11 @@ Why do you think this happens?
 \
 \
 
-
+-   It is often recommended to center predictors in regression models.
+-   Centering can help interpretation (because the intercept is often meaningless in context), and also help with multicollinearity (in polynomial models, or when there are multiple predictors).
+-   In Bayesian framework, centering can reduce the correlation between parameters amd improve efficiency of MCMC methods
+-   When there are multiple numerical predictors it is also often recommended to standardize them (by subtracting the mean and dividing by one or two standard deviations). 
+In a Bayesian framework, standardizing can help set priors when the predictors are on different scales.
 
 ::: {#exm-regression-conclusions}
 Now we'll summarize and report conclusions based on the posterior distribution, using the model with centered BMI.
@@ -362,9 +367,12 @@ sigma = rexp(n_rep, 1 / 5)
 # simulate values of percent body fat based on assumptions of regression model
 y = rnorm(n_rep, beta0 + beta1 * x, sigma)
 
-hist(y, xlab = "Prior predicted PBF(%) for BMI of 20 kg/m^2",
-     breaks = 100,
-     col = bayes_col["prior_predict"])
+hist(
+  y,
+  xlab = "Prior predicted PBF(%) for BMI of 20 kg/m^2",
+  breaks = 100,
+  col = bayes_col["prior_predict"]
+)
 ```
 
 
@@ -385,9 +393,13 @@ sigma = rexp(n_rep, 1 / 5)
 y = rnorm(n_rep, beta0 + beta1 * x, sigma)
 
 # scatter plot or prior predicted values
-plot(x, y,
-     xlab = "BMI (kg/m^2)", ylab = "Prior predicted percent body fat (%)",
-     col = bayes_col["prior_predict"])
+plot(
+  x,
+  y,
+  xlab = "BMI (kg/m^2)",
+  ylab = "Prior predicted percent body fat (%)",
+  col = bayes_col["prior_predict"]
+)
 ```
 
 What regression lines might look like according to prior distribution
@@ -397,13 +409,19 @@ What regression lines might look like according to prior distribution
 n_lines = 100
 
 # blank scatterplot - just set the plot area and scale
-plot(x, y, xlab = "BMI (kg/m^2)", ylab = "Percent body fat (%)", type = "n",
- xlim = c(15, 35),
- ylim = c(0, 30))
+plot(
+  x,
+  y,
+  xlab = "BMI (kg/m^2)",
+  ylab = "Percent body fat (%)",
+  type = "n",
+  xlim = c(15, 35),
+  ylim = c(0, 30)
+)
 
 # plot each of the simulated lines
 # using slope and intercept simulated from prior distribution
-for (l in 1:n_lines){
+for (l in 1:n_lines) {
   abline(beta0[l], beta1[l], col = bayes_col["prior"], lwd = 1)
 }
 ```
@@ -434,9 +452,13 @@ sigma = rexp(n_rep, 1 / 1.5)
 y = rnorm(n_rep, beta0 + beta1 * x, sigma)
 
 # scatter plot or prior predicted values
-plot(x, y,
-     xlab = "BMI (kg/m^2)", ylab = "Prior predicted percent body fat (%)",
-     col = bayes_col["prior_predict"])
+plot(
+  x,
+  y,
+  xlab = "BMI (kg/m^2)",
+  ylab = "Prior predicted percent body fat (%)",
+  col = bayes_col["prior_predict"]
+)
 ```
 
 
@@ -445,13 +467,19 @@ plot(x, y,
 n_lines = 100
 
 # blank scatterplot - just set the plot area and scale
-plot(x, y, xlab = "BMI (kg/m^2)", ylab = "Percent body fat (%)", type = "n",
- xlim = c(15, 35),
- ylim = c(0, 30))
+plot(
+  x,
+  y,
+  xlab = "BMI (kg/m^2)",
+  ylab = "Percent body fat (%)",
+  type = "n",
+  xlim = c(15, 35),
+  ylim = c(0, 30)
+)
 
 # plot each of the simulated lines
 # using slope and intercept simulated from prior distribution
-for (l in 1:n_lines){
+for (l in 1:n_lines) {
   abline(beta0[l], beta1[l], col = bayes_col["prior"], lwd = 1)
 }
 ```
@@ -479,11 +507,9 @@ cor(data$BMI, data$PBF)
 
 
 ```{r}
-data_plot = ggplot(data, 
-                   aes(x = BMI, y = PBF)) +
+data_plot = ggplot(data, aes(x = BMI, y = PBF)) +
   geom_point(shape = 1, size = 2) +
-  labs(x = "BMI (kg/m^2)",
-       y = "Percent body fat (%)") +
+  labs(x = "BMI (kg/m^2)", y = "Percent body fat (%)") +
   theme_bw()
 
 data_plot
@@ -508,11 +534,12 @@ predict(freq, newdata = x_new, interval = "confidence", se.fit = TRUE)
 
 ```{r}
 #| warning: false
-
 data_plot +
-  geom_smooth(method = lm,
-              col = bayes_col["likelihood"],
-              fill = bayes_col["likelihood"])
+  geom_smooth(
+    method = lm,
+    col = bayes_col["likelihood"],
+    fill = bayes_col["likelihood"]
+  )
 ```
 
 Prediction intervals
@@ -525,20 +552,19 @@ predict(freq, newdata = x_new, interval = "prediction")
 
 ```{r}
 #| warning: false
-
 predictions <- predict(freq, interval = "predict")
 
 data |>
   cbind(predictions) |>
   ggplot(aes(x = BMI, y = PBF)) +
   geom_point(shape = 1, size = 2) +
-  geom_ribbon(aes(ymin = lwr, ymax = upr),
-              fill = bayes_col["likelihood"], alpha = 0.4) +
-  labs(x = "BMI (kg/m^2)",
-       y = "Percent body fat (%)") +
+  geom_ribbon(
+    aes(ymin = lwr, ymax = upr),
+    fill = bayes_col["likelihood"],
+    alpha = 0.4
+  ) +
+  labs(x = "BMI (kg/m^2)", y = "Percent body fat (%)") +
   theme_bw()
-
-
 ```
 
 
@@ -556,16 +582,20 @@ library(bayesplot)
 
 
 ```{r}
-fit <- brm(data = data,
-           family = gaussian(),
-           PBF ~ 1 + BMI,
-           prior = c(prior(normal(2, 2), class = Intercept),
-                     prior(normal(0.5, 0.1), class = b),
-                     prior(exponential(0.667), class = sigma)),
-           iter = 3500,
-           warmup = 1000,
-           chains = 4,
-           refresh = 0)
+fit <- brm(
+  data = data,
+  family = gaussian(),
+  PBF ~ 1 + BMI,
+  prior = c(
+    prior(normal(2, 2), class = Intercept),
+    prior(normal(0.5, 0.1), class = b),
+    prior(exponential(0.667), class = sigma)
+  ),
+  iter = 3500,
+  warmup = 1000,
+  chains = 4,
+  refresh = 0
+)
 ```
 
 
@@ -595,9 +625,9 @@ neff_ratio(fit)[c("b_Intercept", "b_BMI", "sigma")]
 ```
 
 ```{r}
-neff_ratio(fit)[c("b_Intercept", "b_BMI", "sigma")] |> 
+neff_ratio(fit)[c("b_Intercept", "b_BMI", "sigma")] |>
   mcmc_neff() +
-  yaxis_text(hjust = 0) 
+  yaxis_text(hjust = 0)
 ```
 
 
@@ -610,16 +640,20 @@ data = data |>
 
 
 ```{r}
-fit_c <- brm(data = data,
-           family = gaussian(),
-           PBF ~ 1 + BMI_c,
-           prior = c(prior(normal(18, 2), class = Intercept),
-                prior(normal(0.5, 0.1), class = b),
-                prior(exponential(0.667), class = sigma)),
-           iter = 3500,
-           warmup = 1000,
-           chains = 4,
-           refresh = 0)
+fit_c <- brm(
+  data = data,
+  family = gaussian(),
+  PBF ~ 1 + BMI_c,
+  prior = c(
+    prior(normal(18, 2), class = Intercept),
+    prior(normal(0.5, 0.1), class = b),
+    prior(exponential(0.667), class = sigma)
+  ),
+  iter = 3500,
+  warmup = 1000,
+  chains = 4,
+  refresh = 0
+)
 ```
 
 
@@ -647,40 +681,27 @@ neff_ratio(fit_c)[c("b_Intercept", "b_BMI_c", "sigma")]
 
 
 ```{r}
-neff_ratio(fit_c)[c("b_Intercept", "b_BMI_c", "sigma")] |> 
+neff_ratio(fit_c)[c("b_Intercept", "b_BMI_c", "sigma")] |>
   mcmc_neff() +
-  yaxis_text(hjust = 0) 
+  yaxis_text(hjust = 0)
 ```
 
 
 Posterior distribution of regression slope
 
 ```{r}
-mcmc_intervals(fit_c,
-               pars = c("b_BMI_c"),
-               prob = 0.5,
-               prob_outer = 0.98)
+mcmc_intervals(fit_c, pars = c("b_BMI_c"), prob = 0.5, prob_outer = 0.98)
 ```
 
 ```{r}
 #| layout-nrow: 3
-
 color_scheme_set("teal")
 
-mcmc_areas(fit_c,
-           pars = c("b_BMI_c"),
-           prob = 0.5,
-           point_est = "median")
+mcmc_areas(fit_c, pars = c("b_BMI_c"), prob = 0.5, point_est = "median")
 
-mcmc_areas(fit_c,
-           pars = c("b_BMI_c"),
-           prob = 0.8,
-           point_est = "median")
+mcmc_areas(fit_c, pars = c("b_BMI_c"), prob = 0.8, point_est = "median")
 
-mcmc_areas(fit_c,
-           pars = c("b_BMI_c"),
-           prob = 0.98,
-           point_est = "median")
+mcmc_areas(fit_c, pars = c("b_BMI_c"), prob = 0.98, point_est = "median")
 ```
 
 
@@ -689,29 +710,16 @@ mcmc_areas(fit_c,
 Posterior distribution of $\sigma$
 
 ```{r}
-mcmc_intervals(fit_c,
-               pars = c("sigma"),
-               prob = 0.5,
-               prob_outer = 0.98)
+mcmc_intervals(fit_c, pars = c("sigma"), prob = 0.5, prob_outer = 0.98)
 ```
 
 ```{r}
 #| layout-nrow: 3
+mcmc_areas(fit_c, pars = c("sigma"), prob = 0.5, point_est = "median")
 
-mcmc_areas(fit_c,
-           pars = c("sigma"),
-           prob = 0.5,
-           point_est = "median")
+mcmc_areas(fit_c, pars = c("sigma"), prob = 0.8, point_est = "median")
 
-mcmc_areas(fit_c,
-           pars = c("sigma"),
-           prob = 0.8,
-           point_est = "median")
-
-mcmc_areas(fit_c,
-           pars = c("sigma"),
-           prob = 0.98,
-           point_est = "median")
+mcmc_areas(fit_c, pars = c("sigma"), prob = 0.98, point_est = "median")
 ```
 
 
@@ -730,12 +738,17 @@ posterior_c |> head(10) |> kbl() |> kable_styling()
 ```{r}
 posterior_c |>
   ggplot(aes(x = mu_20)) +
-  stat_halfeye(.width = c(0.80, 0.98),
-               fill = bayes_col["posterior"]) +
+  stat_halfeye(.width = c(0.80, 0.98), fill = bayes_col["posterior"]) +
   theme_bw()
 ```
 
+```{r}
+mean(posterior_c$mu_20)
+```
 
+```{r}
+sd(posterior_c$mu_20)
+```
 
 ```{r}
 quantile(posterior_c$mu_20, c(0.01, 0.99))
@@ -755,13 +768,25 @@ posterior_c |> head(10) |> kbl() |> kable_styling()
 
 
 ```{r}
-ggplot(posterior_c,
-       aes(x = y_pred_20)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 col = bayes_col["posterior_predict"], fill = "white", bins = 100) +
+ggplot(posterior_c, aes(x = y_pred_20)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    col = bayes_col["posterior_predict"],
+    fill = "white",
+    bins = 100
+  ) +
   geom_density(linewidth = 1, col = bayes_col["posterior_predict"]) +
   labs(x = "Posterior predicted PBF(%) for BMI of 20 kg/m^2") +
   theme_bw()
+```
+
+
+```{r}
+mean(posterior_c$y_pred_20)
+```
+
+```{r}
+sd(posterior_c$y_pred_20)
 ```
 
 ```{r}
@@ -771,9 +796,11 @@ quantile(posterior_c$y_pred_20, c(0.025, 0.975))
 
 
 ```{r}
-predictive_interval(fit_c,
-                    newdata = data.frame(BMI_c = 20 - mean(data$BMI)),
-                    prob = 0.95)
+predictive_interval(
+  fit_c,
+  newdata = data.frame(BMI_c = 20 - mean(data$BMI)),
+  prob = 0.95
+)
 ```
 
 
@@ -785,9 +812,8 @@ predictive_interval(fit_c,
 data |>
   add_predicted_draws(fit_c, ndraws = 4) %>%
   ggplot(aes(x = BMI_c, y = PBF)) +
-    geom_point(aes(y = .prediction,
-                   group = .draw), size = 0.2) + 
-    facet_wrap(~ .draw)
+  geom_point(aes(y = .prediction, group = .draw), size = 0.2) +
+  facet_wrap(~.draw)
 ```
 
 Posterior predictive check of response
@@ -796,7 +822,6 @@ Posterior predictive check of response
 color_scheme_set("purple")
 
 pp_check(fit_c, ndraw = 100)
-
 ```
 
 `posterior_predict` simulates a sample of size 2157, using the observed $x$ values, for each of the 10000 simulated triples from the posterior distribution, resulting in a 10000 x 2157 matrix.
@@ -811,11 +836,13 @@ dim(predictions)
 We can use these predictions to plot posterior prediction intervals for a range of BMI values.
 
 ```{r}
-ppc_intervals(data$PBF,
-              yrep = predictions,
-              x = data$BMI, 
-              prob = 0.5,
-              prob_outer = 0.95)
+ppc_intervals(
+  data$PBF,
+  yrep = predictions,
+  x = data$BMI,
+  prob = 0.5,
+  prob_outer = 0.95
+)
 ```
 
 
@@ -827,21 +854,21 @@ ppc_intervals(data$PBF,
 
 
 ```{r}
-get_prior(data = data,
-          family = gaussian(),
-          PBF ~ 1 + BMI_c)
+get_prior(data = data, family = gaussian(), PBF ~ 1 + BMI_c)
 ```
 
 
 ```{r}
-fit_brms_prior <- brm(data = data,
-           family = gaussian(),
-           PBF ~ 1 + BMI_c,
-           sample_prior = TRUE,
-           iter = 3500,
-           warmup = 1000,
-           chains = 4,
-           refresh = 0)
+fit_brms_prior <- brm(
+  data = data,
+  family = gaussian(),
+  PBF ~ 1 + BMI_c,
+  sample_prior = TRUE,
+  iter = 3500,
+  warmup = 1000,
+  chains = 4,
+  refresh = 0
+)
 ```
 
 
@@ -869,9 +896,9 @@ neff_ratio(fit_brms_prior)[c("b_Intercept", "b_BMI_c", "sigma")]
 
 
 ```{r}
-neff_ratio(fit_brms_prior)[c("b_Intercept", "b_BMI_c", "sigma")] |> 
+neff_ratio(fit_brms_prior)[c("b_Intercept", "b_BMI_c", "sigma")] |>
   mcmc_neff() +
-  yaxis_text(hjust = 0) 
+  yaxis_text(hjust = 0)
 ```
 
 
@@ -879,7 +906,6 @@ neff_ratio(fit_brms_prior)[c("b_Intercept", "b_BMI_c", "sigma")] |>
 color_scheme_set("purple")
 
 pp_check(fit_brms_prior, ndraw = 100)
-
 ```
 
 ```{r}
@@ -892,11 +918,13 @@ dim(predictions_b)
 
 
 ```{r}
-ppc_intervals(data$PBF,
-              yrep = predictions_b,
-              x = data$BMI, 
-              prob = 0.5,
-              prob_outer = 0.95)
+ppc_intervals(
+  data$PBF,
+  yrep = predictions_b,
+  x = data$BMI,
+  prob = 0.5,
+  prob_outer = 0.95
+)
 ```
 
 Leave-one-out (LOO) cross-validation to compare models.

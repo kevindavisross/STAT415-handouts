@@ -1,8 +1,8 @@
 # Introduction to Bayesian Hierarchical Models {#sec-hierarchical}
 
 {{< include _r_setup.qmd >}}
-
-{{< include _python_setup.qmd >}}
+<!-- 
+{{< include _python_setup.qmd >}} -->
 
 
 
@@ -12,18 +12,16 @@ complex and high-dimensional models from simple and
 low-dimensional building blocks.
 
 
-Suppose we want to estimate the true, long run free throw percentage for each basketball player currently on the Philadelphia 76ers^[Along with one bonus "player" who will illustrate some ideas.].
+Suppose we want to estimate the true, long run free throw percentage for a subset of NBA players^[Along with one bonus "player" who will illustrate some ideas.].
 That is, we want to estimate each player's true probability of successfully scoring on any free throw attempt.
-We'll consider data from games in the 2022-2023 NBA season obtained from [basketball-reference](https://www.basketball-reference.com/teams/PHI/2023.html#totals::17) as of Feb 27, summarized in @sec-hierarchical-sample.
+We'll consider data from games in the 2022-2023 NBA season for players who were on the Philadelpha 76ers obtained from [basketball-reference](https://www.basketball-reference.com/teams/PHI/2023.html#totals::17) as of Feb 27, summarized in @sec-hierarchical-sample.
 
 ```{r}
 #| include: false
 #| echo: false
 #| warning: false
-
 data = read_csv("sixers.csv") |>
   rename(FTpct = "FT%")
-
 ```
 
 
@@ -67,7 +65,8 @@ Let's first consider just a single player with true (long run) free throw percen
 Given $n$ independent attempts, conditional on $\theta$, we might assume that $y$ follows a Binomial($n, \theta$) distribution.
 :::
 
-1. If we imagine the player is randomly selected from among current NBA players, how might we interpret the prior distribution for $\theta$?
+1. If we imagine the player is randomly selected from among current NBA players, how might we interpret the prior distribution for $\theta$? 
+Note: this question is mixing some Bayesian and frequentist ideas, but the purpose is to help intuition.
 \
 \
 \
@@ -90,13 +89,6 @@ What would the prior distribution on $\mu$ represent?
 \
 \
 
-1. In this model $\mu$ and $\theta$ are dependent.
-Why is this dependence useful?
-\
-\
-\
-\
-\
 
 1. The prior distribution for $\theta$ has a prior standard deviation; let's denote it $\sigma$.
 How might we interpret $\sigma$?
@@ -114,13 +106,22 @@ What would the prior distribution on $\sigma$ represent?
 \
 \
 
+1. In this model $\mu$ and $\theta$ are dependent.
+Why is this dependence useful? 
+(Hint: consider another player.)
+\
+\
+\
+\
+\
+
 
 - A Bayesian hierarchical model consists of the following layers in the hierarchy.
-    1. A model for the data $y$ which depends on model parameters $\theta$ and is represented by the likelihood $f(y|\theta)$.
+    1. A model for the data $y$ which depends on model parameters $\theta$ and determines the likelihood $f(y|\theta)$.
         - The model usually involves multiple parameters.
         Generically, $\theta$ represents a vector of parameters that show up in the likelihood function.
         - Remember: While the likelihood for a particular $y$ sample is computed by evaulating the conditional density of $y$ given $\theta$, the likelihood function is *a function of $\theta$, treating the data $y$ as fixed*.
-    1. A (joint) prior distribution for the model parameter $\theta$, denoted $\pi(\theta|\phi)$, which depends on *hyperparameters* $\phi$.
+    1. A (joint) prior distribution for the model parameters $\theta$, denoted $\pi(\theta|\phi)$, which depends on *hyperparameters* $\phi$.
     1. A *hyperprior* distribution, i.e., a prior distribution for the hyperparameters, denoted $\pi(\phi)$.
 (Again, $\phi$ generically represents a vector of hyperparameters.)
 - The above specification implicitly assumes that the data distribution and likelihood function only depend on $\theta$; the hyperparameters only affect $y$ through $\theta$.
@@ -137,7 +138,7 @@ $$
 \pi(\theta, \phi|y) & \propto f(y|\theta, \phi)\pi(\theta, \phi)\\
 & \propto f(y|\theta)\pi(\theta|\phi)\pi(\phi)
 \end{align*}
-- In Bayesian hierarchical models, there will generally be dependence between parameters.
+- In Bayesian hierarchical models, there will generally be implied dependence between parameters.
 But dependence among parameters is actually useful for several reasons:
     - The dependence is natural and meaningful in the problem context.
     - If parameters are dependent, then all data can inform parameter estimates.
@@ -228,17 +229,17 @@ Why?
 
 ```{r}
 #| warning: false
-
 data = read_csv("sixers.csv") |>
   rename(FTpct = "FT%") |>
-  arrange(desc(FTA)) 
+  arrange(desc(FTA))
 ```
 
 
 ```{r}
 data |>
   select(Player, FTA, FT, FTpct) |>
-  kbl() |> kable_styling()
+  kbl() |>
+  kable_styling()
 ```
 
 
@@ -255,7 +256,6 @@ And the output is an approximation of the posterior distribution of the paramete
 
 
 ```{r}
-
 library(rjags)
 
 player = data$Player
@@ -289,21 +289,21 @@ model_string <- "model{
 
 dataList = list(y = y, n = n, J = J)
 
-model <- jags.model(file = textConnection(model_string), 
-                    data = dataList)
+model <- jags.model(file = textConnection(model_string), data = dataList)
 
 update(model, n.iter = 1000)
 
-posterior_sample <- coda.samples(model,
-                       variable.names = c("theta", "mu", "sigma"),
-                       n.iter = 10000,
-                       n.chains = 5)
+posterior_sample <- coda.samples(
+  model,
+  variable.names = c("theta", "mu", "sigma"),
+  n.iter = 10000,
+  n.chains = 5
+)
 ```
 
 
 ```{r}
 head(posterior_sample)
-
 ```
 
 
@@ -344,19 +344,20 @@ player_summary |> kbl(digits = 4) |> kable_styling()
 
 ```{r}
 #| warning: false
-
 player_summary |>
   select(player, FTpct, posterior_mean) |>
   pivot_longer(!player, names_to = "source", values_to = "value") |>
   mutate(label = if_else(source == "FTpct", player, "")) |>
-  ggplot(aes(x = source,
-           y = value,
-           group = player,
-           col = player,
-           label = label)) +
+  ggplot(aes(
+    x = source,
+    y = value,
+    group = player,
+    col = player,
+    label = label
+  )) +
   scale_color_discrete() +
   geom_point() +
-  geom_text(hjust = 1, size = 3) + 
+  geom_text(hjust = 1, size = 3) +
   geom_line(alpha = 0.5) +
   theme(legend.position = "none")
 ```
@@ -388,7 +389,6 @@ quantile(mu_post, c(0.01, 0.10, 0.25, 0.5, 0.75, 0.90, 0.99))
 
 ```{r}
 #| eval: false
-
 library(shinystan)
 
 sixers_sso <- as.shinystan(posterior_sample, model_name = "76ers Free Throws")

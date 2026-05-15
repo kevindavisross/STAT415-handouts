@@ -2,7 +2,7 @@
 
 {{< include _r_setup.qmd >}}
 
-{{< include _python_setup.qmd >}}
+<!-- {{< include _python_setup.qmd >}} -->
 
 
 We have studied a Bayesian simple linear regression model.
@@ -141,9 +141,7 @@ library(tidybayes)
 
 
 ```{r}
-fit_lm <- brm(data = running,
-              family = gaussian(),
-              net ~ 1 + age)
+fit_lm <- brm(data = running, family = gaussian(), net ~ 1 + age)
 ```
 
 
@@ -155,9 +153,11 @@ summary(fit_lm)
 
 
 ```{r}
-fit_hier1 <- brm(data = running,
-                 family = gaussian(),
-                 net ~ 1 + age + (1 | runner))
+fit_hier1 <- brm(
+  data = running,
+  family = gaussian(),
+  net ~ 1 + age + (1 | runner)
+)
 ```
 
 
@@ -172,9 +172,11 @@ summary(fit_hier1)
 
 
 ```{r}
-fit_hier2 <- brm(data = running,
-                 family = gaussian(),
-                 net ~ 1 + age + (1 + age | runner))
+fit_hier2 <- brm(
+  data = running,
+  family = gaussian(),
+  net ~ 1 + age + (1 + age | runner)
+)
 ```
 
 
@@ -184,7 +186,6 @@ summary(fit_hier2)
 
 ```{r}
 #| eval: false
-
 library(shinystan)
 
 launch_shinystan(fit_hier2)

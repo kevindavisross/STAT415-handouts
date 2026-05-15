@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>24&nbsp; Introduction to Bayesian Hierarchical Models – STAT415 Handouts</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./classification.html" rel="next">
+<link href="./regression.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./hierarchical.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Hierarchical Models</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">STAT415 Handouts</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introductory-activity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introductory Activity</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introductory-example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introductory Example</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-ideas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Ideas of Bayesian Reasoning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretations-probstat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Interpretations of Probability and Statistics</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayes-rule.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bayes Rule</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro-estimation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Introduction to Estimation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro-inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./normal-mean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introduction to Inference for a Population Mean</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparing-bayesian-and-frequentist.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Comparing Bayesian and Frequentist Analysis</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro-prediction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Prediction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./predictive-tuning-and-checking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Predictive Tuning and Checking</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./beta-binomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Beta-Binomial Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./considering-priors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Considering Prior Distributions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./posterior-simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Introduction to Posterior Simulation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./poisson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Bayesian Analysis of Poisson Count Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./normal-normal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Normal-Normal Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multi-parameter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Introduction to Multi-Parameter models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mean-t.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Bayesian Analyis of a Numerical Variable</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./numerical-skew.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">More Bayesian Analyis of a Numerical Variable</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparing-two-means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Comparing Two Means</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Introduction to Markov Chain Monte Carlo (MCMC) Simulation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mcmc-diagnostics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Some Diagnostics for MCMC Simulation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Bayesian Simple Linear Regression Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hierarchical.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Hierarchical Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./model-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#notes" id="toc-notes" class="nav-link active" data-scroll-target="#notes"><span class="header-section-number">24.1</span> Notes</a>
+  <ul class="collapse">
+  <li><a href="#sec-hierarchical-sample" id="toc-sec-hierarchical-sample" class="nav-link" data-scroll-target="#sec-hierarchical-sample"><span class="header-section-number">24.1.1</span> Sample data</a></li>
+  <li><a href="#approximating-the-posterior-distribution" id="toc-approximating-the-posterior-distribution" class="nav-link" data-scroll-target="#approximating-the-posterior-distribution"><span class="header-section-number">24.1.2</span> Approximating the posterior distribution</a></li>
+  <li><a href="#posterior-distribution-of-mu" id="toc-posterior-distribution-of-mu" class="nav-link" data-scroll-target="#posterior-distribution-of-mu"><span class="header-section-number">24.1.3</span> Posterior distribution of <span class="math inline">\(\mu\)</span></a></li>
+  <li><a href="#posterior-mean-and-sd-of-theta_js" id="toc-posterior-mean-and-sd-of-theta_js" class="nav-link" data-scroll-target="#posterior-mean-and-sd-of-theta_js"><span class="header-section-number">24.1.4</span> Posterior mean and SD of <span class="math inline">\(\theta_j\)</span>s</a></li>
+  <li><a href="#posterior-distribution-of-theta_textembiid" id="toc-posterior-distribution-of-theta_textembiid" class="nav-link" data-scroll-target="#posterior-distribution-of-theta_textembiid"><span class="header-section-number">24.1.5</span> Posterior distribution of <span class="math inline">\(\theta_{\text{Embiid}}\)</span></a></li>
+  <li><a href="#posterior-distribution-of-theta_textross" id="toc-posterior-distribution-of-theta_textross" class="nav-link" data-scroll-target="#posterior-distribution-of-theta_textross"><span class="header-section-number">24.1.6</span> Posterior distribution of <span class="math inline">\(\theta_{\text{Ross}}\)</span></a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-hierarchical" class="quarto-section-identifier"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Hierarchical Models</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- 
+{{< include _python_setup.qmd >}} -->
+<p>In a <strong>Bayesian hierarchical<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> model</strong>, the model for the data depends on certain parameters, and those parameters in turn depend on other parameters. Hierarchical modeling provides a framework for building complex and high-dimensional models from simple and low-dimensional building blocks.</p>
+<p>Suppose we want to estimate the true, long run free throw percentage for a subset of NBA players<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. That is, we want to estimate each player’s true probability of successfully scoring on any free throw attempt. We’ll consider data from games in the 2022-2023 NBA season for players who were on the Philadelpha 76ers obtained from <a href="https://www.basketball-reference.com/teams/PHI/2023.html#totals::17">basketball-reference</a> as of Feb 27, summarized in <a href="#sec-hierarchical-sample" class="quarto-xref"><span>Section 24.1.1</span></a>.</p>
+<div id="exm-hier-intro" class="theorem example">
+<p><span class="theorem-title"><strong>Example 24.1</strong></span> Let <span class="math inline">\(\theta_j\)</span> denote player <span class="math inline">\(j\)</span>’s true (long run) FT percentage; for example, <span class="math inline">\(\theta_{\text{Embiid}}\)</span>, <span class="math inline">\(\theta_{\text{Harden}}\)</span>, etc. Let <span class="math inline">\(n_j\)</span> denote the number of free throw attempts and <span class="math inline">\(y_j\)</span> the number of free throws made for player <span class="math inline">\(j\)</span>.</p>
+</div>
+<ol type="1">
+<li><p>One way to estimate <span class="math inline">\(\theta_j\)</span> is to pool all the data together. Over the 19 players in the data set, there are 1482 attempts, of which 1229 were successful, for an overall free throw percentage of 82.9%. The sample mean free throw percentage, among players with nonzero attempts, is 77.7%. So we could just estimate each <span class="math inline">\(\theta_j\)</span> with the overall free throw percentage (or the sample mean free throw percentage). What are some issues with this approach?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>At the other extreme, we could estimate <span class="math inline">\(\theta_j\)</span> using just the attempts for player <span class="math inline">\(j\)</span>. For example, use only the attempts for Embiid to estimate <span class="math inline">\(\theta_{\text{Embiid}}\)</span>, only the attempts for Harden to estimate <span class="math inline">\(\theta_{\text{Harden}}\)</span>, etc. What are some issues with this approach? (Hint: consider the players with no attempts, or few attempts.)<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>In a Bayesian model, the <span class="math inline">\(\theta_j\)</span>’s would have a prior distribution. We could assume a Bayesian model with a prior in which all <span class="math inline">\(\theta_j\)</span> are independent. What are some issues with this approach?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<div id="exm-hier-hyper" class="theorem example">
+<p><span class="theorem-title"><strong>Example 24.2</strong></span> Let’s first consider just a single player with true (long run) free throw percentage <span class="math inline">\(\theta\)</span>. Given <span class="math inline">\(n\)</span> independent attempts, conditional on <span class="math inline">\(\theta\)</span>, we might assume that <span class="math inline">\(y\)</span> follows a Binomial(<span class="math inline">\(n, \theta\)</span>) distribution.</p>
+</div>
+<ol type="1">
+<li><p>If we imagine the player is randomly selected from among current NBA players, how might we interpret the prior distribution for <span class="math inline">\(\theta\)</span>? Note: this question is mixing some Bayesian and frequentist ideas, but the purpose is to help intuition.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>The prior distribution for <span class="math inline">\(\theta\)</span> has a prior mean; let’s denote it <span class="math inline">\(\mu\)</span>. How might we interpret <span class="math inline">\(\mu\)</span>?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>The prior mean <span class="math inline">\(\mu\)</span> is also a parameter, so we could place a prior distribution on it. What would the prior distribution on <span class="math inline">\(\mu\)</span> represent?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>The prior distribution for <span class="math inline">\(\theta\)</span> has a prior standard deviation; let’s denote it <span class="math inline">\(\sigma\)</span>. How might we interpret <span class="math inline">\(\sigma\)</span>?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>The prior standard deviation <span class="math inline">\(\sigma\)</span> is also a parameter, so we could place a prior distribution on it. What would the prior distribution on <span class="math inline">\(\sigma\)</span> represent?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>In this model <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\theta\)</span> are dependent. Why is this dependence useful? (Hint: consider another player.)<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<ul>
+<li>A Bayesian hierarchical model consists of the following layers in the hierarchy.
+<ol type="1">
+<li>A model for the data <span class="math inline">\(y\)</span> which depends on model parameters <span class="math inline">\(\theta\)</span> and determines the likelihood <span class="math inline">\(f(y|\theta)\)</span>.
+<ul>
+<li>The model usually involves multiple parameters. Generically, <span class="math inline">\(\theta\)</span> represents a vector of parameters that show up in the likelihood function.</li>
+<li>Remember: While the likelihood for a particular <span class="math inline">\(y\)</span> sample is computed by evaulating the conditional density of <span class="math inline">\(y\)</span> given <span class="math inline">\(\theta\)</span>, the likelihood function is <em>a function of <span class="math inline">\(\theta\)</span>, treating the data <span class="math inline">\(y\)</span> as fixed</em>.</li>
+</ul></li>
+<li>A (joint) prior distribution for the model parameters <span class="math inline">\(\theta\)</span>, denoted <span class="math inline">\(\pi(\theta|\phi)\)</span>, which depends on <em>hyperparameters</em> <span class="math inline">\(\phi\)</span>.</li>
+<li>A <em>hyperprior</em> distribution, i.e., a prior distribution for the hyperparameters, denoted <span class="math inline">\(\pi(\phi)\)</span>. (Again, <span class="math inline">\(\phi\)</span> generically represents a vector of hyperparameters.)</li>
+</ol></li>
+<li>The above specification implicitly assumes that the data distribution and likelihood function only depend on <span class="math inline">\(\theta\)</span>; the hyperparameters only affect <span class="math inline">\(y\)</span> through <span class="math inline">\(\theta\)</span>. That is, the general hierarchical model above assumes that the data <span class="math inline">\(y\)</span> and hyperparameters <span class="math inline">\(\phi\)</span> are conditionally independent given the model parameters <span class="math inline">\(\theta\)</span>, so the likelihood satisfies <span class="math display">\[
+f(y|\theta, \phi) = f(y|\theta)
+\]</span> The joint prior distribution on parameters and hyperparameters is <span class="math display">\[
+\pi(\theta, \phi) = \pi(\theta|\phi)\pi(\phi)
+\]</span></li>
+<li>Given the observed data <span class="math inline">\(y\)</span>, we find the joint posterior density of the parameters and hyperparameters, denoted <span class="math inline">\(\pi(\theta, \phi|y)\)</span>, using Bayes rule: posterior <span class="math inline">\(\propto\)</span> likelihood <span class="math inline">\(\times\)</span> prior. <span class="math display">\[\begin{align*}
+\pi(\theta, \phi|y) &amp; \propto f(y|\theta, \phi)\pi(\theta, \phi)\\
+&amp; \propto f(y|\theta)\pi(\theta|\phi)\pi(\phi)
+\end{align*}\]</span></li>
+<li>In Bayesian hierarchical models, there will generally be implied dependence between parameters. But dependence among parameters is actually useful for several reasons:
+<ul>
+<li>The dependence is natural and meaningful in the problem context.</li>
+<li>If parameters are dependent, then all data can inform parameter estimates.</li>
+</ul></li>
+</ul>
+<div id="exm-hier-model" class="theorem example">
+<p><span class="theorem-title"><strong>Example 24.3</strong></span> Now suppose want to estimate the free throw percentages for <span class="math inline">\(J\)</span> NBA players, given data consisting of the number of free throws attempted <span class="math inline">\(n_j\)</span> and made <span class="math inline">\(y_j\)</span> by player <span class="math inline">\(j\)</span>. Specify a hierarchical model, including your choice of prior distribution. How many parameters are there in the model?</p>
+</div>
+<p><br>
+<br>
+<br>
+<br>
+<br>
+</p>
+<div id="exm-hier-hyper-post" class="theorem example">
+<p><span class="theorem-title"><strong>Example 24.4</strong></span> Use software to fit the Bayesian model using the 76ers data. Summarize the posterior distribution of <span class="math inline">\(\mu\)</span>.</p>
+</div>
+<p><br>
+<br>
+<br>
+<br>
+<br>
+</p>
+<div id="exm-hier-post" class="theorem example">
+<p><span class="theorem-title"><strong>Example 24.5</strong></span> For each player <span class="math inline">\(j\)</span>, consider the posterior mean and posterior SD of <span class="math inline">\(\theta_j\)</span>.</p>
+</div>
+<ol type="1">
+<li><p>What is the posterior mean of <span class="math inline">\(\theta_j\)</span> for players with no attempts? Why does this make sense?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Why is the posterior mean of <span class="math inline">\(\theta_j\)</span> not the same for players with no attempts?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>For which players is the posterior mean closest to the observed free throw percentage? Why?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Which players have the smallest posterior SDs? Why?<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Find and interpret 50%, 80%, and 98% posterior credible intervals for Joel Embiid.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+<li><p>Find and interpret 50%, 80%, and 98% posterior credible intervals for Kevin Ross.<br>
+<br>
+<br>
+<br>
+<br>
+</p></li>
+</ol>
+<section id="notes" class="level2" data-number="24.1">
+<h2 data-number="24.1" class="anchored" data-anchor-id="notes"><span class="header-section-number">24.1</span> Notes</h2>
+<section id="sec-hierarchical-sample" class="level3" data-number="24.1.1">
+<h3 data-number="24.1.1" class="anchored" data-anchor-id="sec-hierarchical-sample"><span class="header-section-number">24.1.1</span> Sample data</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"sixers.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">FTpct =</span> <span class="st">"FT%"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(FTA))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Player, FTA, FT, FTpct) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Player</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FTA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FT</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FTpct</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Joel Embiid</td>
+<td style="text-align: right;">556</td>
+<td style="text-align: right;">477</td>
+<td style="text-align: right;">0.858</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">James Harden</td>
+<td style="text-align: right;">279</td>
+<td style="text-align: right;">241</td>
+<td style="text-align: right;">0.864</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Tyrese Maxey</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: right;">0.813</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tobias Harris</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">0.856</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Shake Milton</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">0.854</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Montrezl Harrell</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">0.694</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">De'Anthony Melton</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">0.780</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Danuel House Jr.</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0.700</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Georges Niang</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0.875</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Furkan Korkmaz</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">0.655</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Paul Reed</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0.727</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P.J. Tucker</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">0.850</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Matisse Thybulle</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.750</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jalen McDaniels</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.400</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kevin Ross</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jaden Springer</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.750</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Saben Lee</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Julian Champagnie</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Michael Foster Jr.</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="approximating-the-posterior-distribution" class="level3" data-number="24.1.2">
+<h3 data-number="24.1.2" class="anchored" data-anchor-id="approximating-the-posterior-distribution"><span class="header-section-number">24.1.2</span> Approximating the posterior distribution</h3>
+<p><code>brms</code> is structured around linear models. In the situation of this example, <code>brms</code> wants to fit a logistic regression model. Rather than doing that, I used another software program, JAGS, to fit our current model. Don’t worry about the syntax. Just notice that the inputs are: (1) the data, (2) the model for the data which determines the likelihood (<code>dbinom</code>), and (3) the prior (<code>dbeta</code>) and hyperprior (<code>dnorm</code>). And the output is an approximation of the posterior distribution of the parameters.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjags)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: coda</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Linked to JAGS 4.3.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loaded modules: basemod,bugs</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>player <span class="ot">=</span> data<span class="sc">$</span>Player</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> data<span class="sc">$</span>FT</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> data<span class="sc">$</span>FTA</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>J <span class="ot">=</span> <span class="fu">length</span>(y)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># specify the model: likelihood, prior, hyperprior</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>model_string <span class="ot">&lt;-</span> <span class="st">"model{</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="st">  # Likelihood</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="st">  for (j in 1:J){</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="st">    y[j] ~ dbinom(theta[j], n[j])</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="st">  # Prior Beta(alpha, beta)</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="st">  # We put hyperpriors on the mean mu and the SD sigma,</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="st">  # So we need to convert to shape parameters alpha and beta</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="st">  for (j in 1:J){</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="st">    theta[j] ~ dbeta(mu * (mu * (1 - mu) / sigma ^ 2 - 1), (1 - mu) * (mu * (1 - mu) / sigma ^ 2 - 1))</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="st">  # Hyperprior, phi=(mu, sigma)</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="st">  # In JAGS the second parameter of dnorm is precision = 1 / SD ^ 2</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="st">  mu ~ dnorm(0.75, 1 / 0.05 ^ 2)</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="st">  sigma ~ dnorm(0.08, 1 / 0.02 ^ 2)</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="st">}"</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>dataList <span class="ot">=</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">n =</span> n, <span class="at">J =</span> J)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">jags.model</span>(<span class="at">file =</span> <span class="fu">textConnection</span>(model_string), <span class="at">data =</span> dataList)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 19
+   Unobserved stochastic nodes: 21
+   Total graph size: 77
+
+Initializing model</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">update</span>(model, <span class="at">n.iter =</span> <span class="dv">1000</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>posterior_sample <span class="ot">&lt;-</span> <span class="fu">coda.samples</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  model,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable.names =</span> <span class="fu">c</span>(<span class="st">"theta"</span>, <span class="st">"mu"</span>, <span class="st">"sigma"</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.iter =</span> <span class="dv">10000</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.chains =</span> <span class="dv">5</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(posterior_sample)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+Markov Chain Monte Carlo (MCMC) output:
+Start = 2001 
+End = 2007 
+Thinning interval = 1 
+            mu      sigma  theta[1]  theta[2]  theta[3]  theta[4]  theta[5]
+[1,] 0.8160927 0.05340369 0.8577184 0.8013187 0.8223897 0.8390239 0.8597395
+[2,] 0.7944552 0.05376734 0.8616222 0.8532029 0.7774072 0.8658178 0.8143806
+[3,] 0.7956600 0.06970748 0.8368495 0.8364321 0.8069355 0.8589069 0.8359431
+[4,] 0.7722398 0.06191490 0.8539318 0.8478128 0.7973313 0.8596863 0.8096179
+[5,] 0.7808670 0.06446775 0.8390681 0.8376413 0.8245664 0.8433706 0.8489843
+[6,] 0.7972862 0.06226652 0.8280945 0.8710550 0.7943592 0.8403172 0.8171182
+[7,] 0.7959133 0.06569238 0.8380443 0.8456165 0.8393506 0.8230030 0.7851432
+      theta[6]  theta[7]  theta[8]  theta[9] theta[10] theta[11] theta[12]
+[1,] 0.7232506 0.7878320 0.8002852 0.8497328 0.8285476 0.8417582 0.8521441
+[2,] 0.6620113 0.7636968 0.7664200 0.8518445 0.7369340 0.6890680 0.8390770
+[3,] 0.7191397 0.8238674 0.7447017 0.8046005 0.7018724 0.8315200 0.7879715
+[4,] 0.7098649 0.7923695 0.7121227 0.8655789 0.7831001 0.8174122 0.8238959
+[5,] 0.7067375 0.7353161 0.7118381 0.8788510 0.7643388 0.8109889 0.7293750
+[6,] 0.7651827 0.7901857 0.6651666 0.7612226 0.6213256 0.7999470 0.8545818
+[7,] 0.7645567 0.8065873 0.7562223 0.8983760 0.7379918 0.8203798 0.8590652
+     theta[13] theta[14] theta[15] theta[16] theta[17] theta[18] theta[19]
+[1,] 0.7697318 0.6451061 0.7613435 0.9265648 0.7991566 0.8418508 0.8638916
+[2,] 0.8861288 0.6424672 0.7438617 0.9502467 0.8074818 0.7464886 0.8688353
+[3,] 0.8685188 0.6315697 0.7798400 0.8581449 0.6891970 0.7662180 0.7438044
+[4,] 0.7498830 0.7771569 0.8470823 0.7649235 0.7289173 0.7716190 0.7696147
+[5,] 0.6671506 0.7741483 0.7965394 0.8050903 0.8092341 0.7878438 0.6885896
+[6,] 0.7394102 0.7394434 0.8965430 0.7853840 0.8763045 0.7915210 0.7283433
+[7,] 0.8648576 0.7390125 0.8758009 0.8314494 0.7464809 0.8094262 0.8448395
+
+attr(,"class")
+[1] "mcmc.list"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(posterior_sample)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Iterations = 2001:12000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 10000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+             Mean      SD  Naive SE Time-series SE
+mu        0.78344 0.02210 0.0002210      0.0005339
+sigma     0.07278 0.01627 0.0001627      0.0004172
+theta[1]  0.85355 0.01466 0.0001466      0.0001925
+theta[2]  0.85497 0.01984 0.0001984      0.0002578
+theta[3]  0.80843 0.02879 0.0002879      0.0004033
+theta[4]  0.83673 0.03408 0.0003408      0.0004680
+theta[5]  0.83552 0.03356 0.0003356      0.0004700
+theta[6]  0.72012 0.04267 0.0004267      0.0006282
+theta[7]  0.78280 0.04334 0.0004334      0.0005996
+theta[8]  0.73930 0.05471 0.0005471      0.0007950
+theta[9]  0.82957 0.04832 0.0004832      0.0007724
+theta[10] 0.72368 0.05953 0.0005953      0.0009200
+theta[11] 0.76115 0.05824 0.0005824      0.0008356
+theta[12] 0.80794 0.05652 0.0005652      0.0008269
+theta[13] 0.77533 0.06493 0.0006493      0.0009173
+theta[14] 0.72869 0.07954 0.0007954      0.0013308
+theta[15] 0.81138 0.06749 0.0006749      0.0010831
+theta[16] 0.77913 0.07285 0.0007285      0.0010960
+theta[17] 0.78122 0.07953 0.0007953      0.0012987
+theta[18] 0.78386 0.07722 0.0007722      0.0012242
+theta[19] 0.78310 0.07802 0.0007802      0.0011653
+
+2. Quantiles for each variable:
+
+             2.5%     25%     50%     75%  97.5%
+mu        0.73772 0.76887 0.78402 0.79879 0.8236
+sigma     0.04202 0.06167 0.07243 0.08361 0.1063
+theta[1]  0.82355 0.84406 0.85390 0.86330 0.8816
+theta[2]  0.81442 0.84190 0.85567 0.86879 0.8915
+theta[3]  0.74853 0.78946 0.80992 0.82850 0.8614
+theta[4]  0.76402 0.81464 0.83839 0.86044 0.8983
+theta[5]  0.76478 0.81396 0.83766 0.85911 0.8955
+theta[6]  0.63347 0.69199 0.72163 0.75001 0.8001
+theta[7]  0.69072 0.75462 0.78483 0.81309 0.8626
+theta[8]  0.62321 0.70383 0.74305 0.77771 0.8360
+theta[9]  0.72650 0.79896 0.83248 0.86368 0.9151
+theta[10] 0.59564 0.68518 0.72778 0.76554 0.8289
+theta[11] 0.63703 0.72412 0.76499 0.80266 0.8663
+theta[12] 0.68791 0.77258 0.81210 0.84778 0.9072
+theta[13] 0.63247 0.73514 0.78127 0.82075 0.8871
+theta[14] 0.55270 0.68018 0.73700 0.78655 0.8592
+theta[15] 0.66388 0.76991 0.81643 0.85773 0.9306
+theta[16] 0.61850 0.73560 0.78555 0.83041 0.9030
+theta[17] 0.60365 0.73470 0.78806 0.83567 0.9163
+theta[18] 0.60640 0.73796 0.79117 0.83745 0.9156
+theta[19] 0.60367 0.73810 0.79032 0.83727 0.9148</code></pre>
+</div>
+</div>
+</section>
+<section id="posterior-distribution-of-mu" class="level3" data-number="24.1.3">
+<h3 data-number="24.1.3" class="anchored" data-anchor-id="posterior-distribution-of-mu"><span class="header-section-number">24.1.3</span> Posterior distribution of <span class="math inline">\(\mu\)</span></h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>mu_post <span class="ot">=</span> <span class="fu">as.matrix</span>(posterior_sample)[, <span class="st">"mu"</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(mu_post, <span class="at">breaks =</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hierarchical_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(mu_post, <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.90</span>, <span class="fl">0.99</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1%       10%       25%       50%       75%       90%       99% 
+0.7286450 0.7547322 0.7688723 0.7840213 0.7987911 0.8115802 0.8310453 </code></pre>
+</div>
+</div>
+</section>
+<section id="posterior-mean-and-sd-of-theta_js" class="level3" data-number="24.1.4">
+<h3 data-number="24.1.4" class="anchored" data-anchor-id="posterior-mean-and-sd-of-theta_js"><span class="header-section-number">24.1.4</span> Posterior mean and SD of <span class="math inline">\(\theta_j\)</span>s</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>player_summary <span class="ot">=</span> <span class="fu">data.frame</span>(player, n, y, y <span class="sc">/</span> n)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(player_summary) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"player"</span>, <span class="st">"FTA"</span>, <span class="st">"FT"</span>, <span class="st">"FTpct"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># In posterior_sample list, the first two entries correspond to mu and sigma,</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># so we remove them.</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>player_summary[<span class="fu">c</span>(<span class="st">"posterior_mean"</span>, <span class="st">"posterior_SD"</span>)] <span class="ot">=</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>(posterior_sample)<span class="sc">$</span>statistics[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>), <span class="fu">c</span>(<span class="st">"Mean"</span>, <span class="st">"SD"</span>)]</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>player_summary <span class="sc">|&gt;</span> <span class="fu">kbl</span>(<span class="at">digits =</span> <span class="dv">4</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">player</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FTA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FT</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FTpct</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">posterior_mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">posterior_SD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Joel Embiid</td>
+<td style="text-align: right;">556</td>
+<td style="text-align: right;">477</td>
+<td style="text-align: right;">0.8579</td>
+<td style="text-align: right;">0.8536</td>
+<td style="text-align: right;">0.0147</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">James Harden</td>
+<td style="text-align: right;">279</td>
+<td style="text-align: right;">241</td>
+<td style="text-align: right;">0.8638</td>
+<td style="text-align: right;">0.8550</td>
+<td style="text-align: right;">0.0198</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Tyrese Maxey</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: right;">0.8129</td>
+<td style="text-align: right;">0.8084</td>
+<td style="text-align: right;">0.0288</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tobias Harris</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">0.8556</td>
+<td style="text-align: right;">0.8367</td>
+<td style="text-align: right;">0.0341</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Shake Milton</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">0.8539</td>
+<td style="text-align: right;">0.8355</td>
+<td style="text-align: right;">0.0336</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Montrezl Harrell</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">0.6941</td>
+<td style="text-align: right;">0.7201</td>
+<td style="text-align: right;">0.0427</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">De'Anthony Melton</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">0.7797</td>
+<td style="text-align: right;">0.7828</td>
+<td style="text-align: right;">0.0433</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Danuel House Jr.</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0.7000</td>
+<td style="text-align: right;">0.7393</td>
+<td style="text-align: right;">0.0547</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Georges Niang</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0.8750</td>
+<td style="text-align: right;">0.8296</td>
+<td style="text-align: right;">0.0483</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Furkan Korkmaz</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">0.6552</td>
+<td style="text-align: right;">0.7237</td>
+<td style="text-align: right;">0.0595</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Paul Reed</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0.7273</td>
+<td style="text-align: right;">0.7612</td>
+<td style="text-align: right;">0.0582</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P.J. Tucker</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">0.8500</td>
+<td style="text-align: right;">0.8079</td>
+<td style="text-align: right;">0.0565</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Matisse Thybulle</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.7500</td>
+<td style="text-align: right;">0.7753</td>
+<td style="text-align: right;">0.0649</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jalen McDaniels</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.4000</td>
+<td style="text-align: right;">0.7287</td>
+<td style="text-align: right;">0.0795</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kevin Ross</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">0.8114</td>
+<td style="text-align: right;">0.0675</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jaden Springer</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.7500</td>
+<td style="text-align: right;">0.7791</td>
+<td style="text-align: right;">0.0729</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Saben Lee</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NaN</td>
+<td style="text-align: right;">0.7812</td>
+<td style="text-align: right;">0.0795</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Julian Champagnie</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NaN</td>
+<td style="text-align: right;">0.7839</td>
+<td style="text-align: right;">0.0772</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Michael Foster Jr.</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NaN</td>
+<td style="text-align: right;">0.7831</td>
+<td style="text-align: right;">0.0780</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>player_summary <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(player, FTpct, posterior_mean) <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">!</span>player, <span class="at">names_to =</span> <span class="st">"source"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">label =</span> <span class="fu">if_else</span>(source <span class="sc">==</span> <span class="st">"FTpct"</span>, player, <span class="st">""</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> source,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> value,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> player,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> player,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> label</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_discrete</span>() <span class="sc">+</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hierarchical_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="posterior-distribution-of-theta_textembiid" class="level3" data-number="24.1.5">
+<h3 data-number="24.1.5" class="anchored" data-anchor-id="posterior-distribution-of-theta_textembiid"><span class="header-section-number">24.1.5</span> Posterior distribution of <span class="math inline">\(\theta_{\text{Embiid}}\)</span></h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mu_post <span class="ot">=</span> <span class="fu">as.matrix</span>(posterior_sample)[, <span class="st">"theta[1]"</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(mu_post, <span class="at">breaks =</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hierarchical_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(mu_post, <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.90</span>, <span class="fl">0.99</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1%       10%       25%       50%       75%       90%       99% 
+0.8175385 0.8346530 0.8440620 0.8538953 0.8633015 0.8720074 0.8860221 </code></pre>
+</div>
+</div>
+</section>
+<section id="posterior-distribution-of-theta_textross" class="level3" data-number="24.1.6">
+<h3 data-number="24.1.6" class="anchored" data-anchor-id="posterior-distribution-of-theta_textross"><span class="header-section-number">24.1.6</span> Posterior distribution of <span class="math inline">\(\theta_{\text{Ross}}\)</span></h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>mu_post <span class="ot">=</span> <span class="fu">as.matrix</span>(posterior_sample)[, <span class="st">"theta[19]"</span>]</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(mu_post, <span class="at">breaks =</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hierarchical_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(mu_post, <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.90</span>, <span class="fl">0.99</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1%       10%       25%       50%       75%       90%       99% 
+0.5556247 0.6823394 0.7380963 0.7903224 0.8372665 0.8758460 0.9332181 </code></pre>
+</div>
+</div>
+<p><a href="https://mc-stan.org/users/interfaces/shinystan"><code>ShinyStan</code></a> provides a nice interface to interactively investigate the posterior distribution.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shinystan)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>sixers_sso <span class="ot">&lt;-</span> <span class="fu">as.shinystan</span>(posterior_sample, <span class="at">model_name =</span> <span class="st">"76ers Free Throws"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>sixers_sso <span class="ot">&lt;-</span> <span class="fu">drop_parameters</span>(sixers_sso, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"sigma"</span>))</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">launch_shinystan</span>(sixers_sso)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Hierarchical models are often called <em>multilevel, mixed effects, or random effects models</em>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Along with one bonus “player” who will illustrate some ideas.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./regression.html" class="pagination-link" aria-label="Bayesian Simple Linear Regression Model">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Bayesian Simple Linear Regression Model</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./classification.html" class="pagination-link" aria-label="Naive Bayes Classification">
+        <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
