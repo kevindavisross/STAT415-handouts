@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>26&nbsp; Introduction to Bayesian Model Comparison – STAT415 Handouts</title>
+<title>27&nbsp; Introduction to Bayesian Model Comparison – STAT415 Handouts</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -172,7 +172,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./model-comparison.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./model-comparison.html"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -349,14 +349,20 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./hierarchical-linear.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Hierarchical Linear Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./classification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span></a>
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./model-comparison.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></span></a>
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -375,20 +381,20 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#odds-and-bayes-factors" id="toc-odds-and-bayes-factors" class="nav-link active" data-scroll-target="#odds-and-bayes-factors"><span class="header-section-number">26.1</span> Odds and Bayes factors</a></li>
-  <li><a href="#posterior-probability-of-models" id="toc-posterior-probability-of-models" class="nav-link" data-scroll-target="#posterior-probability-of-models"><span class="header-section-number">26.2</span> Posterior probability of models</a></li>
-  <li><a href="#model-averaging" id="toc-model-averaging" class="nav-link" data-scroll-target="#model-averaging"><span class="header-section-number">26.3</span> Model averaging</a></li>
-  <li><a href="#accounting-for-model-complexity" id="toc-accounting-for-model-complexity" class="nav-link" data-scroll-target="#accounting-for-model-complexity"><span class="header-section-number">26.4</span> Accounting for model complexity</a></li>
-  <li><a href="#sensitivity-of-model-comparison-to-prior" id="toc-sensitivity-of-model-comparison-to-prior" class="nav-link" data-scroll-target="#sensitivity-of-model-comparison-to-prior"><span class="header-section-number">26.5</span> Sensitivity of model comparison to prior</a></li>
-  <li><a href="#hypothesis-testing-just-dont-do-it" id="toc-hypothesis-testing-just-dont-do-it" class="nav-link" data-scroll-target="#hypothesis-testing-just-dont-do-it"><span class="header-section-number">26.6</span> Hypothesis testing (just don’t do it)</a></li>
-  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes"><span class="header-section-number">26.7</span> Notes</a>
+  <li><a href="#odds-and-bayes-factors" id="toc-odds-and-bayes-factors" class="nav-link active" data-scroll-target="#odds-and-bayes-factors"><span class="header-section-number">27.1</span> Odds and Bayes factors</a></li>
+  <li><a href="#posterior-probability-of-models" id="toc-posterior-probability-of-models" class="nav-link" data-scroll-target="#posterior-probability-of-models"><span class="header-section-number">27.2</span> Posterior probability of models</a></li>
+  <li><a href="#model-averaging" id="toc-model-averaging" class="nav-link" data-scroll-target="#model-averaging"><span class="header-section-number">27.3</span> Model averaging</a></li>
+  <li><a href="#accounting-for-model-complexity" id="toc-accounting-for-model-complexity" class="nav-link" data-scroll-target="#accounting-for-model-complexity"><span class="header-section-number">27.4</span> Accounting for model complexity</a></li>
+  <li><a href="#sensitivity-of-model-comparison-to-prior" id="toc-sensitivity-of-model-comparison-to-prior" class="nav-link" data-scroll-target="#sensitivity-of-model-comparison-to-prior"><span class="header-section-number">27.5</span> Sensitivity of model comparison to prior</a></li>
+  <li><a href="#hypothesis-testing-just-dont-do-it" id="toc-hypothesis-testing-just-dont-do-it" class="nav-link" data-scroll-target="#hypothesis-testing-just-dont-do-it"><span class="header-section-number">27.6</span> Hypothesis testing (just don’t do it)</a></li>
+  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes"><span class="header-section-number">27.7</span> Notes</a>
   <ul class="collapse">
-  <li><a href="#odds-and-bayes-factors-1" id="toc-odds-and-bayes-factors-1" class="nav-link" data-scroll-target="#odds-and-bayes-factors-1"><span class="header-section-number">26.7.1</span> Odds and Bayes factors</a></li>
-  <li><a href="#posterior-probability-of-models-1" id="toc-posterior-probability-of-models-1" class="nav-link" data-scroll-target="#posterior-probability-of-models-1"><span class="header-section-number">26.7.2</span> Posterior probability of models</a></li>
-  <li><a href="#model-averaging-1" id="toc-model-averaging-1" class="nav-link" data-scroll-target="#model-averaging-1"><span class="header-section-number">26.7.3</span> Model averaging</a></li>
-  <li><a href="#accounting-for-model-complexity-1" id="toc-accounting-for-model-complexity-1" class="nav-link" data-scroll-target="#accounting-for-model-complexity-1"><span class="header-section-number">26.7.4</span> Accounting for model complexity</a></li>
-  <li><a href="#sensitivity-of-model-comparison-to-prior-1" id="toc-sensitivity-of-model-comparison-to-prior-1" class="nav-link" data-scroll-target="#sensitivity-of-model-comparison-to-prior-1"><span class="header-section-number">26.7.5</span> Sensitivity of model comparison to prior</a></li>
-  <li><a href="#hypothesis-testing-just-dont-do-it-1" id="toc-hypothesis-testing-just-dont-do-it-1" class="nav-link" data-scroll-target="#hypothesis-testing-just-dont-do-it-1"><span class="header-section-number">26.7.6</span> Hypothesis testing (just don’t do it)</a></li>
+  <li><a href="#odds-and-bayes-factors-1" id="toc-odds-and-bayes-factors-1" class="nav-link" data-scroll-target="#odds-and-bayes-factors-1"><span class="header-section-number">27.7.1</span> Odds and Bayes factors</a></li>
+  <li><a href="#posterior-probability-of-models-1" id="toc-posterior-probability-of-models-1" class="nav-link" data-scroll-target="#posterior-probability-of-models-1"><span class="header-section-number">27.7.2</span> Posterior probability of models</a></li>
+  <li><a href="#model-averaging-1" id="toc-model-averaging-1" class="nav-link" data-scroll-target="#model-averaging-1"><span class="header-section-number">27.7.3</span> Model averaging</a></li>
+  <li><a href="#accounting-for-model-complexity-1" id="toc-accounting-for-model-complexity-1" class="nav-link" data-scroll-target="#accounting-for-model-complexity-1"><span class="header-section-number">27.7.4</span> Accounting for model complexity</a></li>
+  <li><a href="#sensitivity-of-model-comparison-to-prior-1" id="toc-sensitivity-of-model-comparison-to-prior-1" class="nav-link" data-scroll-target="#sensitivity-of-model-comparison-to-prior-1"><span class="header-section-number">27.7.5</span> Sensitivity of model comparison to prior</a></li>
+  <li><a href="#hypothesis-testing-just-dont-do-it-1" id="toc-hypothesis-testing-just-dont-do-it-1" class="nav-link" data-scroll-target="#hypothesis-testing-just-dont-do-it-1"><span class="header-section-number">27.7.6</span> Hypothesis testing (just don’t do it)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -398,7 +404,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-model-comparison" class="quarto-section-identifier"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></span></h1>
+<h1 class="title"><span id="sec-model-comparison" class="quarto-section-identifier"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></span></h1>
 </div>
 
 
@@ -422,8 +428,8 @@ window.Quarto = {
 <li>But model selection can also concern choosing between models with the same likelihood but different priors.</li>
 <li>In Bayesian model comparison, prior probabilities are assigned to each of the models, and these probabilities are updated given the data according to Bayes rule.</li>
 </ul>
-<section id="odds-and-bayes-factors" class="level2" data-number="26.1">
-<h2 data-number="26.1" class="anchored" data-anchor-id="odds-and-bayes-factors"><span class="header-section-number">26.1</span> Odds and Bayes factors</h2>
+<section id="odds-and-bayes-factors" class="level2" data-number="27.1">
+<h2 data-number="27.1" class="anchored" data-anchor-id="odds-and-bayes-factors"><span class="header-section-number">27.1</span> Odds and Bayes factors</h2>
 <ul>
 <li>The <strong>odds</strong> of an event is a ratio involving the probability that the event occurs and the probability that the event does not occur <span class="math display">\[
 \text{odds}(A)  = \frac{P(A)}{P(A^c)} = \frac{P(A)}{1-P(A)}
@@ -434,7 +440,7 @@ P(A) = \frac{\text{odds}(A)}{1+\text{odds}(A)}
 \]</span></li>
 </ul>
 <div id="exm-bayes-false-positive" class="theorem example">
-<p><span class="theorem-title"><strong>Example 26.1</strong></span> The ELISA test for HIV was widely used in the mid-1990s for screening blood donations. As with most medical diagnostic tests, the ELISA test is not perfect. If a person actually carries the HIV virus, experts estimate that this test gives a positive result 97.7% of the time. (This number is called the <em>sensitivity</em> of the test.) If a person does not carry the HIV virus, ELISA gives a negative (correct) result 92.6% of the time (the <em>specificity</em> of the test). Estimates at the time were that 0.5% of the American public carried the HIV virus (the <em>base rate</em>).</p>
+<p><span class="theorem-title"><strong>Example 27.1</strong></span> The ELISA test for HIV was widely used in the mid-1990s for screening blood donations. As with most medical diagnostic tests, the ELISA test is not perfect. If a person actually carries the HIV virus, experts estimate that this test gives a positive result 97.7% of the time. (This number is called the <em>sensitivity</em> of the test.) If a person does not carry the HIV virus, ELISA gives a negative (correct) result 92.6% of the time (the <em>specificity</em> of the test). Estimates at the time were that 0.5% of the American public carried the HIV virus (the <em>base rate</em>).</p>
 </div>
 <ol type="1">
 <li><p>Calculate the <em>prior odds</em> of a randomly selected American having the HIV virus, before taking an ELISA test.<br>
@@ -488,10 +494,10 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 \end{align*}\]</span></li>
 </ul>
 </section>
-<section id="posterior-probability-of-models" class="level2" data-number="26.2">
-<h2 data-number="26.2" class="anchored" data-anchor-id="posterior-probability-of-models"><span class="header-section-number">26.2</span> Posterior probability of models</h2>
+<section id="posterior-probability-of-models" class="level2" data-number="27.2">
+<h2 data-number="27.2" class="anchored" data-anchor-id="posterior-probability-of-models"><span class="header-section-number">27.2</span> Posterior probability of models</h2>
 <div id="exm-biased-coins" class="theorem example">
-<p><span class="theorem-title"><strong>Example 26.2</strong></span> Suppose I have some trick coins<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, some of which are biased in favor of landing on heads, and some of which are biased in favor of landing on tails. I will select a trick coin at random; let <span class="math inline">\(\theta\)</span> be the probability that the selected coin lands on heads in any single flip. I will flip the coin <span class="math inline">\(n\)</span> times and use the data to decide about the direction of its bias. This can be viewed as a choice between two models</p>
+<p><span class="theorem-title"><strong>Example 27.2</strong></span> Suppose I have some trick coins<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, some of which are biased in favor of landing on heads, and some of which are biased in favor of landing on tails. I will select a trick coin at random; let <span class="math inline">\(\theta\)</span> be the probability that the selected coin lands on heads in any single flip. I will flip the coin <span class="math inline">\(n\)</span> times and use the data to decide about the direction of its bias. This can be viewed as a choice between two models</p>
 <ul>
 <li>Model 1: the coin is biased in favor of landing on heads</li>
 <li>Model 2: the coin is biased in favor of landing on tails</li>
@@ -530,10 +536,10 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 </p></li>
 </ol>
 </section>
-<section id="model-averaging" class="level2" data-number="26.3">
-<h2 data-number="26.3" class="anchored" data-anchor-id="model-averaging"><span class="header-section-number">26.3</span> Model averaging</h2>
+<section id="model-averaging" class="level2" data-number="27.3">
+<h2 data-number="27.3" class="anchored" data-anchor-id="model-averaging"><span class="header-section-number">27.3</span> Model averaging</h2>
 <div id="exm-biased-coins-averaging" class="theorem example">
-<p><span class="theorem-title"><strong>Example 26.3</strong></span> Continuing <a href="#exm-biased-coins" class="quarto-xref">Example&nbsp;<span>26.2</span></a>. Now suppose I want to predict the number of heads in the next 10 flips of the selected coin, given that there were 6 heads in the first 10 flips.</p>
+<p><span class="theorem-title"><strong>Example 27.3</strong></span> Continuing <a href="#exm-biased-coins" class="quarto-xref">Example&nbsp;<span>27.2</span></a>. Now suppose I want to predict the number of heads in the next 10 flips of the selected coin, given that there were 6 heads in the first 10 flips.</p>
 </div>
 <ol type="1">
 <li><p>Use simulation to approximate the posterior predictive distribution of the number of heads in the next 10 flips given 6 heads in the first 10 flips <em>given that model 1 is the correct model</em>. In particular, approximate the posterior predictive probability that there are 7 heads in the next 10 flips <em>given then model 1 is the correct model</em>.<br>
@@ -563,10 +569,10 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <li>That is, prediction is accomplished by taking a weighted average across the models, with weights equal to the posterior probabilities of the models. This is called <strong>model averaging</strong>.</li>
 </ul>
 </section>
-<section id="accounting-for-model-complexity" class="level2" data-number="26.4">
-<h2 data-number="26.4" class="anchored" data-anchor-id="accounting-for-model-complexity"><span class="header-section-number">26.4</span> Accounting for model complexity</h2>
+<section id="accounting-for-model-complexity" class="level2" data-number="27.4">
+<h2 data-number="27.4" class="anchored" data-anchor-id="accounting-for-model-complexity"><span class="header-section-number">27.4</span> Accounting for model complexity</h2>
 <div id="exm-biased-coins2" class="theorem example">
-<p><span class="theorem-title"><strong>Example 26.4</strong></span> Suppose again I select a coin, with probability of heads <span class="math inline">\(\theta\)</span>, but now the decision is whether the coin is fair. Suppose we consider the two models</p>
+<p><span class="theorem-title"><strong>Example 27.4</strong></span> Suppose again I select a coin, with probability of heads <span class="math inline">\(\theta\)</span>, but now the decision is whether the coin is fair. Suppose we consider the two models</p>
 <ul>
 <li>“Must be fair” model: prior distribution for <span class="math inline">\(\theta\)</span> is Beta(500, 500)</li>
 <li>“Anything is possible” model: prior distribution for <span class="math inline">\(\theta\)</span> is Beta(1, 1)</li>
@@ -602,10 +608,10 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <li>Thus, in Bayesian model comparison, a simpler model can “win” if the data are consistent with it, even if the complex model fits well.</li>
 </ul>
 </section>
-<section id="sensitivity-of-model-comparison-to-prior" class="level2" data-number="26.5">
-<h2 data-number="26.5" class="anchored" data-anchor-id="sensitivity-of-model-comparison-to-prior"><span class="header-section-number">26.5</span> Sensitivity of model comparison to prior</h2>
+<section id="sensitivity-of-model-comparison-to-prior" class="level2" data-number="27.5">
+<h2 data-number="27.5" class="anchored" data-anchor-id="sensitivity-of-model-comparison-to-prior"><span class="header-section-number">27.5</span> Sensitivity of model comparison to prior</h2>
 <div id="exm-biased-coins3" class="theorem example">
-<p><span class="theorem-title"><strong>Example 26.5</strong></span> Continuing <a href="#exm-biased-coins3" class="quarto-xref">Example&nbsp;<span>26.5</span></a> where we considered the two models</p>
+<p><span class="theorem-title"><strong>Example 27.5</strong></span> Continuing <a href="#exm-biased-coins3" class="quarto-xref">Example&nbsp;<span>27.5</span></a> where we considered the two models</p>
 <ul>
 <li>“Must be fair” model: prior distribution for <span class="math inline">\(\theta\)</span> is Beta(500, 500)</li>
 <li>“Anything is possible” model: prior distribution for <span class="math inline">\(\theta\)</span> is Beta(1, 1)</li>
@@ -644,7 +650,7 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <li>When comparing different models, prior distributions on parameters within each model should be equally informed. One strategy is to use a small set of “training data” to inform the prior of each model before comparing.</li>
 </ul>
 <div id="exm-biased-coins4" class="theorem example">
-<p><span class="theorem-title"><strong>Example 26.6</strong></span> Continuing <a href="#exm-biased-coins3" class="quarto-xref">Example&nbsp;<span>26.5</span></a> where we considered two priors in the “anything is possible model”: Beta(1, 1) and Beta(0.1, 0.1). We will again compare the “anything is possible model” to the “must be fair” model which corresponds to a Beta(500, 500) prior.</p>
+<p><span class="theorem-title"><strong>Example 27.6</strong></span> Continuing <a href="#exm-biased-coins3" class="quarto-xref">Example&nbsp;<span>27.5</span></a> where we considered two priors in the “anything is possible model”: Beta(1, 1) and Beta(0.1, 0.1). We will again compare the “anything is possible model” to the “must be fair” model which corresponds to a Beta(500, 500) prior.</p>
 <p>Suppose we observe 65 heads in 100 flips.</p>
 </div>
 <ol type="1">
@@ -662,10 +668,10 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 </p></li>
 </ol>
 </section>
-<section id="hypothesis-testing-just-dont-do-it" class="level2" data-number="26.6">
-<h2 data-number="26.6" class="anchored" data-anchor-id="hypothesis-testing-just-dont-do-it"><span class="header-section-number">26.6</span> Hypothesis testing (just don’t do it)</h2>
+<section id="hypothesis-testing-just-dont-do-it" class="level2" data-number="27.6">
+<h2 data-number="27.6" class="anchored" data-anchor-id="hypothesis-testing-just-dont-do-it"><span class="header-section-number">27.6</span> Hypothesis testing (just don’t do it)</h2>
 <div id="exm-hypothesis-test" class="theorem example">
-<p><span class="theorem-title"><strong>Example 26.7</strong></span> Consider a null hypothesis significance test of <span class="math inline">\(H_0:\theta=0.5\)</span> versus <span class="math inline">\(H_1:\theta\neq 0.5\)</span>. How does this situation resemble the previous problems in this section?</p>
+<p><span class="theorem-title"><strong>Example 27.7</strong></span> Consider a null hypothesis significance test of <span class="math inline">\(H_0:\theta=0.5\)</span> versus <span class="math inline">\(H_1:\theta\neq 0.5\)</span>. How does this situation resemble the previous problems in this section?</p>
 </div>
 <p><br>
 <br>
@@ -685,7 +691,7 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <li>Rather, the <em>posterior distribution</em> provides all relevant information to make decisions about practically meaningful issues. Ask research questions that are important in the context of the problem and use the posterior distribution to answer them.</li>
 </ul>
 <div id="exm-uniform-color-bf" class="theorem example">
-<p><span class="theorem-title"><strong>Example 26.8</strong></span> Recall a previous application: Does uniform color give athletes an advantage over their competitors? To investigate this question, Hill and Barton (<em>Nature</em>, 2005) examined the records in the 2004 Olympic Games for four combat sports: boxing, tae kwon do, Greco-Roman wrestling, and freestyle wrestling. Competitors in these sports were randomly assigned to wear either a red or a blue uniform. Let the parameter <span class="math inline">\(\theta\)</span> represent the probability that a competitor wearing <em>red</em> wins a match.</p>
+<p><span class="theorem-title"><strong>Example 27.8</strong></span> Recall a previous application: Does uniform color give athletes an advantage over their competitors? To investigate this question, Hill and Barton (<em>Nature</em>, 2005) examined the records in the 2004 Olympic Games for four combat sports: boxing, tae kwon do, Greco-Roman wrestling, and freestyle wrestling. Competitors in these sports were randomly assigned to wear either a red or a blue uniform. Let the parameter <span class="math inline">\(\theta\)</span> represent the probability that a competitor wearing <em>red</em> wins a match.</p>
 <p>In this context, we might say that if the probability of winning by the competitor wearing red is between 0.49 and 0.51, then any color advantage is small enough to be considered unimportant. That is, we might consider the interval [0.49, 0.51] as a ROPE for 0.5. Therefore, we consider a null hypothesis of <span class="math inline">\(H_0: 0.49 \le \theta \le 0.51\)</span> and an alternative that <span class="math inline">\(\theta\)</span> is outside of [0.49, 0.51].</p>
 <p>The researchers collected data on a sample of 457 matches; the competitor wearing red won in 248 of the matches.</p>
 </div>
@@ -722,7 +728,7 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 </p></li>
 </ol>
 <div id="exm-uniform-color-bf" class="theorem example">
-<p><span class="theorem-title"><strong>Example 26.9</strong></span> Continuing <a href="#exm-uniform-color-bf" class="quarto-xref">Example&nbsp;<span>26.9</span></a>. An alternative to hypothesis testing is to just use credible intervals to determine ranges of plausible values for the parameters, and to assess any hypotheses or regions of practical equivalence in light of the credible values.</p>
+<p><span class="theorem-title"><strong>Example 27.9</strong></span> Continuing <a href="#exm-uniform-color-bf" class="quarto-xref">Example&nbsp;<span>27.9</span></a>. An alternative to hypothesis testing is to just use credible intervals to determine ranges of plausible values for the parameters, and to assess any hypotheses or regions of practical equivalence in light of the credible values.</p>
 </div>
 <ol type="1">
 <li><p>Assume a Uniform(0, 1) = Beta(1, 1) prior for <span class="math inline">\(\theta\)</span>. Compute a posterior 98% credible interval for <span class="math inline">\(\theta\)</span> given the sample data.<br>
@@ -757,10 +763,10 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 </p></li>
 </ol>
 </section>
-<section id="notes" class="level2" data-number="26.7">
-<h2 data-number="26.7" class="anchored" data-anchor-id="notes"><span class="header-section-number">26.7</span> Notes</h2>
-<section id="odds-and-bayes-factors-1" class="level3" data-number="26.7.1">
-<h3 data-number="26.7.1" class="anchored" data-anchor-id="odds-and-bayes-factors-1"><span class="header-section-number">26.7.1</span> Odds and Bayes factors</h3>
+<section id="notes" class="level2" data-number="27.7">
+<h2 data-number="27.7" class="anchored" data-anchor-id="notes"><span class="header-section-number">27.7</span> Notes</h2>
+<section id="odds-and-bayes-factors-1" class="level3" data-number="27.7.1">
+<h3 data-number="27.7.1" class="anchored" data-anchor-id="odds-and-bayes-factors-1"><span class="header-section-number">27.7.1</span> Odds and Bayes factors</h3>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table caption-top table-sm table-striped small">
@@ -807,8 +813,8 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 </div>
 </div>
 </section>
-<section id="posterior-probability-of-models-1" class="level3" data-number="26.7.2">
-<h3 data-number="26.7.2" class="anchored" data-anchor-id="posterior-probability-of-models-1"><span class="header-section-number">26.7.2</span> Posterior probability of models</h3>
+<section id="posterior-probability-of-models-1" class="level3" data-number="27.7.2">
+<h3 data-number="27.7.2" class="anchored" data-anchor-id="posterior-probability-of-models-1"><span class="header-section-number">27.7.2</span> Posterior probability of models</h3>
 <p>Prior predictive probability of observing 6 heads in 10 flips given that model 1 is correct</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
@@ -839,8 +845,8 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 </div>
 </div>
 </section>
-<section id="model-averaging-1" class="level3" data-number="26.7.3">
-<h3 data-number="26.7.3" class="anchored" data-anchor-id="model-averaging-1"><span class="header-section-number">26.7.3</span> Model averaging</h3>
+<section id="model-averaging-1" class="level3" data-number="27.7.3">
+<h3 data-number="27.7.3" class="anchored" data-anchor-id="model-averaging-1"><span class="header-section-number">27.7.3</span> Model averaging</h3>
 <p>If model 1 is correct the prior is Beta(7.5, 2.5) so the posterior after observing 6 heads in 10 flips is Beta(13.5, 6.5).</p>
 <ul>
 <li>Simulate a value of <span class="math inline">\(\theta\)</span> from a Beta(13.5, 6.5) distribution</li>
@@ -913,8 +919,8 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 </div>
 </div>
 </section>
-<section id="accounting-for-model-complexity-1" class="level3" data-number="26.7.4">
-<h3 data-number="26.7.4" class="anchored" data-anchor-id="accounting-for-model-complexity-1"><span class="header-section-number">26.7.4</span> Accounting for model complexity</h3>
+<section id="accounting-for-model-complexity-1" class="level3" data-number="27.7.4">
+<h3 data-number="27.7.4" class="anchored" data-anchor-id="accounting-for-model-complexity-1"><span class="header-section-number">27.7.4</span> Accounting for model complexity</h3>
 <p>A sample proportion of 15/20 = 0.75 does not seem consistent with the “must be fair” model, so we expect the Bayes Factor to favor the “anything in possible” model.</p>
 <p>The Bayes Factor is the ratio of the likelihoods (of 15/20). To approximate the likelihood of 15 heads in 20 flips for the “must be fair” model</p>
 <ul>
@@ -946,8 +952,8 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 </div>
 </div>
 </section>
-<section id="sensitivity-of-model-comparison-to-prior-1" class="level3" data-number="26.7.5">
-<h3 data-number="26.7.5" class="anchored" data-anchor-id="sensitivity-of-model-comparison-to-prior-1"><span class="header-section-number">26.7.5</span> Sensitivity of model comparison to prior</h3>
+<section id="sensitivity-of-model-comparison-to-prior-1" class="level3" data-number="27.7.5">
+<h3 data-number="27.7.5" class="anchored" data-anchor-id="sensitivity-of-model-comparison-to-prior-1"><span class="header-section-number">27.7.5</span> Sensitivity of model comparison to prior</h3>
 <p>The simulation is similar to the ones in the previous example, just with different data. The Bayes Factor is about 0.13 in favor of the “must be fair” model. So the Bayes Factor favors the “anything is possible” model.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Nrep <span class="ot">=</span> <span class="dv">1000000</span></span>
@@ -991,8 +997,8 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 </div>
 </div>
 </section>
-<section id="hypothesis-testing-just-dont-do-it-1" class="level3" data-number="26.7.6">
-<h3 data-number="26.7.6" class="anchored" data-anchor-id="hypothesis-testing-just-dont-do-it-1"><span class="header-section-number">26.7.6</span> Hypothesis testing (just don’t do it)</h3>
+<section id="hypothesis-testing-just-dont-do-it-1" class="level3" data-number="27.7.6">
+<h3 data-number="27.7.6" class="anchored" data-anchor-id="hypothesis-testing-just-dont-do-it-1"><span class="header-section-number">27.7.6</span> Hypothesis testing (just don’t do it)</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rope</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>rope_lb <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">-</span> <span class="fl">0.01</span></span>
@@ -1507,7 +1513,7 @@ BF = \frac{P(E|H)}{P(E|H^c)}
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./classification.html" class="pagination-link" aria-label="Naive Bayes Classification">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

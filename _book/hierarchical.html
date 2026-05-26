@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./classification.html" rel="next">
+<link href="./hierarchical-linear.html" rel="next">
 <link href="./regression.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -330,14 +330,20 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./hierarchical-linear.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Hierarchical Linear Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./classification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span></a>
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./model-comparison.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></span></a>
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Model Comparison</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -762,29 +768,29 @@ Start = 2001
 End = 2007 
 Thinning interval = 1 
             mu      sigma  theta[1]  theta[2]  theta[3]  theta[4]  theta[5]
-[1,] 0.8160927 0.05340369 0.8577184 0.8013187 0.8223897 0.8390239 0.8597395
-[2,] 0.7944552 0.05376734 0.8616222 0.8532029 0.7774072 0.8658178 0.8143806
-[3,] 0.7956600 0.06970748 0.8368495 0.8364321 0.8069355 0.8589069 0.8359431
-[4,] 0.7722398 0.06191490 0.8539318 0.8478128 0.7973313 0.8596863 0.8096179
-[5,] 0.7808670 0.06446775 0.8390681 0.8376413 0.8245664 0.8433706 0.8489843
-[6,] 0.7972862 0.06226652 0.8280945 0.8710550 0.7943592 0.8403172 0.8171182
-[7,] 0.7959133 0.06569238 0.8380443 0.8456165 0.8393506 0.8230030 0.7851432
+[1,] 0.7555775 0.07921928 0.8386526 0.8604243 0.8459893 0.8305631 0.8566181
+[2,] 0.7635775 0.07592569 0.8421768 0.8344470 0.8379428 0.8358840 0.7914917
+[3,] 0.7941961 0.05011713 0.8583107 0.8662174 0.7612669 0.7809876 0.7915956
+[4,] 0.7989662 0.05002902 0.8377143 0.8705762 0.7654653 0.8459553 0.8209893
+[5,] 0.7779216 0.05031916 0.8408643 0.8275125 0.8397971 0.8501741 0.8471134
+[6,] 0.8048253 0.06595677 0.8323730 0.8350123 0.7903869 0.8638214 0.8410987
+[7,] 0.7730351 0.06125558 0.8450267 0.8127273 0.8257063 0.8101122 0.8126974
       theta[6]  theta[7]  theta[8]  theta[9] theta[10] theta[11] theta[12]
-[1,] 0.7232506 0.7878320 0.8002852 0.8497328 0.8285476 0.8417582 0.8521441
-[2,] 0.6620113 0.7636968 0.7664200 0.8518445 0.7369340 0.6890680 0.8390770
-[3,] 0.7191397 0.8238674 0.7447017 0.8046005 0.7018724 0.8315200 0.7879715
-[4,] 0.7098649 0.7923695 0.7121227 0.8655789 0.7831001 0.8174122 0.8238959
-[5,] 0.7067375 0.7353161 0.7118381 0.8788510 0.7643388 0.8109889 0.7293750
-[6,] 0.7651827 0.7901857 0.6651666 0.7612226 0.6213256 0.7999470 0.8545818
-[7,] 0.7645567 0.8065873 0.7562223 0.8983760 0.7379918 0.8203798 0.8590652
+[1,] 0.7549757 0.7957334 0.7786578 0.7731625 0.6034847 0.6941081 0.8628986
+[2,] 0.7157952 0.7844823 0.7959441 0.7920538 0.7963032 0.7191708 0.6872611
+[3,] 0.6919166 0.7748574 0.8027660 0.8791182 0.7964528 0.7400872 0.7857784
+[4,] 0.7197988 0.7324170 0.7599206 0.8804523 0.7670851 0.8114943 0.7926496
+[5,] 0.7794976 0.7750168 0.7541935 0.7850362 0.7660546 0.8242620 0.7634910
+[6,] 0.7233923 0.7613264 0.7936800 0.8206385 0.7269181 0.8468743 0.8270834
+[7,] 0.7289698 0.8405265 0.7535754 0.8195994 0.8004007 0.7627584 0.8380063
      theta[13] theta[14] theta[15] theta[16] theta[17] theta[18] theta[19]
-[1,] 0.7697318 0.6451061 0.7613435 0.9265648 0.7991566 0.8418508 0.8638916
-[2,] 0.8861288 0.6424672 0.7438617 0.9502467 0.8074818 0.7464886 0.8688353
-[3,] 0.8685188 0.6315697 0.7798400 0.8581449 0.6891970 0.7662180 0.7438044
-[4,] 0.7498830 0.7771569 0.8470823 0.7649235 0.7289173 0.7716190 0.7696147
-[5,] 0.6671506 0.7741483 0.7965394 0.8050903 0.8092341 0.7878438 0.6885896
-[6,] 0.7394102 0.7394434 0.8965430 0.7853840 0.8763045 0.7915210 0.7283433
-[7,] 0.8648576 0.7390125 0.8758009 0.8314494 0.7464809 0.8094262 0.8448395
+[1,] 0.7354283 0.7169208 0.7770684 0.7209018 0.7269951 0.6807398 0.7411504
+[2,] 0.7738776 0.6940222 0.8051911 0.8017877 0.7412862 0.6678919 0.6426935
+[3,] 0.6450965 0.7615708 0.8293455 0.8050397 0.8359435 0.8730834 0.6285403
+[4,] 0.7105079 0.7408502 0.9158065 0.7691811 0.8058121 0.7204509 0.8776500
+[5,] 0.8022695 0.7410960 0.7714884 0.7512273 0.8003665 0.8625337 0.8246577
+[6,] 0.8749640 0.6703499 0.8025530 0.6888582 0.8080648 0.8215120 0.7283967
+[7,] 0.7243932 0.8028349 0.8294274 0.8135558 0.6821205 0.8217222 0.7475864
 
 attr(,"class")
 [1] "mcmc.list"</code></pre>
@@ -803,52 +809,52 @@ Sample size per chain = 10000
    plus standard error of the mean:
 
              Mean      SD  Naive SE Time-series SE
-mu        0.78344 0.02210 0.0002210      0.0005339
-sigma     0.07278 0.01627 0.0001627      0.0004172
-theta[1]  0.85355 0.01466 0.0001466      0.0001925
-theta[2]  0.85497 0.01984 0.0001984      0.0002578
-theta[3]  0.80843 0.02879 0.0002879      0.0004033
-theta[4]  0.83673 0.03408 0.0003408      0.0004680
-theta[5]  0.83552 0.03356 0.0003356      0.0004700
-theta[6]  0.72012 0.04267 0.0004267      0.0006282
-theta[7]  0.78280 0.04334 0.0004334      0.0005996
-theta[8]  0.73930 0.05471 0.0005471      0.0007950
-theta[9]  0.82957 0.04832 0.0004832      0.0007724
-theta[10] 0.72368 0.05953 0.0005953      0.0009200
-theta[11] 0.76115 0.05824 0.0005824      0.0008356
-theta[12] 0.80794 0.05652 0.0005652      0.0008269
-theta[13] 0.77533 0.06493 0.0006493      0.0009173
-theta[14] 0.72869 0.07954 0.0007954      0.0013308
-theta[15] 0.81138 0.06749 0.0006749      0.0010831
-theta[16] 0.77913 0.07285 0.0007285      0.0010960
-theta[17] 0.78122 0.07953 0.0007953      0.0012987
-theta[18] 0.78386 0.07722 0.0007722      0.0012242
-theta[19] 0.78310 0.07802 0.0007802      0.0011653
+mu        0.78462 0.02239 0.0002239      0.0005344
+sigma     0.07224 0.01640 0.0001640      0.0004475
+theta[1]  0.85344 0.01471 0.0001471      0.0001914
+theta[2]  0.85488 0.02044 0.0002044      0.0002715
+theta[3]  0.80852 0.02856 0.0002856      0.0003686
+theta[4]  0.83700 0.03369 0.0003369      0.0004635
+theta[5]  0.83510 0.03422 0.0003422      0.0004693
+theta[6]  0.72169 0.04233 0.0004233      0.0006600
+theta[7]  0.78174 0.04345 0.0004345      0.0005841
+theta[8]  0.74000 0.05274 0.0005274      0.0008511
+theta[9]  0.82979 0.04740 0.0004740      0.0007376
+theta[10] 0.72421 0.06060 0.0006060      0.0010033
+theta[11] 0.76172 0.06047 0.0006047      0.0009083
+theta[12] 0.81025 0.05542 0.0005542      0.0008105
+theta[13] 0.77596 0.06448 0.0006448      0.0009524
+theta[14] 0.73109 0.07919 0.0007919      0.0013652
+theta[15] 0.81509 0.06761 0.0006761      0.0010764
+theta[16] 0.78029 0.07233 0.0007233      0.0011276
+theta[17] 0.78577 0.07737 0.0007737      0.0012249
+theta[18] 0.78467 0.07906 0.0007906      0.0013443
+theta[19] 0.78440 0.07680 0.0007680      0.0011530
 
 2. Quantiles for each variable:
 
              2.5%     25%     50%     75%  97.5%
-mu        0.73772 0.76887 0.78402 0.79879 0.8236
-sigma     0.04202 0.06167 0.07243 0.08361 0.1063
-theta[1]  0.82355 0.84406 0.85390 0.86330 0.8816
-theta[2]  0.81442 0.84190 0.85567 0.86879 0.8915
-theta[3]  0.74853 0.78946 0.80992 0.82850 0.8614
-theta[4]  0.76402 0.81464 0.83839 0.86044 0.8983
-theta[5]  0.76478 0.81396 0.83766 0.85911 0.8955
-theta[6]  0.63347 0.69199 0.72163 0.75001 0.8001
-theta[7]  0.69072 0.75462 0.78483 0.81309 0.8626
-theta[8]  0.62321 0.70383 0.74305 0.77771 0.8360
-theta[9]  0.72650 0.79896 0.83248 0.86368 0.9151
-theta[10] 0.59564 0.68518 0.72778 0.76554 0.8289
-theta[11] 0.63703 0.72412 0.76499 0.80266 0.8663
-theta[12] 0.68791 0.77258 0.81210 0.84778 0.9072
-theta[13] 0.63247 0.73514 0.78127 0.82075 0.8871
-theta[14] 0.55270 0.68018 0.73700 0.78655 0.8592
-theta[15] 0.66388 0.76991 0.81643 0.85773 0.9306
-theta[16] 0.61850 0.73560 0.78555 0.83041 0.9030
-theta[17] 0.60365 0.73470 0.78806 0.83567 0.9163
-theta[18] 0.60640 0.73796 0.79117 0.83745 0.9156
-theta[19] 0.60367 0.73810 0.79032 0.83727 0.9148</code></pre>
+mu        0.73778 0.77039 0.78555 0.80015 0.8258
+sigma     0.04155 0.06092 0.07179 0.08318 0.1053
+theta[1]  0.82362 0.84363 0.85392 0.86383 0.8807
+theta[2]  0.81319 0.84137 0.85566 0.86916 0.8932
+theta[3]  0.74957 0.78999 0.80954 0.82842 0.8620
+theta[4]  0.76735 0.81493 0.83818 0.86056 0.8991
+theta[5]  0.76261 0.81290 0.83680 0.85912 0.8969
+theta[6]  0.63494 0.69356 0.72345 0.75118 0.7999
+theta[7]  0.69077 0.75435 0.78405 0.81212 0.8602
+theta[8]  0.62747 0.70624 0.74382 0.77779 0.8330
+theta[9]  0.72851 0.80008 0.83235 0.86263 0.9149
+theta[10] 0.59512 0.68499 0.72851 0.76673 0.8325
+theta[11] 0.63234 0.72418 0.76596 0.80374 0.8659
+theta[12] 0.69288 0.77511 0.81389 0.84921 0.9085
+theta[13] 0.63554 0.73544 0.78102 0.82065 0.8896
+theta[14] 0.55531 0.68446 0.74035 0.78690 0.8610
+theta[15] 0.66711 0.77302 0.81961 0.86259 0.9341
+theta[16] 0.61289 0.73750 0.78693 0.83069 0.9039
+theta[17] 0.61213 0.73976 0.79335 0.84002 0.9150
+theta[18] 0.60689 0.73849 0.79390 0.83905 0.9175
+theta[19] 0.61362 0.73828 0.79173 0.83861 0.9142</code></pre>
 </div>
 </div>
 </section>
@@ -868,7 +874,7 @@ theta[19] 0.60367 0.73810 0.79032 0.83727 0.9148</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(mu_post, <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.90</span>, <span class="fl">0.99</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1%       10%       25%       50%       75%       90%       99% 
-0.7286450 0.7547322 0.7688723 0.7840213 0.7987911 0.8115802 0.8310453 </code></pre>
+0.7285852 0.7552298 0.7703858 0.7855504 0.8001485 0.8124104 0.8325420 </code></pre>
 </div>
 </div>
 </section>
@@ -904,7 +910,7 @@ theta[19] 0.60367 0.73810 0.79032 0.83727 0.9148</code></pre>
 <td style="text-align: right;">556</td>
 <td style="text-align: right;">477</td>
 <td style="text-align: right;">0.8579</td>
-<td style="text-align: right;">0.8536</td>
+<td style="text-align: right;">0.8534</td>
 <td style="text-align: right;">0.0147</td>
 </tr>
 <tr class="even">
@@ -912,144 +918,144 @@ theta[19] 0.60367 0.73810 0.79032 0.83727 0.9148</code></pre>
 <td style="text-align: right;">279</td>
 <td style="text-align: right;">241</td>
 <td style="text-align: right;">0.8638</td>
-<td style="text-align: right;">0.8550</td>
-<td style="text-align: right;">0.0198</td>
+<td style="text-align: right;">0.8549</td>
+<td style="text-align: right;">0.0204</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Tyrese Maxey</td>
 <td style="text-align: right;">155</td>
 <td style="text-align: right;">126</td>
 <td style="text-align: right;">0.8129</td>
-<td style="text-align: right;">0.8084</td>
-<td style="text-align: right;">0.0288</td>
+<td style="text-align: right;">0.8085</td>
+<td style="text-align: right;">0.0286</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Tobias Harris</td>
 <td style="text-align: right;">90</td>
 <td style="text-align: right;">77</td>
 <td style="text-align: right;">0.8556</td>
-<td style="text-align: right;">0.8367</td>
-<td style="text-align: right;">0.0341</td>
+<td style="text-align: right;">0.8370</td>
+<td style="text-align: right;">0.0337</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Shake Milton</td>
 <td style="text-align: right;">89</td>
 <td style="text-align: right;">76</td>
 <td style="text-align: right;">0.8539</td>
-<td style="text-align: right;">0.8355</td>
-<td style="text-align: right;">0.0336</td>
+<td style="text-align: right;">0.8351</td>
+<td style="text-align: right;">0.0342</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Montrezl Harrell</td>
 <td style="text-align: right;">85</td>
 <td style="text-align: right;">59</td>
 <td style="text-align: right;">0.6941</td>
-<td style="text-align: right;">0.7201</td>
-<td style="text-align: right;">0.0427</td>
+<td style="text-align: right;">0.7217</td>
+<td style="text-align: right;">0.0423</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">De'Anthony Melton</td>
 <td style="text-align: right;">59</td>
 <td style="text-align: right;">46</td>
 <td style="text-align: right;">0.7797</td>
-<td style="text-align: right;">0.7828</td>
-<td style="text-align: right;">0.0433</td>
+<td style="text-align: right;">0.7817</td>
+<td style="text-align: right;">0.0434</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Danuel House Jr.</td>
 <td style="text-align: right;">40</td>
 <td style="text-align: right;">28</td>
 <td style="text-align: right;">0.7000</td>
-<td style="text-align: right;">0.7393</td>
-<td style="text-align: right;">0.0547</td>
+<td style="text-align: right;">0.7400</td>
+<td style="text-align: right;">0.0527</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Georges Niang</td>
 <td style="text-align: right;">32</td>
 <td style="text-align: right;">28</td>
 <td style="text-align: right;">0.8750</td>
-<td style="text-align: right;">0.8296</td>
-<td style="text-align: right;">0.0483</td>
+<td style="text-align: right;">0.8298</td>
+<td style="text-align: right;">0.0474</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Furkan Korkmaz</td>
 <td style="text-align: right;">29</td>
 <td style="text-align: right;">19</td>
 <td style="text-align: right;">0.6552</td>
-<td style="text-align: right;">0.7237</td>
-<td style="text-align: right;">0.0595</td>
+<td style="text-align: right;">0.7242</td>
+<td style="text-align: right;">0.0606</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Paul Reed</td>
 <td style="text-align: right;">22</td>
 <td style="text-align: right;">16</td>
 <td style="text-align: right;">0.7273</td>
-<td style="text-align: right;">0.7612</td>
-<td style="text-align: right;">0.0582</td>
+<td style="text-align: right;">0.7617</td>
+<td style="text-align: right;">0.0605</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">P.J. Tucker</td>
 <td style="text-align: right;">20</td>
 <td style="text-align: right;">17</td>
 <td style="text-align: right;">0.8500</td>
-<td style="text-align: right;">0.8079</td>
-<td style="text-align: right;">0.0565</td>
+<td style="text-align: right;">0.8102</td>
+<td style="text-align: right;">0.0554</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Matisse Thybulle</td>
 <td style="text-align: right;">12</td>
 <td style="text-align: right;">9</td>
 <td style="text-align: right;">0.7500</td>
-<td style="text-align: right;">0.7753</td>
-<td style="text-align: right;">0.0649</td>
+<td style="text-align: right;">0.7760</td>
+<td style="text-align: right;">0.0645</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Jalen McDaniels</td>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">0.4000</td>
-<td style="text-align: right;">0.7287</td>
-<td style="text-align: right;">0.0795</td>
+<td style="text-align: right;">0.7311</td>
+<td style="text-align: right;">0.0792</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Kevin Ross</td>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">1.0000</td>
-<td style="text-align: right;">0.8114</td>
-<td style="text-align: right;">0.0675</td>
+<td style="text-align: right;">0.8151</td>
+<td style="text-align: right;">0.0676</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Jaden Springer</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">0.7500</td>
-<td style="text-align: right;">0.7791</td>
-<td style="text-align: right;">0.0729</td>
+<td style="text-align: right;">0.7803</td>
+<td style="text-align: right;">0.0723</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Saben Lee</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">NaN</td>
-<td style="text-align: right;">0.7812</td>
-<td style="text-align: right;">0.0795</td>
+<td style="text-align: right;">0.7858</td>
+<td style="text-align: right;">0.0774</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Julian Champagnie</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">NaN</td>
-<td style="text-align: right;">0.7839</td>
-<td style="text-align: right;">0.0772</td>
+<td style="text-align: right;">0.7847</td>
+<td style="text-align: right;">0.0791</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Michael Foster Jr.</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">NaN</td>
-<td style="text-align: right;">0.7831</td>
-<td style="text-align: right;">0.0780</td>
+<td style="text-align: right;">0.7844</td>
+<td style="text-align: right;">0.0768</td>
 </tr>
 </tbody>
 </table>
@@ -1097,7 +1103,7 @@ theta[19] 0.60367 0.73810 0.79032 0.83727 0.9148</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(mu_post, <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.90</span>, <span class="fl">0.99</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1%       10%       25%       50%       75%       90%       99% 
-0.8175385 0.8346530 0.8440620 0.8538953 0.8633015 0.8720074 0.8860221 </code></pre>
+0.8185598 0.8341798 0.8436324 0.8539204 0.8638316 0.8721804 0.8847340 </code></pre>
 </div>
 </div>
 </section>
@@ -1117,7 +1123,7 @@ theta[19] 0.60367 0.73810 0.79032 0.83727 0.9148</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(mu_post, <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.90</span>, <span class="fl">0.99</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1%       10%       25%       50%       75%       90%       99% 
-0.5556247 0.6823394 0.7380963 0.7903224 0.8372665 0.8758460 0.9332181 </code></pre>
+0.5711090 0.6820233 0.7382783 0.7917314 0.8386111 0.8775132 0.9340064 </code></pre>
 </div>
 </div>
 <p><a href="https://mc-stan.org/users/interfaces/shinystan"><code>ShinyStan</code></a> provides a nice interface to interactively investigate the posterior distribution.</p>
@@ -1548,8 +1554,8 @@ theta[19] 0.60367 0.73810 0.79032 0.83727 0.9148</code></pre>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./classification.html" class="pagination-link" aria-label="Naive Bayes Classification">
-        <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Naive Bayes Classification</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./hierarchical-linear.html" class="pagination-link" aria-label="Introduction to Bayesian Hierarchical Linear Models">
+        <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Introduction to Bayesian Hierarchical Linear Models</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

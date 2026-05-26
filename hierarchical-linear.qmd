@@ -149,6 +149,14 @@ fit_lm <- brm(data = running, family = gaussian(), net ~ 1 + age)
 summary(fit_lm)
 ```
 
+```{r}
+plot(fit_lm)
+```
+
+```{r}
+pp_check(fit_lm)
+```
+
 ### Hierarchical model - random intercepts only
 
 
@@ -164,6 +172,52 @@ fit_hier1 <- brm(
 ```{r}
 summary(fit_hier1)
 ```
+
+
+```{r}
+plot(fit_hier1)
+```
+
+```{r}
+pp_check(fit_hier1)
+```
+
+
+```{r}
+library(performance)
+icc(fit_hier1)
+```
+
+
+```{r}
+icc_draws <- fit_hier1 |>
+  spread_draws(sd_runner__Intercept, sigma) |>
+  mutate(
+    var_between = sd_runner__Intercept^2,
+    var_within = sigma^2,
+    icc = var_between / (var_between + var_within)
+  )
+```
+
+
+```{r}
+icc_draws |>
+  ggplot(aes(x = icc)) +
+  geom_density(fill = "steelblue", alpha = 0.4, color = "steelblue4") +
+  geom_vline(
+    aes(xintercept = mean(icc)),
+    linetype = "dashed",
+    color = "steelblue4"
+  ) +
+  labs(
+    title = "Posterior Distribution of ICC",
+    subtitle = "Proportion of variance attributable to between-runner differences",
+    x = "ICC",
+    y = "Density"
+  ) +
+  theme_bw()
+```
+
 
 
 
@@ -182,6 +236,30 @@ fit_hier2 <- brm(
 
 ```{r}
 summary(fit_hier2)
+```
+
+
+
+```{r}
+plot(fit_hier2)
+```
+
+```{r}
+pp_check(fit_hier2)
+```
+
+
+
+```{r}
+fit_hier2 |>
+  spread_draws(cor_runner__Intercept__age) |>
+  ggplot(aes(x = cor_runner__Intercept__age)) +
+  geom_density(fill = "steelblue", alpha = 0.4) +
+  scale_x_continuous(limits = c(-1, 1)) +
+  labs(
+    x = "Correlation (intercept vs slope)",
+    title = "Posterior of random effect correlation"
+  )
 ```
 
 ```{r}
